@@ -1,0 +1,45 @@
+.main-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  margin: 5px;
+  background-color: #fff;
+  border-radius: 30px;
+}
+
+.card-container {
+  padding: 30px;
+  text-align: center;
+}
+
+.button-container {
+  display: flex;
+  padding: 2rem;
+  color: #000000;
+  justify-content: center;
+  margin-bottom: 10px;
+}
+.button-container > p > span {
+  color: #77bafa;
+  font-weight: bold;
+}
+
+.button-container > p > span:hover {
+  color: #597aee;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.form-container {
+  display: flex;
+  justify-content: center;
+}
+
+.app {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  height: auto;
+}

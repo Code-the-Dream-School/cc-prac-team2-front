@@ -1,0 +1,15 @@
+.nav {
+    width: 100%;
+    background: #030303;
+    margin-bottom: 10vh;
+}
+
+.appname {
+    font-size: 1.8rem;
+    font-weight: 500;
+    color: #ffffff;
+    padding-left: 10px;
+    font-family: "Pacifico", cursive;
+    text-align: start;
+}
+
