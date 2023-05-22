@@ -3,7 +3,6 @@ import LogIn from "../entryPoint/Login.tsx";
 import Register from "../entryPoint/Register.tsx";
 import NavBar from "./../navbar/NavBar.tsx";
 import ImageWrapper from "../UI/ImageWrapper.tsx";
-import "./Main.css";
 
 const Main = () => {
     const [showLogin, setShowLogin] = useState(true);
