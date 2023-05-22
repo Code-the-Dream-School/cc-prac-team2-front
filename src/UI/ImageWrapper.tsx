@@ -1,7 +1,7 @@
 import COCKATOO from "./../assests/cockatoo.png";
-import './Cockatoo.css';
+import './ImageWrapper.css';
 
-const Cockatoo = () => {
+const ImageWrapper = () => {
 
     return (
         <div className='image'>
@@ -10,4 +10,4 @@ const Cockatoo = () => {
     )
 }
 
-export default Cockatoo
+export default ImageWrapper

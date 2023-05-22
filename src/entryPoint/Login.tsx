@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
+import emailRegex from "../util/constants.tsx";
 
-const LogIN = () => {
+const LogIn = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [emailError, setEmailError] = useState('');
@@ -25,7 +26,6 @@ const LogIN = () => {
     if (email.trim() === '') {
       setEmailError('Email is required');
     } else {
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailRegex.test(email)) {
         setEmailError('Invalid email format');
       }
@@ -107,4 +107,4 @@ const LogIN = () => {
   );
 };
 
-export default LogIN;
+export default LogIn;

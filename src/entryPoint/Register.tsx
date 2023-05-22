@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-
+import emailRegex from "../util/constants.tsx";
 const Register = () => {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
@@ -26,7 +26,6 @@ const Register = () => {
         setEmailError('Email is required');
         isValid = false;
       } else {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(email)) {
           setEmailError('Invalid email format');
           isValid = false;

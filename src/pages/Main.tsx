@@ -1,8 +1,8 @@
 import { useState } from "react";
-import LogIN from "../entryPoint/Login.tsx";
+import LogIn from "../entryPoint/Login.tsx";
 import Register from "../entryPoint/Register.tsx";
 import NavBar from "./../navbar/NavBar.tsx";
-import Cockatoo from "../UI/Cockatoo.tsx";
+import ImageWrapper from "../UI/ImageWrapper.tsx";
 import "./Main.css";
 
 const Main = () => {
@@ -17,13 +17,13 @@ const Main = () => {
     return (
         <div className="flex flex-col items-center justify-center">
             <NavBar />
-            <Cockatoo />
+            <ImageWrapper />
 
             <div className="flex justify-center items-center h-full mt-5 bg-white rounded-lg">
                 <div className="px-8 py-6 text-center">
                     <div className="flex justify-center">
                         <div className="flex justify-center">
-                            {showLogin && <LogIN />}
+                            {showLogin && <LogIn />}
                             {showRegister && <Register />}
                         </div>
                     </div>
