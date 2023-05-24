@@ -23,7 +23,7 @@ const Chat = () => {
             </div>
             <div className="flex flex-col w-2/3 bg-gray-300 p-2 ">
 
-
+            <ChatWelcome />
             <ChatContainer />
 
             </div>

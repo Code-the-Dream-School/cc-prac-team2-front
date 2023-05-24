@@ -16,7 +16,7 @@ const ChatInput = () => {
         setShowEmoji(!showEmoji)
     }
 
-    const handleEmojiclick = (event: EmojiClickData) =>
+    const handleEmojiclick = (event: any) =>
     setMessageText(`${messageText} ${event.emoji}`)
 
 
@@ -46,7 +46,7 @@ const ChatInput = () => {
             <input
             type="text"
             placeholder='Type your message'
-            className="border flex-grow bg-slate-800 rounded-xl p-2"
+            className="border flex-grow bg-slate-800 rounded-xl p-2 text-white"
             value={messageText}
             onChange={e => setMessageText(e.target.value)}
             />

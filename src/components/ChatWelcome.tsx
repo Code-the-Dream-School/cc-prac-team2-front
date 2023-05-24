@@ -1,5 +1,5 @@
 import React from 'react'
-import Bird from "../assets/Bird.gif"
+import Bird from "../assests/Bird.gif"
 
 export default function ChatWelcome() {
   return (

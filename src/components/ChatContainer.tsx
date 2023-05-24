@@ -6,7 +6,7 @@ import ChatInput from "../components/ChatInput"
 
 const ChatContainer = () => {
 
-    const scrollRef = useRef()
+    const scrollRef = useRef<HTMLDivElement | null>(null)
 
     return (
         <>
