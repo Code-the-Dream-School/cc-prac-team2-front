@@ -6,7 +6,7 @@ import ChatInput from "../components/ChatInput"
 
 const ChatContainer = () => {
 
-    const scrollRef = useRef()
+    const scrollRef = useRef<HTMLDivElement | null>(null)
 
     return (
         <>
@@ -14,7 +14,6 @@ const ChatContainer = () => {
             <div className="relative h-full">
                 <div className="overflow-y-scroll absolute top-0 left-0 right-0 bottom-2"> 
                 <div className=''>
-                        Hello
                 </div>
                 <div ref={scrollRef}></div>
                 </div>

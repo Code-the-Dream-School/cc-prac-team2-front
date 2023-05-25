@@ -3,6 +3,8 @@ import {useState, useContext, useEffect, useRef} from 'react'
 import { useNavigate, Link } from 'react-router-dom';
 import axios from "axios"
 import ChatContainer from "../components/ChatContainer"
+import ChatWelcome from '../components/ChatWelcome';
+
 
 const Chat = () => {
 
@@ -20,6 +22,8 @@ const Chat = () => {
             </div>
             </div>
             <div className="flex flex-col w-2/3 bg-gray-300 p-2 ">
+
+            <ChatWelcome />
             <ChatContainer />
 
             </div>
