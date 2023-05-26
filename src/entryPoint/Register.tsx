@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import emailRegex from "../util/constants.tsx";
 const Register = () => {
-  const [username, setUsername] = useState('');
+  const [userName, setUserName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -15,7 +17,7 @@ const Register = () => {
     const validateForm = () => {
       let isValid = true;
 
-      if (username.trim() === '') {
+      if (userName.trim() === '') {
         setUsernameError('Username is required');
         isValid = false;
       } else {
@@ -55,10 +57,10 @@ const Register = () => {
     };
 
     setIsFormValid(validateForm());
-  }, [username, email, password, confirmPassword]);
+  }, [userName, email, password, confirmPassword]);
 
   const handleUsernameChange = (e) => {
-    setUsername(e.target.value);
+    setUserName(e.target.value);
   };
 
   const handleEmailChange = (e) => {
@@ -73,11 +75,30 @@ const Register = () => {
     setConfirmPassword(e.target.value);
   };
 
-  const handleSubmit = (e) => {
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e:any) => {
     e.preventDefault();
 
     if (isFormValid) {
-      // Perform further actions, such as making API requests or handling form submission
+      try {
+        const response = await axios.post('http://localhost:8000/api/v1/users/sign-up', {
+          userName,
+          email,
+          password
+        });
+
+        const { token } = response.data; // Assuming the token is returned in the response data
+
+        // Save the token to local storage
+        localStorage.setItem('token', token);
+
+        // Navigate to the chat page
+        navigate('/chat');
+      } catch (error) {
+        // Handle error response
+        console.log(error);
+      }
     }
   };
 
@@ -97,11 +118,11 @@ const Register = () => {
             <div className="mb-6">
               <input
                   type="text"
-                  placeholder="Username"
+                  placeholder="User Name"
                   className={`w-full px-4 py-2 border-b-2 outline-none ${
                       emailError ? 'border-red-500' : 'border-gray-300'
                   }`}
-                  value={username}
+                  value={userName}
                   onChange={handleUsernameChange}
               />
               {usernameError && <div className="text-red-500 text-sm mt-1">{usernameError}</div>}

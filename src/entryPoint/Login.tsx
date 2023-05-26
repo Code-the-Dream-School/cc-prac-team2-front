@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'react';
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import emailRegex from "../util/constants.tsx";
 
 const LogIn = () => {
@@ -45,14 +47,46 @@ const LogIn = () => {
     validatePassword();
   };
 
-  const handleSubmit = (e) => {
+const navigate = useNavigate()
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     validateForm();
 
     if (isFormValid) {
-      // Perform further actions, such as making API requests or handling form submission
+      try {
+        const response = await axios.post('http://localhost:8000/api/v1/users/log-in', {
+          email: email,
+          password: password
+        });
+
+        if (response.data === 'user not sign-up') {
+          // Show notification for user not signed up
+          showNotification('User not signed up');
+
+          // Perform further actions, such as displaying an error message
+        } else {
+          // Show notification for successful sign-in
+          showNotification('User signed in');
+
+          // Perform actions for user signed in, such as storing the user token and redirecting to the /chat page
+          localStorage.setItem('token', response.data.token);
+
+          // Redirect to /chat page
+          navigate('/chat');
+        }
+      } catch (error) {
+        console.log('Error signing in:', error);
+        // Handle error, such as displaying an error message
+      }
     }
+  };
+
+  const showNotification = (message:any) => {
+    // Show notification message with timeout of 5 seconds
+    // Replace this with your own notification implementation
+    // Example using window.alert:
+    window.alert(message);
   };
 
   const isButtonDisabled = emailError || passwordError || !isFormValid;
