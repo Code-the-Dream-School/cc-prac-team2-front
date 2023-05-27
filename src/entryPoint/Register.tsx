@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import emailRegex from "../util/constants.tsx";
+import jwt_decode from "jwt-decode";
+
 const Register = () => {
   const [userName, setUserName] = useState('');
   const [email, setEmail] = useState('');
@@ -89,7 +91,8 @@ const Register = () => {
         });
 
         const { token } = response.data; // Assuming the token is returned in the response data
-
+        console.log(token);
+        
         // Save the token to local storage
         localStorage.setItem('token', token);
 
