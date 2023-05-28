@@ -10,7 +10,7 @@ export const UserContextProvider = ({children}) => {
 
     console.log(user);
 
-    useEffect(() =>{
+    useEffect(() => {
         checkUser()
     }, [])
 
@@ -20,7 +20,7 @@ export const UserContextProvider = ({children}) => {
             const loggedInUser = jwt_decode(userWithToken);
             setUser(loggedInUser)
         }
-      }
+    }
     
 
     return (
