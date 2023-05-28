@@ -7,6 +7,7 @@ import ImageWrapper from "../UI/ImageWrapper.tsx";
 const Main = () => {
     const [showLogin, setShowLogin] = useState(true);
     const [showRegister, setShowRegister] = useState(false);
+    
 
     const handleRegisterClick = () => {
         setShowLogin(!showLogin);

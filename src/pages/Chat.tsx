@@ -5,14 +5,9 @@ import axios from "axios"
 import ChatContainer from "../components/ChatContainer"
 import ChatWelcome from '../components/ChatWelcome';
 import {UserContext} from "../context/user-context"
-import { BsLockFill } from 'react-icons/bs';
+
 
 const Chat = () => {
-
-    const [user, setUser] = useContext(UserContext)
-    console.log(user);
-
-    
 
 
     return (

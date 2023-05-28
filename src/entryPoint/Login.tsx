@@ -2,7 +2,7 @@ import { useState, useEffect, useContext } from 'react';
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import emailRegex from "../util/constants.tsx";
-import jwt_decode from "jwt-decode";
+
 import {UserContext} from "../context/user-context"
 
 const LogIn = () => {
@@ -69,7 +69,6 @@ const navigate = useNavigate()
           // Show notification for user not signed up
           showNotification('User not signed up');
 
-
           // Perform further actions, such as displaying an error message
         } else {
           // Show notification for successful sign-in
@@ -77,11 +76,8 @@ const navigate = useNavigate()
 
           // Perform actions for user signed in, such as storing the user token and redirecting to the /chat page
           const token = response.data.token
-          localStorage.setItem('token',token);
-          var loggedInUser = jwt_decode(token);
-
-          setUser({...loggedInUser})
-
+          localStorage.setItem('token',JSON.stringify(token));
+     
           // Redirect to /chat page
           navigate('/chat');
         }
