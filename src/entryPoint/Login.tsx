@@ -1,24 +1,19 @@
 import { useState, useEffect, useContext } from 'react';
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
-import emailRegex from "../util/constants.tsx";
-import jwt_decode from "jwt-decode";
-import {UserContext} from "../context/user-context"
-import Notification from "../UI/Notification.tsx";
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import emailRegex from '../util/constants.tsx';
+import jwt_decode from 'jwt-decode';
+import { UserContext } from '../context/user-context';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const LogIn = () => {
-
-
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
   const [isFormValid, setIsFormValid] = useState(false);
-  const {user, setUser} = useContext(UserContext)
-  const [showNotification, setShowNotification] = useState(false);
-  const [notificationMessage, setNotificationMessage] = useState('');
-  
-  
+  const { user, setUser } = useContext(UserContext);
 
   useEffect(() => {
     setIsFormValid(email.trim() !== '' && password.trim() !== '');
@@ -57,8 +52,7 @@ const LogIn = () => {
     validatePassword();
   };
 
-const navigate = useNavigate()
-  // ...
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -73,89 +67,74 @@ const navigate = useNavigate()
         });
 
         if (response.status === 200) {
-          // Show notification for successful sign-in
-          setShowNotification(true);
-          setNotificationMessage('User signed in');
-
-          // Perform actions for user signed in, such as storing the user token and redirecting to the /chat page
           const token = response.data.token;
           localStorage.setItem('token', JSON.stringify(token));
           const loggedIn = jwt_decode(token);
           setUser(loggedIn);
 
-          // Redirect to /chat page
-          setTimeout(() => {
+          toast.success('User signed in');
+
             navigate('/chat');
-          }, 4000);
+
         }
       } catch (error) {
         console.log('Error signing in:', error);
-        // Handle error, such as displaying an error message
-        setShowNotification(true);
-        setNotificationMessage('Error signing in');
+        toast.error('Error signing in');
       }
     }
   };
-
-// ...
-
-
-
-
 
   const isButtonDisabled = emailError || passwordError || !isFormValid;
 
   return (
       <>
-        {notificationMessage && <Notification message={notificationMessage} />}
-
-      <div className="flex justify-center items-center">
-
-        <form className="bg-white rounded-md p-8" onSubmit={handleSubmit}>
-          <h2 className="text-3xl font-bold mb-8" style={{ marginRight: '180px', fontFamily: 'Montserrat, sans-serif' }}>Sign in</h2>
-          <div className="mb-6">
-            <input
-                type="text"
-                placeholder="Email"
-                className={`w-full px-4 py-2 border-b-2 outline-none ${
-                    emailError ? 'border-red-500' : 'border-gray-300'
+        <ToastContainer />
+        <div className="flex justify-center items-center">
+          <form className="bg-white rounded-md p-8" onSubmit={handleSubmit}>
+            <h2 className="text-3xl font-bold mb-8" style={{ marginRight: '180px', fontFamily: 'Montserrat, sans-serif' }}>Sign in</h2>
+            <div className="mb-6">
+              <input
+                  type="text"
+                  placeholder="Email"
+                  className={`w-full px-4 py-2 border-b-2 outline-none ${
+                      emailError ? 'border-red-500' : 'border-gray-300'
+                  }`}
+                  value={email}
+                  onChange={handleEmailChange}
+                  onBlur={validateEmail}
+              />
+              {emailError && (
+                  <div className="text-red-500 text-sm mt-1">{emailError}</div>
+              )}
+            </div>
+            <div className="mb-6">
+              <input
+                  type="password"
+                  placeholder="Password"
+                  className={`w-full px-4 py-2 border-b-2 outline-none ${
+                      passwordError ? 'border-red-500' : 'border-gray-300'
+                  }`}
+                  value={password}
+                  onChange={handlePasswordChange}
+                  onBlur={validatePassword}
+              />
+              {passwordError && (
+                  <div className="text-red-500 text-sm mt-1">{passwordError}</div>
+              )}
+            </div>
+            <button
+                type="submit"
+                className={`bg-yellow-200 text-gray-800 text-sm font-bold px-8 py-3 rounded-full shadow-md transition-colors ${
+                    isButtonDisabled
+                        ? 'bg-gray-300 cursor-not-allowed'
+                        : 'hover:bg-blue-500 hover:text-white'
                 }`}
-                value={email}
-                onChange={handleEmailChange}
-                onBlur={validateEmail}
-            />
-            {emailError && (
-                <div className="text-red-500 text-sm mt-1">{emailError}</div>
-            )}
-          </div>
-          <div className="mb-6">
-            <input
-                type="password"
-                placeholder="Password"
-                className={`w-full px-4 py-2 border-b-2 outline-none ${
-                    passwordError ? 'border-red-500' : 'border-gray-300'
-                }`}
-                value={password}
-                onChange={handlePasswordChange}
-                onBlur={validatePassword}
-            />
-            {passwordError && (
-                <div className="text-red-500 text-sm mt-1">{passwordError}</div>
-            )}
-          </div>
-          <button
-              type="submit"
-              className={`bg-yellow-200 text-gray-800 text-sm font-bold px-8 py-3 rounded-full shadow-md transition-colors ${
-                  isButtonDisabled
-                      ? 'bg-gray-300 cursor-not-allowed'
-                      : 'hover:bg-blue-500 hover:text-white'
-              }`}
-              disabled={isButtonDisabled}
-          >
-            Sign in
-          </button>
-        </form>
-      </div>
+                disabled={isButtonDisabled}
+            >
+              Sign in
+            </button>
+          </form>
+        </div>
       </>
   );
 };

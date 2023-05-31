@@ -1,10 +1,12 @@
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import emailRegex from "../util/constants.tsx";
-import jwt_decode from "jwt-decode";
-import {UserContext} from "../context/user-context"
-import Notification from "../UI/Notification.tsx";
+import emailRegex from '../util/constants.tsx';
+import {
+  ToastContainer,
+  toast
+} from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Register = () => {
   const [userName, setUserName] = useState('');
@@ -16,8 +18,6 @@ const Register = () => {
   const [passwordError, setPasswordError] = useState('');
   const [confirmPasswordError, setConfirmPasswordError] = useState('');
   const [isFormValid, setIsFormValid] = useState(false);
-  const [showNotification, setShowNotification] = useState(false);
-  const [notificationMessage, setNotificationMessage] = useState('');
 
   useEffect(() => {
     const validateForm = () => {
@@ -65,19 +65,19 @@ const Register = () => {
     setIsFormValid(validateForm());
   }, [userName, email, password, confirmPassword]);
 
-  const handleUsernameChange = (e) => {
+  const handleUsernameChange = (e:any) => {
     setUserName(e.target.value);
   };
 
-  const handleEmailChange = (e) => {
+  const handleEmailChange = (e:any) => {
     setEmail(e.target.value);
   };
 
-  const handlePasswordChange = (e) => {
+  const handlePasswordChange = (e:any) => {
     setPassword(e.target.value);
   };
 
-  const handleConfirmPasswordChange = (e) => {
+  const handleConfirmPasswordChange = (e:any) => {
     setConfirmPassword(e.target.value);
   };
 
@@ -94,22 +94,16 @@ const Register = () => {
           password
         });
 
-          setShowNotification(true);
-          setNotificationMessage('User signed Up');
-          const {token} = response.data; // Assuming the token is returned in the response data
 
-          // Redirect to /chat page
-          // Save the token to local storage
+          const token = response.data.token;
           localStorage.setItem('token', JSON.stringify(token));
 
-          // Navigate to the chat page
-          setTimeout(() => {
+          toast.success('User signed up');
             navigate('/chat');
-          }, 4000);
 
       } catch (error) {
-        // Handle error response
-        console.log(error);
+        console.log('Error signing up:', error);
+        toast.error('Error signing up');
       }
     }
   };
@@ -123,7 +117,7 @@ const Register = () => {
 
   return (
       <>
-        {showNotification && <Notification message={notificationMessage} />}
+      <ToastContainer />
       <div className="flex justify-center items-center h-full">
               <div className="flex justify-center items-center">
           <form className="flex flex-col items-center bg-white rounded-2xl p-10" onSubmit={handleSubmit}>
@@ -192,7 +186,6 @@ const Register = () => {
       </div>
       </>
   );
-}
-
+};
 
 export default Register;
