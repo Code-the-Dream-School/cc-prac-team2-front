@@ -6,25 +6,17 @@ export const UserContext = createContext(null)
 
 export const UserContextProvider = ({children}) => {
 
-    const [user, setUser] = useState(null)
+    let loggedInUser 
 
-    console.log(user);
-
-    useEffect(() => {
-        checkUser()
-    }, [])
-
-    const checkUser = async () => {
-        const userWithToken = await JSON.parse(localStorage.getItem('token') || 'null')
-        if (userWithToken) {
-            const loggedInUser = jwt_decode(userWithToken);
-            setUser(loggedInUser)
-        }
+    const userWithToken = JSON.parse(localStorage.getItem('token') || 'null')
+    if (userWithToken) {
+        loggedInUser = jwt_decode(userWithToken)
     }
-    
+    const [user, setUser] = useState(loggedInUser)
+
 
     return (
-        <UserContext.Provider value={[user, setUser]}>
+        <UserContext.Provider value={{user, setUser}}>
             {children}
         </UserContext.Provider>
     )

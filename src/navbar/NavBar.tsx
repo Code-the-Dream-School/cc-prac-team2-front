@@ -3,11 +3,14 @@ import {useState, useContext, useEffect} from 'react'
 import { useNavigate } from "react-router-dom";
 import './NavBar.css';
 import {UserContext} from "../context/user-context"
-
+import jwt_decode from "jwt-decode";
 
 const NavBar = () => {
-    const [user, setUser] = useContext(UserContext)
+    const {user, setUser} = useContext(UserContext)
     const navigate = useNavigate()
+
+    
+  
 
     const handleLogout = () => {
       localStorage.removeItem("token")
