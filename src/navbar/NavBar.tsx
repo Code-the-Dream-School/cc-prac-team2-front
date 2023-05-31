@@ -3,11 +3,15 @@ import {useState, useContext, useEffect} from 'react'
 import { useNavigate } from "react-router-dom";
 import './NavBar.css';
 import {UserContext} from "../context/user-context"
+import Notification from "../UI/Notification.tsx";
 import jwt_decode from "jwt-decode";
 
 const NavBar = () => {
     const {user, setUser} = useContext(UserContext)
     const navigate = useNavigate()
+
+    const [showNotification, setShowNotification] = useState(false);
+    const [notificationMessage, setNotificationMessage] = useState('');
 
     
   
@@ -15,7 +19,12 @@ const NavBar = () => {
     const handleLogout = () => {
       localStorage.removeItem("token")
       setUser(null)
-      navigate("/")
+        setShowNotification(true);
+        setNotificationMessage('User signed Out');
+        setTimeout(() => {
+            navigate("/")
+        }, 4000);
+
     }
 
     return (
@@ -32,6 +41,7 @@ const NavBar = () => {
            </button>
            : null  
             }
+                {showNotification && <Notification message={notificationMessage} />}
             </li>
             <li className="items-center" >
                 {user && user.userName ? <p> Hello, {user.userName} </p> : ""}

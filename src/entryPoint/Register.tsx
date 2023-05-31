@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import emailRegex from "../util/constants.tsx";
 import jwt_decode from "jwt-decode";
 import {UserContext} from "../context/user-context"
+import Notification from "../UI/Notification.tsx";
 
 const Register = () => {
   const [userName, setUserName] = useState('');
@@ -15,7 +16,8 @@ const Register = () => {
   const [passwordError, setPasswordError] = useState('');
   const [confirmPasswordError, setConfirmPasswordError] = useState('');
   const [isFormValid, setIsFormValid] = useState(false);
-
+  const [showNotification, setShowNotification] = useState(false);
+  const [notificationMessage, setNotificationMessage] = useState('');
 
   useEffect(() => {
     const validateForm = () => {
@@ -92,14 +94,20 @@ const Register = () => {
           password
         });
 
-        const { token } = response.data; // Assuming the token is returned in the response data
+        if(response.status === 200 ) {
+          setShowNotification(true);
+          setNotificationMessage('User signed Up');
+          const {token} = response.data; // Assuming the token is returned in the response data
 
-        // Redirect to /chat page
-        // Save the token to local storage
-        localStorage.setItem('token', JSON.stringify(token));
+          // Redirect to /chat page
+          // Save the token to local storage
+          localStorage.setItem('token', JSON.stringify(token));
 
-        // Navigate to the chat page
-        navigate('/chat');
+          // Navigate to the chat page
+          setTimeout(() => {
+            navigate('/chat');
+          }, 4000);
+        }
       } catch (error) {
         // Handle error response
         console.log(error);
@@ -116,7 +124,7 @@ const Register = () => {
 
   return (
       <div className="flex justify-center items-center h-full">
-        <div className="flex justify-center items-center">
+              <div className="flex justify-center items-center">
           <form className="flex flex-col items-center bg-white rounded-2xl p-10" onSubmit={handleSubmit}>
             <h2 className="text-3xl font-bold mb-8"
                 style={{marginRight: '180px', fontFamily: 'Montserrat, sans-serif'}}>Sign up</h2>
@@ -177,6 +185,7 @@ const Register = () => {
                 }`} disabled={isButtonDisabled}>
               Sign Up
             </button>
+            {showNotification && <Notification message={notificationMessage} />}
           </form>
         </div>
       </div>

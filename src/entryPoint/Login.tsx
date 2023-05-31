@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import emailRegex from "../util/constants.tsx";
 import jwt_decode from "jwt-decode";
 import {UserContext} from "../context/user-context"
+import Notification from "../UI/Notification.tsx";
 
 const LogIn = () => {
 
@@ -14,7 +15,8 @@ const LogIn = () => {
   const [passwordError, setPasswordError] = useState('');
   const [isFormValid, setIsFormValid] = useState(false);
   const {user, setUser} = useContext(UserContext)
-
+  const [showNotification, setShowNotification] = useState(false);
+  const [notificationMessage, setNotificationMessage] = useState('');
   
   
 
@@ -56,6 +58,8 @@ const LogIn = () => {
   };
 
 const navigate = useNavigate()
+  // ...
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -68,44 +72,45 @@ const navigate = useNavigate()
           password: password
         });
 
-        if (response.data === 'user not sign-up') {
-          // Show notification for user not signed up
-          showNotification('User not signed up');
-
-          // Perform further actions, such as displaying an error message
-        } else {
+        if (response.status === 200) {
           // Show notification for successful sign-in
-          showNotification('User signed in');
+          setShowNotification(true);
+          setNotificationMessage('User signed in');
 
           // Perform actions for user signed in, such as storing the user token and redirecting to the /chat page
-          const token = response.data.token
-          localStorage.setItem('token',JSON.stringify(token));
+          const token = response.data.token;
+          localStorage.setItem('token', JSON.stringify(token));
           const loggedIn = jwt_decode(token);
-          setUser(loggedIn)
+          setUser(loggedIn);
 
           // Redirect to /chat page
-          navigate('/chat');
+          setTimeout(() => {
+            navigate('/chat');
+          }, 4000);
         }
       } catch (error) {
         console.log('Error signing in:', error);
         // Handle error, such as displaying an error message
+        setShowNotification(true);
+        setNotificationMessage('Error signing in');
       }
     }
   };
 
-  
+// ...
 
-  const showNotification = (message:any) => {
-    // Show notification message with timeout of 5 seconds
-    // Replace this with your own notification implementation
-    // Example using window.alert:
-    window.alert(message);
-  };
+
+
+
 
   const isButtonDisabled = emailError || passwordError || !isFormValid;
 
   return (
+      <>
+        {notificationMessage && <Notification message={notificationMessage} />}
+
       <div className="flex justify-center items-center">
+
         <form className="bg-white rounded-md p-8" onSubmit={handleSubmit}>
           <h2 className="text-3xl font-bold mb-8" style={{ marginRight: '180px', fontFamily: 'Montserrat, sans-serif' }}>Sign in</h2>
           <div className="mb-6">
@@ -149,8 +154,10 @@ const navigate = useNavigate()
           >
             Sign in
           </button>
+          {showNotification && <Notification message={notificationMessage} />}
         </form>
       </div>
+      </>
   );
 };
 
