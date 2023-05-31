@@ -9,9 +9,9 @@ import {UserContextProvider} from "./context/user-context"
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
     <UserContextProvider>
-    <BrowserRouter>
-       <App />
-    </BrowserRouter>
+        <BrowserRouter>
+            <App />
+        </BrowserRouter>
     </UserContextProvider>
 );
 
