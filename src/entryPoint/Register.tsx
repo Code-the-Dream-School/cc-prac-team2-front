@@ -94,7 +94,6 @@ const Register = () => {
           password
         });
 
-        if(response.status === 200 ) {
           setShowNotification(true);
           setNotificationMessage('User signed Up');
           const {token} = response.data; // Assuming the token is returned in the response data
@@ -107,7 +106,7 @@ const Register = () => {
           setTimeout(() => {
             navigate('/chat');
           }, 4000);
-        }
+
       } catch (error) {
         // Handle error response
         console.log(error);
@@ -123,6 +122,8 @@ const Register = () => {
       !isFormValid;
 
   return (
+      <>
+        {showNotification && <Notification message={notificationMessage} />}
       <div className="flex justify-center items-center h-full">
               <div className="flex justify-center items-center">
           <form className="flex flex-col items-center bg-white rounded-2xl p-10" onSubmit={handleSubmit}>
@@ -185,10 +186,11 @@ const Register = () => {
                 }`} disabled={isButtonDisabled}>
               Sign Up
             </button>
-            {showNotification && <Notification message={notificationMessage} />}
+
           </form>
         </div>
       </div>
+      </>
   );
 }
 

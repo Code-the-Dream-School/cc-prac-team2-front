@@ -154,7 +154,6 @@ const navigate = useNavigate()
           >
             Sign in
           </button>
-          {showNotification && <Notification message={notificationMessage} />}
         </form>
       </div>
       </>
