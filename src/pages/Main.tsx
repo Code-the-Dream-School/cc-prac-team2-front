@@ -15,7 +15,7 @@ const Main = () => {
     };
 
     return (
-        <div className="flex flex-col items-center justify-center">
+        <div className="flex flex-wrap-reverse items-center justify-center">
 
             <ImageWrapper />
 

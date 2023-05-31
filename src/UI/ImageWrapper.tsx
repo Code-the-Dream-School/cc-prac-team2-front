@@ -1,5 +1,4 @@
 import COCKATOO from "./../assests/cockatoo.png";
-import './ImageWrapper.css';
 
 const ImageWrapper = () => {
 
