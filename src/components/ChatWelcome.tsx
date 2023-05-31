@@ -7,7 +7,6 @@ export default function ChatWelcome() {
         <div className='mx-auto items-center'>
         <img src={Bird} alt="Bird" width="80" height="80"/>
         </div>
-      
     </div>
   )
 }

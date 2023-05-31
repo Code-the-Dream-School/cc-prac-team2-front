@@ -7,6 +7,7 @@ import ImageWrapper from "../UI/ImageWrapper.tsx";
 const Main = () => {
     const [showLogin, setShowLogin] = useState(true);
     const [showRegister, setShowRegister] = useState(false);
+    
 
     const handleRegisterClick = () => {
         setShowLogin(!showLogin);
@@ -15,10 +16,10 @@ const Main = () => {
 
     return (
         <div className="flex flex-col items-center justify-center">
-            <NavBar />
+
             <ImageWrapper />
 
-            <div className="flex justify-center items-center h-full mt-5 bg-white rounded-lg">
+            <div className="flex justify-center items-center h-full m-20 bg-white rounded-lg">
                 <div className="px-8 py-6 text-center">
                     <div className="flex justify-center">
                         <div className="flex justify-center">

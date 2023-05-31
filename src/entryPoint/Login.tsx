@@ -1,14 +1,22 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import emailRegex from "../util/constants.tsx";
+import jwt_decode from "jwt-decode";
+import {UserContext} from "../context/user-context"
 
 const LogIn = () => {
+
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
   const [isFormValid, setIsFormValid] = useState(false);
+  const {user, setUser} = useContext(UserContext)
+
+  
+  
 
   useEffect(() => {
     setIsFormValid(email.trim() !== '' && password.trim() !== '');
@@ -70,7 +78,10 @@ const navigate = useNavigate()
           showNotification('User signed in');
 
           // Perform actions for user signed in, such as storing the user token and redirecting to the /chat page
-          localStorage.setItem('token', response.data.token);
+          const token = response.data.token
+          localStorage.setItem('token',JSON.stringify(token));
+          const loggedIn = jwt_decode(token);
+          setUser(loggedIn)
 
           // Redirect to /chat page
           navigate('/chat');
@@ -81,6 +92,8 @@ const navigate = useNavigate()
       }
     }
   };
+
+  
 
   const showNotification = (message:any) => {
     // Show notification message with timeout of 5 seconds

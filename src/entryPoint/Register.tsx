@@ -1,7 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import emailRegex from "../util/constants.tsx";
+import jwt_decode from "jwt-decode";
+import {UserContext} from "../context/user-context"
+
 const Register = () => {
   const [userName, setUserName] = useState('');
   const [email, setEmail] = useState('');
@@ -12,6 +15,7 @@ const Register = () => {
   const [passwordError, setPasswordError] = useState('');
   const [confirmPasswordError, setConfirmPasswordError] = useState('');
   const [isFormValid, setIsFormValid] = useState(false);
+  const {user, setUser} = useContext(UserContext)
 
   useEffect(() => {
     const validateForm = () => {
@@ -90,8 +94,11 @@ const Register = () => {
 
         const { token } = response.data; // Assuming the token is returned in the response data
 
+        // Redirect to /chat page
         // Save the token to local storage
-        localStorage.setItem('token', token);
+        localStorage.setItem('token', JSON.stringify(token));
+        const registered = jwt_decode(token);
+        setUser(registered)
 
         // Navigate to the chat page
         navigate('/chat');
