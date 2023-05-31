@@ -3,10 +3,9 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import emailRegex from '../util/constants.tsx';
 import {
-  ToastContainer,
   toast
 } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+
 
 const Register = () => {
   const [userName, setUserName] = useState('');
@@ -116,8 +115,7 @@ const Register = () => {
       !isFormValid;
 
   return (
-      <>
-      <ToastContainer />
+
       <div className="flex justify-center items-center h-full">
               <div className="flex justify-center items-center">
           <form className="flex flex-col items-center bg-white rounded-2xl p-10" onSubmit={handleSubmit}>
@@ -184,7 +182,6 @@ const Register = () => {
           </form>
         </div>
       </div>
-      </>
   );
 };
 

@@ -2,8 +2,7 @@ import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './NavBar.css';
 import { UserContext } from '../context/user-context';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import {  toast } from 'react-toastify';
 
 const NavBar = () => {
     const { user, setUser } = useContext(UserContext);
@@ -19,8 +18,7 @@ const NavBar = () => {
     };
 
     return (
-        <>
-            <ToastContainer />
+
             <nav className="hidden md:flex bg-black text-white">
                 <ul className="flex items-center p-3">
                     <li className="px-4">
@@ -38,7 +36,6 @@ const NavBar = () => {
                     </li>
                 </ul>
             </nav>
-        </>
     );
 };
 

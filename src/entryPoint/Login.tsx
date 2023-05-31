@@ -4,8 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import emailRegex from '../util/constants.tsx';
 import jwt_decode from 'jwt-decode';
 import { UserContext } from '../context/user-context';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { toast } from "react-toastify";
 
 const LogIn = () => {
   const [email, setEmail] = useState('');
@@ -87,8 +86,7 @@ const LogIn = () => {
   const isButtonDisabled = emailError || passwordError || !isFormValid;
 
   return (
-      <>
-        <ToastContainer />
+
         <div className="flex justify-center items-center">
           <form className="bg-white rounded-md p-8" onSubmit={handleSubmit}>
             <h2 className="text-3xl font-bold mb-8" style={{ marginRight: '180px', fontFamily: 'Montserrat, sans-serif' }}>Sign in</h2>
@@ -135,7 +133,7 @@ const LogIn = () => {
             </button>
           </form>
         </div>
-      </>
+
   );
 };
 
