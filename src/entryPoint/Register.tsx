@@ -1,11 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import emailRegex from '../util/constants.tsx';
-import {
-  toast
-} from 'react-toastify';
-
+import emailRegex from "../util/constants.tsx";
+import jwt_decode from "jwt-decode";
+import {UserContext} from "../context/user-context"
 
 const Register = () => {
   const [userName, setUserName] = useState('');
@@ -18,7 +16,6 @@ const Register = () => {
   const [confirmPasswordError, setConfirmPasswordError] = useState('');
   const [isFormValid, setIsFormValid] = useState(false);
   const {user, setUser} = useContext(UserContext)
-
 
   useEffect(() => {
     const validateForm = () => {
@@ -66,19 +63,19 @@ const Register = () => {
     setIsFormValid(validateForm());
   }, [userName, email, password, confirmPassword]);
 
-  const handleUsernameChange = (e:any) => {
+  const handleUsernameChange = (e) => {
     setUserName(e.target.value);
   };
 
-  const handleEmailChange = (e:any) => {
+  const handleEmailChange = (e) => {
     setEmail(e.target.value);
   };
 
-  const handlePasswordChange = (e:any) => {
+  const handlePasswordChange = (e) => {
     setPassword(e.target.value);
   };
 
-  const handleConfirmPasswordChange = (e:any) => {
+  const handleConfirmPasswordChange = (e) => {
     setConfirmPassword(e.target.value);
   };
 
@@ -95,21 +92,19 @@ const Register = () => {
           password
         });
 
+        const { token } = response.data; // Assuming the token is returned in the response data
 
-          const token = response.data.token;
-          localStorage.setItem('token', JSON.stringify(token));
-
-          toast.success('User signed up');
-            navigate('/chat')
         // Redirect to /chat page
         // Save the token to local storage
         localStorage.setItem('token', JSON.stringify(token));
         const registered = jwt_decode(token);
         setUser(registered)
 
+        // Navigate to the chat page
+        navigate('/chat');
       } catch (error) {
-        console.log('Error signing up:', error);
-        toast.error('Error signing up');
+        // Handle error response
+        console.log(error);
       }
     }
   };
@@ -122,9 +117,8 @@ const Register = () => {
       !isFormValid;
 
   return (
-
       <div className="flex justify-center items-center h-full">
-              <div className="flex justify-center items-center">
+        <div className="flex justify-center items-center">
           <form className="flex flex-col items-center bg-white rounded-2xl p-10" onSubmit={handleSubmit}>
             <h2 className="text-3xl font-bold mb-8"
                 style={{marginRight: '180px', fontFamily: 'Montserrat, sans-serif'}}>Sign up</h2>
@@ -185,11 +179,11 @@ const Register = () => {
                 }`} disabled={isButtonDisabled}>
               Sign Up
             </button>
-
           </form>
         </div>
       </div>
   );
-};
+}
+
 
 export default Register;
