@@ -2,14 +2,14 @@ import { useEffect} from 'react';
 import Chat from "./pages/Chat"
 import Main from "./pages/Main"
 import { Route, Routes, useNavigate } from "react-router-dom";
-import NavBar from './navbar/NavBar';
+import Navbar from "./navbar/Nav"
 // import {UserContext} from "./context/user-context"
 
 
 // const URL = 'http://localhost:8000/api/v1/';
 
 
-function App() {
+const App = () => {
 
   const navigate = useNavigate();
   useEffect(() => {
@@ -24,7 +24,7 @@ function App() {
 
   return (
     <>
-        <NavBar />
+        <Navbar />
         <Routes>
             <Route path="/"       element={<Main />} />
             <Route path="/chat"   element={<Chat />} />
