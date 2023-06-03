@@ -17,6 +17,8 @@ const Register = () => {
   const [passwordError, setPasswordError] = useState('');
   const [confirmPasswordError, setConfirmPasswordError] = useState('');
   const [isFormValid, setIsFormValid] = useState(false);
+  const {user, setUser} = useContext(UserContext)
+
 
   useEffect(() => {
     const validateForm = () => {
@@ -98,7 +100,12 @@ const Register = () => {
           localStorage.setItem('token', JSON.stringify(token));
 
           toast.success('User signed up');
-            navigate('/chat');
+            navigate('/chat')
+        // Redirect to /chat page
+        // Save the token to local storage
+        localStorage.setItem('token', JSON.stringify(token));
+        const registered = jwt_decode(token);
+        setUser(registered)
 
       } catch (error) {
         console.log('Error signing up:', error);
