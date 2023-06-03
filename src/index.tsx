@@ -6,7 +6,9 @@ import reportWebVitals from './reportWebVitals';
 import './index.css'
 import {UserContextProvider} from "./context/user-context"
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
+
+
+const root = ReactDOM.createRoot(document.getElementById('root')!);
 root.render(
     <UserContextProvider>
         <BrowserRouter>

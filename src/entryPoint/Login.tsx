@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect, useContext, ChangeEvent } from 'react';
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import emailRegex from "../util/constants.tsx";
@@ -8,12 +8,12 @@ import {UserContext} from "../context/user-context"
 const LogIn = () => {
 
 
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [emailError, setEmailError] = useState('');
-  const [passwordError, setPasswordError] = useState('');
-  const [isFormValid, setIsFormValid] = useState(false);
-  const {user, setUser} = useContext(UserContext)
+  const [email, setEmail] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
+  const [emailError, setEmailError] = useState<string>('');
+  const [passwordError, setPasswordError] = useState<string>('');
+  const [isFormValid, setIsFormValid] = useState<boolean>(false);
+  const { setUser} = useContext(UserContext)
 
   
   
@@ -22,12 +22,12 @@ const LogIn = () => {
     setIsFormValid(email.trim() !== '' && password.trim() !== '');
   }, [email, password]);
 
-  const handleEmailChange = (e) => {
+  const handleEmailChange = (e:ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
     setEmailError('');
   };
 
-  const handlePasswordChange = (e) => {
+  const handlePasswordChange = (e:ChangeEvent<HTMLInputElement>) => {
     setPassword(e.target.value);
     setPasswordError('');
   };
@@ -56,14 +56,14 @@ const LogIn = () => {
   };
 
 const navigate = useNavigate()
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e:ChangeEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     validateForm();
 
     if (isFormValid) {
       try {
-        const response = await axios.post('http://localhost:8000/api/v1/users/log-in', {
+        const response = await axios.post('http://localhost:8000/api/v1/auth/log-in', {
           email: email,
           password: password
         });
@@ -80,8 +80,10 @@ const navigate = useNavigate()
           // Perform actions for user signed in, such as storing the user token and redirecting to the /chat page
           const token = response.data.token
           localStorage.setItem('token',JSON.stringify(token));
-          const loggedIn = jwt_decode(token);
-          setUser(loggedIn)
+          const loggedIn: string | null = jwt_decode(token);
+          if (loggedIn) {
+              setUser(loggedIn)
+          }
 
           // Redirect to /chat page
           navigate('/chat');
@@ -95,14 +97,14 @@ const navigate = useNavigate()
 
   
 
-  const showNotification = (message:any) => {
+  const showNotification = (message:string) => {
     // Show notification message with timeout of 5 seconds
     // Replace this with your own notification implementation
     // Example using window.alert:
     window.alert(message);
   };
 
-  const isButtonDisabled = emailError || passwordError || !isFormValid;
+  const isButtonDisabled = !!emailError || !!passwordError || !isFormValid;
 
   return (
       <div className="flex justify-center items-center">

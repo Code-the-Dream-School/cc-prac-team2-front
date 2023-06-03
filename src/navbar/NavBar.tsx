@@ -20,23 +20,22 @@ const NavBar = () => {
 
     return (
         <>
-        <nav className="hidden md:flex bg-black text-white ">
-          <ul className="flex items-center p-3  ">
-            <li className="px-4">
-              <a className="no-underline text-center hover:text-yellow-400 " href="/chat">COCKATOO</a>
-            </li>
-            <li className="px-4">
+        <nav className="flex bg-black text-white p-2 justify-between ">
+            <div className="w-1/3">
+              <a className="no-underline  " href="/chat">TALKATOO</a>
+            </div>
+            <div className="w-1/3">
               {localStorage.getItem("token") ? 
              <button onClick={handleLogout}>
              Logout
            </button>
            : null  
             }
-            </li>
-            <li className="items-center" >
+            </div>
+            <div className="w-1/3 ml-64" >
                 {user && user.userName ? <p> Hello, {user.userName} </p> : ""}
-            </li>
-          </ul>
+            </div>
+        
         </nav>
         </>
   

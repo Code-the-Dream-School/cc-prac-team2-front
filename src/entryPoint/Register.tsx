@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect, useContext , ChangeEvent} from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import emailRegex from "../util/constants.tsx";
@@ -15,7 +15,7 @@ const Register = () => {
   const [passwordError, setPasswordError] = useState('');
   const [confirmPasswordError, setConfirmPasswordError] = useState('');
   const [isFormValid, setIsFormValid] = useState(false);
-  const {user, setUser} = useContext(UserContext)
+  const {setUser} = useContext(UserContext)
 
   useEffect(() => {
     const validateForm = () => {
@@ -63,19 +63,19 @@ const Register = () => {
     setIsFormValid(validateForm());
   }, [userName, email, password, confirmPassword]);
 
-  const handleUsernameChange = (e) => {
+  const handleUsernameChange = (e:ChangeEvent<HTMLInputElement>) => {
     setUserName(e.target.value);
   };
 
-  const handleEmailChange = (e) => {
+  const handleEmailChange = (e:ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
   };
 
-  const handlePasswordChange = (e) => {
+  const handlePasswordChange = (e:ChangeEvent<HTMLInputElement>) => {
     setPassword(e.target.value);
   };
 
-  const handleConfirmPasswordChange = (e) => {
+  const handleConfirmPasswordChange = (e:ChangeEvent<HTMLInputElement>) => {
     setConfirmPassword(e.target.value);
   };
 
@@ -86,7 +86,7 @@ const Register = () => {
 
     if (isFormValid) {
       try {
-        const response = await axios.post('http://localhost:8000/api/v1/users/sign-up', {
+        const response = await axios.post('http://localhost:8000/api/v1/auth/sign-up', {
           userName,
           email,
           password
@@ -97,8 +97,10 @@ const Register = () => {
         // Redirect to /chat page
         // Save the token to local storage
         localStorage.setItem('token', JSON.stringify(token));
-        const registered = jwt_decode(token);
-        setUser(registered)
+        const registered: string | null = jwt_decode(token);
+        if (registered) {
+          setUser(registered)
+        }
 
         // Navigate to the chat page
         navigate('/chat');
@@ -110,10 +112,10 @@ const Register = () => {
   };
 
   const isButtonDisabled =
-      usernameError ||
-      emailError ||
-      passwordError ||
-      confirmPasswordError ||
+      !!usernameError ||
+      !!emailError ||
+      !!passwordError ||
+      !!confirmPasswordError ||
       !isFormValid;
 
   return (
