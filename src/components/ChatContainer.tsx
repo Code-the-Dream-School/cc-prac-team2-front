@@ -1,6 +1,6 @@
 
 import {useState, useContext, useEffect, useRef} from 'react'
-
+import { toast } from "react-toastify";
 import axios from "axios"
 import ChatInput from "../components/ChatInput"
 import {UserContext} from "../context/user-context"
@@ -48,7 +48,7 @@ console.log(user);
             }])
         } catch (err) {
             console.log(err);
-            
+            toast.error("Error sending messages, please try again");
         }
     }
 
@@ -70,6 +70,7 @@ console.log(user);
             }
         } catch (err) {
             console.log(err);
+            toast.error("Error fetching messages, please try again");
         }
     }
 
@@ -78,7 +79,6 @@ console.log(user);
     }, [conversation])
 
     
-
 
     return (
         <>

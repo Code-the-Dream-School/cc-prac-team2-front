@@ -5,17 +5,27 @@ import { BrowserRouter } from "react-router-dom";
 import reportWebVitals from './reportWebVitals';
 import './index.css'
 import {UserContextProvider} from "./context/user-context"
+import { injectStyle } from "react-toastify/dist/inject-style";
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+// CALL IT ONCE IN YOUR APP
+injectStyle();
 
 
 
 const root = ReactDOM.createRoot(document.getElementById('root')!);
 root.render(
+    <>
+
     <UserContextProvider>
         <BrowserRouter>
             <App />
         </BrowserRouter>
     </UserContextProvider>
-);
+        <ToastContainer />
+    </>
+        );
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))

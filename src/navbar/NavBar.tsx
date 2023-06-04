@@ -9,9 +9,6 @@ const NavBar = () => {
     const {user, setUser} = useContext(UserContext)
     const navigate = useNavigate()
 
-    
-  
-
     const handleLogout = () => {
       localStorage.removeItem("token")
       setUser(null)
