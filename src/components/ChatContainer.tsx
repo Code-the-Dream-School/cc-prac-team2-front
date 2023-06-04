@@ -8,8 +8,7 @@ import {UserContext} from "../context/user-context"
 
 interface Messages {
     _id: string,
-    from: string,
-    to: string,
+    sender: string
     message: string,
 }
 
@@ -90,11 +89,12 @@ console.log(user);
                 <div className="overflow-y-scroll absolute top-0 left-0 right-0 bottom-2"> 
                 <div className=''>
                     {messages ? messages.map((msg) => (
+
                         <div 
-                        className=""
+                        className={(msg.sender === user?.userId ? 'text-right' : 'text-left')}
                         key={msg._id}
                         >
-                            {msg.message}
+                        <div className={('max-w-md text-left inline-block rounded-lg bg-white m-2 p-2 ' + (msg.sender === user?.userId ? 'bg-blue-200' : null) )}>{msg.message}</div>
                         </div>
                     )) : null}
                 </div>

@@ -42,7 +42,7 @@ const Chat = () => {
             console.log(conversation.users);
             let convUser = conversation.users
             let id
-            if (convUser[0]._id === user?.userId) {
+            if (convUser[0]._id === user?.userId as string) {
                 id = convUser[1]._id
             } else {
                 id = convUser[0]._id
