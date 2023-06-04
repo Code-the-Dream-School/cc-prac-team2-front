@@ -5,6 +5,7 @@ import emailRegex from "../util/constants.tsx";
 import jwt_decode from "jwt-decode";
 import { UserContext } from "../context/user-context";
 import { toast } from "react-toastify";
+import { AiFillEyeInvisible, AiFillEye } from "react-icons/ai";
 
 const LogIn = () => {
   const [email, setEmail] = useState("");
@@ -12,7 +13,10 @@ const LogIn = () => {
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [isFormValid, setIsFormValid] = useState(false);
-  const { setUser } = useContext(UserContext);
+  const { setUser } = useContext(UserContext) as unknown as {
+    setUser: (user: any) => void;
+  };
+  const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
     setIsFormValid(email.trim() !== "" && password.trim() !== "");
@@ -87,6 +91,10 @@ const LogIn = () => {
 
   const isButtonDisabled = emailError || passwordError || !isFormValid;
 
+  const togglePasswordVisibility = () => {
+    setShowPassword((prevShowPassword) => !prevShowPassword);
+  };
+
   return (
     <div className="flex justify-center items-center h-full">
       <div className="flex justify-center items-center">
@@ -112,37 +120,40 @@ const LogIn = () => {
               }`}
               value={email}
               onChange={handleEmailChange}
-              onBlur={validateEmail}
             />
             {emailError && (
               <div className="text-red-500 text-sm mt-1">{emailError}</div>
             )}
           </div>
-          <div className="mb-6">
+          <div className="mb-6 relative">
             <input
-              type="password"
+              type={showPassword ? "text" : "password"}
               placeholder="Password"
-              className={`w-96 px-4 py-2 mt-4 mb-4 border-b-2 outline-none ${
+              className={`w-96 px-5 py-2 mt-4 mb-4 border-b-2 outline-none ${
                 passwordError ? "border-red-500" : "border-gray-300"
               }`}
               value={password}
               onChange={handlePasswordChange}
-              onBlur={validatePassword}
             />
+            <button
+              className="password-toggle-btn"
+              onClick={togglePasswordVisibility}
+            >
+              {showPassword ? <AiFillEyeInvisible /> : <AiFillEye />}
+            </button>
             {passwordError && (
               <div className="text-red-500 text-sm mt-1">{passwordError}</div>
             )}
           </div>
           <button
-            type="submit"
             className={`bg-orange-50 text-gray-800 px-8 py-3 text-2xl w-96 mt-4 mb-4 rounded-full shadow-md transition-colors ${
               isButtonDisabled
                 ? "bg-gray-300 cursor-not-allowed"
-                : "hover:bg-blue-500 hover:text-white"
+                : "hover:bg-green-500 hover:text-white"
             }`}
             disabled={isButtonDisabled as boolean}
           >
-            Sign in
+            Sign In
           </button>
         </form>
       </div>

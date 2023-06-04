@@ -5,6 +5,7 @@ import { UserContext } from "../context/user-context";
 import emailRegex from "../util/constants.tsx";
 import { toast } from "react-toastify";
 import jwt_decode from "jwt-decode";
+import { AiFillEyeInvisible, AiFillEye } from "react-icons/ai";
 
 const Register = () => {
   const [userName, setUserName] = useState("");
@@ -16,7 +17,11 @@ const Register = () => {
   const [passwordError, setPasswordError] = useState("");
   const [confirmPasswordError, setConfirmPasswordError] = useState("");
   const [isFormValid, setIsFormValid] = useState(false);
-  const { setUser } = useContext(UserContext);
+  const { setUser } = useContext(UserContext) as unknown as {
+    setUser: (user: any) => void;
+  };
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   useEffect(() => {
     const validateForm = () => {
@@ -64,25 +69,25 @@ const Register = () => {
     setIsFormValid(validateForm());
   }, [userName, email, password, confirmPassword]);
 
-  const handleUsernameChange = (e:any) => {
+  const handleUsernameChange = (e: any) => {
     setUserName(e.target.value);
   };
 
-  const handleEmailChange = (e:any) => {
+  const handleEmailChange = (e: any) => {
     setEmail(e.target.value);
   };
 
-  const handlePasswordChange = (e:any) => {
+  const handlePasswordChange = (e: any) => {
     setPassword(e.target.value);
   };
 
-  const handleConfirmPasswordChange = (e:any) => {
+  const handleConfirmPasswordChange = (e: any) => {
     setConfirmPassword(e.target.value);
   };
 
   const navigate = useNavigate();
 
-  const handleSubmit = async (e:any) => {
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
 
     if (isFormValid) {
@@ -117,6 +122,16 @@ const Register = () => {
     passwordError ||
     confirmPasswordError ||
     !isFormValid;
+
+  const togglePasswordVisibility = () => {
+    setShowPassword((prevShowPassword) => !prevShowPassword);
+  };
+
+  const toggleConfirmPasswordVisibility = () => {
+    setShowConfirmPassword(
+      (prevShowConfirmPassword) => !prevShowConfirmPassword
+    );
+  };
 
   return (
     <div className="flex justify-center items-center h-full">
@@ -163,9 +178,9 @@ const Register = () => {
             )}
           </div>
 
-          <div className="mb-6">
+          <div className="mb-6 relative">
             <input
-              type="password"
+              type={showPassword ? "text" : "password"}
               placeholder="Password"
               className={`w-96 px-4 py-2 border-b-2 outline-none ${
                 passwordError ? "border-red-500" : "border-gray-300"
@@ -173,13 +188,19 @@ const Register = () => {
               value={password}
               onChange={handlePasswordChange}
             />
+            <button
+              className="password-toggle-btn"
+              onClick={togglePasswordVisibility}
+            >
+              {showPassword ? <AiFillEyeInvisible /> : <AiFillEye />}
+            </button>
             {passwordError && (
               <div className="text-red-500 text-sm mt-1">{passwordError}</div>
             )}
           </div>
-          <div className="mb-6">
+          <div className="mb-6 relative">
             <input
-              type="password"
+              type={showConfirmPassword ? "text" : "password"}
               placeholder="Confirm Password"
               className={`w-96 px-4 py-2 border-b-2 outline-none ${
                 confirmPasswordError ? "border-red-500" : "border-gray-300"
@@ -187,6 +208,12 @@ const Register = () => {
               value={confirmPassword}
               onChange={handleConfirmPasswordChange}
             />
+            <button
+              className="password-toggle-btn"
+              onClick={toggleConfirmPasswordVisibility}
+            >
+              {showConfirmPassword ? <AiFillEyeInvisible /> : <AiFillEye />}
+            </button>
             {confirmPasswordError && (
               <div className="text-red-500 text-sm mt-1">
                 {confirmPasswordError}
