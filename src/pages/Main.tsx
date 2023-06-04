@@ -1,7 +1,6 @@
 import { useState } from "react";
 import LogIn from "../entryPoint/Login.tsx";
 import Register from "../entryPoint/Register.tsx";
-import NavBar from "./../navbar/NavBar.tsx";
 import ImageWrapper from "../UI/ImageWrapper.tsx";
 
 const Main = () => {
@@ -15,19 +14,21 @@ const Main = () => {
     };
 
     return (
-        <div className="flex flex-wrap-reverse items-center justify-center">
+        <div className="flex h-full justify-start flex-wrap align-top">
+            <div className="pt-24"  style={{width: '620px', height: '685px'}} >
 
             <ImageWrapper />
+            </div>
 
-            <div className="flex justify-center items-center h-full m-20 bg-white rounded-lg">
-                <div className="px-8 py-6 text-center">
+            <div className="justify-center align-middle mt-24 bg-white rounded-xl" style={{width: '600px', height: '680px'}}>
+                <div>
                     <div className="flex justify-center">
                         <div className="flex justify-center">
                             {showLogin && <LogIn />}
                             {showRegister && <Register />}
                         </div>
                     </div>
-                    <div className="flex justify-center mt-5">
+                    <div className="flex justify-center m-8">
                         <p className="text">
                             {showLogin ? "Don't have an account?" : "Already have an account?"}{" "}
                             <span

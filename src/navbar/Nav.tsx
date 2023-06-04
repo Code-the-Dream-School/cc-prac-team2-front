@@ -32,22 +32,21 @@ const Navbar = () => {
     setIsProfileModalOpen(false); // Close the profile modal
   };
 
-  const handleNameChange = (e) => {
+  const handleNameChange = (e: any) => {
     setName(e.target.value); // Update name state with input value
   };
 
-  
-  const handlePasswordChange = (e) => {
+  const handlePasswordChange = (e: any) => {
     setPassword(e.target.value); // Update password state with input value
   };
 
   return (
     <nav className="bg-black py-4 px-6 flex justify-between items-center">
-      <div className="text-white text-xl font-bold">TALCKATOO</div>
+      <div className="text-white text-3xl">TALCKATOO</div>
       <div className="flex items-center">
         {user && (
           <>
-            <h5 className="text-white hover:text-gray-300  mr-2 focus:outline-none">
+            <h5 className="text-white hover:text-gray-300  mr-2 focus:outline-none hidden sm:block">
               {user && user.userName ? <p>Welcome, {user.userName}</p> : ""}
             </h5>
             <button
