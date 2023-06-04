@@ -17,7 +17,7 @@ const ChatInput = ({onHandleSendMessage}: ChatInputProps): JSX.Element => {
         setShowEmoji(!showEmoji)
     }
 
-    const handleEmojiclick = (event: any) =>
+    const handleEmojiClick = (event: any) =>
     setMessageText(`${messageText} ${event.emoji}`)
 
     const handleSendMessage = (e:ChangeEvent<HTMLFormElement>) => {
@@ -45,7 +45,7 @@ const ChatInput = ({onHandleSendMessage}: ChatInputProps): JSX.Element => {
                     >
                       <MdOutlineClose />
                     </span>
-                    <EmojiPicker onEmojiClick={handleEmojiclick} />
+                    <EmojiPicker onEmojiClick={handleEmojiClick} />
                   </div>
                 )}
               </div>

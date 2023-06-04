@@ -94,7 +94,7 @@ console.log(user);
                         className={(msg.sender === user?.userId ? 'text-right' : 'text-left')}
                         key={msg._id}
                         >
-                        <div className={('max-w-md text-left inline-block rounded-lg bg-white m-2 p-2 ' + (msg.sender === user?.userId ? 'bg-blue-200' : null) )}>{msg.message}</div>
+                        <div className={('max-w-md text-left inline-block rounded-lg bg-white m-2 p-2 ' + (msg.sender === user?.userId ? 'bg-slate-500' : null) )}>{msg.message}</div>
                         </div>
                     )) : null}
                 </div>
