@@ -3,10 +3,7 @@
 @tailwind utilities;
 
 body {
-    /* background-color: #f9f1df; */
-    margin: 0;
-    padding: 0;
+    box-sizing: border-box;
     background-color: #f9f1df;
-    overflow-x: hidden;
-    overflow-y: hidden;
+    overflow-y: scroll;
 }

@@ -1,60 +1,66 @@
-import { useState, useEffect, useContext } from 'react';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect, useContext } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { UserContext } from "../context/user-context";
 import emailRegex from "../util/constants.tsx";
+import { toast } from "react-toastify";
 import jwt_decode from "jwt-decode";
-import {UserContext} from "../context/user-context"
+import { AiFillEyeInvisible, AiFillEye } from "react-icons/ai";
 
 const Register = () => {
-  const [userName, setUserName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [usernameError, setUsernameError] = useState('');
-  const [emailError, setEmailError] = useState('');
-  const [passwordError, setPasswordError] = useState('');
-  const [confirmPasswordError, setConfirmPasswordError] = useState('');
+  const [userName, setUserName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [usernameError, setUsernameError] = useState("");
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+  const [confirmPasswordError, setConfirmPasswordError] = useState("");
   const [isFormValid, setIsFormValid] = useState(false);
-  const {user, setUser} = useContext(UserContext)
+  const { setUser } = useContext(UserContext) as unknown as {
+    setUser: (user: any) => void;
+  };
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   useEffect(() => {
     const validateForm = () => {
       let isValid = true;
 
-      if (userName.trim() === '') {
-        setUsernameError('Username is required');
+      if (userName.trim() === "") {
+        setUsernameError("Username is required");
         isValid = false;
       } else {
-        setUsernameError('');
+        setUsernameError("");
       }
 
-      if (email.trim() === '') {
-        setEmailError('Email is required');
+      if (email.trim() === "") {
+        setEmailError("Email is required");
         isValid = false;
       } else {
         if (!emailRegex.test(email)) {
-          setEmailError('Invalid email format');
+          setEmailError("Invalid email format");
           isValid = false;
         } else {
-          setEmailError('');
+          setEmailError("");
         }
       }
 
-      if (password.trim() === '') {
-        setPasswordError('Password is required');
+      if (password.trim() === "") {
+        setPasswordError("Password is required");
         isValid = false;
       } else {
-        setPasswordError('');
+        setPasswordError("");
       }
 
-      if (confirmPassword.trim() === '') {
-        setConfirmPasswordError('Confirm Password is required');
+      if (confirmPassword.trim() === "") {
+        setConfirmPasswordError("Confirm Password is required");
         isValid = false;
       } else if (password !== confirmPassword) {
-        setConfirmPasswordError('Passwords do not match');
+        setConfirmPasswordError("Passwords do not match");
         isValid = false;
       } else {
-        setConfirmPasswordError('');
+        setConfirmPasswordError("");
       }
 
       return isValid;
@@ -63,127 +69,171 @@ const Register = () => {
     setIsFormValid(validateForm());
   }, [userName, email, password, confirmPassword]);
 
-  const handleUsernameChange = (e) => {
+  const handleUsernameChange = (e: any) => {
     setUserName(e.target.value);
   };
 
-  const handleEmailChange = (e) => {
+  const handleEmailChange = (e: any) => {
     setEmail(e.target.value);
   };
 
-  const handlePasswordChange = (e) => {
+  const handlePasswordChange = (e: any) => {
     setPassword(e.target.value);
   };
 
-  const handleConfirmPasswordChange = (e) => {
+  const handleConfirmPasswordChange = (e: any) => {
     setConfirmPassword(e.target.value);
   };
 
   const navigate = useNavigate();
 
-  const handleSubmit = async (e:any) => {
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
 
     if (isFormValid) {
       try {
-        const response = await axios.post('http://localhost:8000/api/v1/users/sign-up', {
-          userName,
-          email,
-          password
-        });
+        const response = await axios.post(
+          "http://localhost:8000/api/v1/users/sign-up",
+          {
+            userName,
+            email,
+            password,
+          }
+        );
 
-        const { token } = response.data; // Assuming the token is returned in the response data
+        const token = response.data.token;
+        localStorage.setItem("token", JSON.stringify(token));
+        const register = jwt_decode(token);
+        console.log(register);
+        setUser(register);
 
-        // Redirect to /chat page
-        // Save the token to local storage
-        localStorage.setItem('token', JSON.stringify(token));
-        const registered = jwt_decode(token);
-        setUser(registered)
-
-        // Navigate to the chat page
-        navigate('/chat');
+        toast.success("User signed up");
+        navigate("/chat");
       } catch (error) {
-        // Handle error response
-        console.log(error);
+        console.log("Error signing up:", error);
+        toast.error("Error signing up");
       }
     }
   };
 
   const isButtonDisabled =
-      usernameError ||
-      emailError ||
-      passwordError ||
-      confirmPasswordError ||
-      !isFormValid;
+    usernameError ||
+    emailError ||
+    passwordError ||
+    confirmPasswordError ||
+    !isFormValid;
+
+  const togglePasswordVisibility = () => {
+    setShowPassword((prevShowPassword) => !prevShowPassword);
+  };
+
+  const toggleConfirmPasswordVisibility = () => {
+    setShowConfirmPassword(
+      (prevShowConfirmPassword) => !prevShowConfirmPassword
+    );
+  };
 
   return (
-      <div className="flex justify-center items-center h-full">
-        <div className="flex justify-center items-center">
-          <form className="flex flex-col items-center bg-white rounded-2xl p-10" onSubmit={handleSubmit}>
-            <h2 className="text-3xl font-bold mb-8"
-                style={{marginRight: '180px', fontFamily: 'Montserrat, sans-serif'}}>Sign up</h2>
-            <div className="mb-6">
-              <input
-                  type="text"
-                  placeholder="User Name"
-                  className={`w-full px-4 py-2 border-b-2 outline-none ${
-                      emailError ? 'border-red-500' : 'border-gray-300'
-                  }`}
-                  value={userName}
-                  onChange={handleUsernameChange}
-              />
-              {usernameError && <div className="text-red-500 text-sm mt-1">{usernameError}</div>}
-            </div>
-            <div className="mb-6">
-              <input
-                  type="email"
-                  placeholder="Email"
-                  className={`w-full px-4 py-2 border-b-2 outline-none ${
-                      emailError ? 'border-red-500' : 'border-gray-300'
-                  }`}
-                  value={email}
-                  onChange={handleEmailChange}
-              />
-              {emailError && <div className="text-red-500 text-sm mt-1">{emailError}</div>}
-            </div>
+    <div className="flex justify-center items-center h-full">
+      <div className="flex justify-center items-center">
+        <form
+          className="flex flex-col items-center rounded-2xl p-10"
+          onSubmit={handleSubmit}
+        >
+          <h2
+            className="mb-8 text-5xl"
+            style={{
+              marginRight: "180px",
+              fontFamily: "Montserrat, sans-serif",
+            }}
+          >
+            Sign up
+          </h2>
+          <div className="mb-6">
+            <input
+              type="text"
+              placeholder="User Name"
+              className={`w-96 px-4 py-2 border-b-2 outline-none ${
+                usernameError ? "border-red-500" : "border-gray-300"
+              }`}
+              value={userName}
+              onChange={handleUsernameChange}
+            />
+            {usernameError && (
+              <div className="text-red-500 text-sm mt-1">{usernameError}</div>
+            )}
+          </div>
+          <div className="mb-6">
+            <input
+              type="email"
+              placeholder="Email"
+              className={`w-96 px-4 py-2 border-b-2 outline-none ${
+                emailError ? "border-red-500" : "border-gray-300"
+              }`}
+              value={email}
+              onChange={handleEmailChange}
+            />
+            {emailError && (
+              <div className="text-red-500 text-sm mt-1">{emailError}</div>
+            )}
+          </div>
 
-            <div className="mb-6">
-              <input
-                  type="password"
-                  placeholder="Password"
-                  className={`w-full px-4 py-2 border-b-2 outline-none ${
-                      emailError ? 'border-red-500' : 'border-gray-300'
-                  }`}
-                  value={password}
-                  onChange={handlePasswordChange}
-              />
-              {passwordError && <div className="text-red-500 text-sm mt-1">{passwordError}</div>}
-            </div>
-            <div className="mb-6">
-              <input
-                  type="password"
-                  placeholder="Confirm Password"
-                  className={`w-full px-4 py-2 border-b-2 outline-none ${
-                      emailError ? 'border-red-500' : 'border-gray-300'
-                  }`}
-                  value={confirmPassword}
-                  onChange={handleConfirmPasswordChange}
-              />
-              {confirmPasswordError && <div className="text-red-500 text-sm mt-1">{confirmPasswordError}</div>}
-            </div>
+          <div className="mb-6 relative">
+            <input
+              type={showPassword ? "text" : "password"}
+              placeholder="Password"
+              className={`w-96 px-4 py-2 border-b-2 outline-none ${
+                passwordError ? "border-red-500" : "border-gray-300"
+              }`}
+              value={password}
+              onChange={handlePasswordChange}
+            />
             <button
-                className={`bg-yellow-200 text-gray-800 text-sm font-bold px-8 py-3 rounded-full shadow-md transition-colors ${
-                    isButtonDisabled
-                        ? 'bg-gray-300 cursor-not-allowed'
-                        : 'hover:bg-green-500 hover:text-white'
-                }`} disabled={isButtonDisabled}>
-              Sign Up
+              className="password-toggle-btn"
+              onClick={togglePasswordVisibility}
+            >
+              {showPassword ? <AiFillEyeInvisible /> : <AiFillEye />}
             </button>
-          </form>
-        </div>
+            {passwordError && (
+              <div className="text-red-500 text-sm mt-1">{passwordError}</div>
+            )}
+          </div>
+          <div className="mb-6 relative">
+            <input
+              type={showConfirmPassword ? "text" : "password"}
+              placeholder="Confirm Password"
+              className={`w-96 px-4 py-2 border-b-2 outline-none ${
+                confirmPasswordError ? "border-red-500" : "border-gray-300"
+              }`}
+              value={confirmPassword}
+              onChange={handleConfirmPasswordChange}
+            />
+            <button
+              className="password-toggle-btn"
+              onClick={toggleConfirmPasswordVisibility}
+            >
+              {showConfirmPassword ? <AiFillEyeInvisible /> : <AiFillEye />}
+            </button>
+            {confirmPasswordError && (
+              <div className="text-red-500 text-sm mt-1">
+                {confirmPasswordError}
+              </div>
+            )}
+          </div>
+          <button
+            className={`bg-orange-50 text-gray-800 px-8 py-3 text-2xl w-96 mt-4 mb-4 rounded-full shadow-md transition-colors ${
+              isButtonDisabled
+                ? "bg-gray-300 cursor-not-allowed"
+                : "hover:bg-green-500 hover:text-white"
+            }`}
+            disabled={isButtonDisabled as boolean}
+          >
+            Sign Up
+          </button>
+        </form>
       </div>
+    </div>
   );
-}
-
+};
 
 export default Register;

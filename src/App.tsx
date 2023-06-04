@@ -1,18 +1,17 @@
-import React, { useState, useEffect, useContext } from 'react';
+import { useEffect} from 'react';
 import Chat from "./pages/Chat"
 import Main from "./pages/Main"
-import { Navigate, Route, Routes, useNavigate, useLocation  } from "react-router-dom";
-import NavBar from './navbar/NavBar';
-import {UserContext} from "./context/user-context"
+import { Route, Routes, useNavigate } from "react-router-dom";
+import Navbar from "./navbar/Nav"
+// import {UserContext} from "./context/user-context"
 
 
-const URL = 'http://localhost:8000/api/v1/';
+// const URL = 'http://localhost:8000/api/v1/';
 
 
-function App() {
+const App = () => {
 
   const navigate = useNavigate();
-
   useEffect(() => {
     if (localStorage.getItem('token')) {
       navigate("/chat");
@@ -25,7 +24,7 @@ function App() {
 
   return (
     <>
-        <NavBar />
+        <Navbar />
         <Routes>
             <Route path="/"       element={<Main />} />
             <Route path="/chat"   element={<Chat />} />
