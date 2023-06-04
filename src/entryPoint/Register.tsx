@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, ChangeEvent } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "../context/user-context";
@@ -69,19 +69,19 @@ const Register = () => {
     setIsFormValid(validateForm());
   }, [userName, email, password, confirmPassword]);
 
-  const handleUsernameChange = (e: any) => {
+  const handleUsernameChange = (e:ChangeEvent<HTMLInputElement>) => {
     setUserName(e.target.value);
   };
 
-  const handleEmailChange = (e: any) => {
+  const handleEmailChange = (e:ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
   };
 
-  const handlePasswordChange = (e: any) => {
+  const handlePasswordChange = (e:ChangeEvent<HTMLInputElement>) => {
     setPassword(e.target.value);
   };
 
-  const handleConfirmPasswordChange = (e: any) => {
+  const handleConfirmPasswordChange = (e:ChangeEvent<HTMLInputElement>) => {
     setConfirmPassword(e.target.value);
   };
 
@@ -117,21 +117,21 @@ const Register = () => {
   };
 
   const isButtonDisabled =
-    usernameError ||
-    emailError ||
-    passwordError ||
-    confirmPasswordError ||
-    !isFormValid;
+      !!usernameError ||
+      !!emailError ||
+      !!passwordError ||
+      !!confirmPasswordError ||
+      !isFormValid;
 
   const togglePasswordVisibility = () => {
-    setShowPassword((prevShowPassword) => !prevShowPassword);
-  };
-
+        setShowPassword((prevShowPassword) => !prevShowPassword);
+      };
+    
   const toggleConfirmPasswordVisibility = () => {
-    setShowConfirmPassword(
-      (prevShowConfirmPassword) => !prevShowConfirmPassword
-    );
-  };
+        setShowConfirmPassword(
+          (prevShowConfirmPassword) => !prevShowConfirmPassword
+        );
+      };
 
   return (
     <div className="flex justify-center items-center h-full">

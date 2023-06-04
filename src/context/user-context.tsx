@@ -2,20 +2,44 @@ import React, { createContext, useState, ReactNode, useEffect } from "react";
 // import axios from "axios"
 import jwt_decode from "jwt-decode";
 
-export const UserContext = createContext(null);
+interface UserContextProviderProps {
+    user: string | null;
+    setUser: React.Dispatch<React.SetStateAction<string | null>>;
+    conversation: number | null,
+    setConversation: React.Dispatch<React.SetStateAction<number | null>>
+    selectId: number | null, 
+    setSelectId: React.Dispatch<React.SetStateAction<number | null>>
 
-export const UserContextProvider = ({ children }) => {
-  let loggedInUser;
+}
 
-  const userWithToken = JSON.parse(localStorage.getItem("token") || "null");
-  if (userWithToken) {
-    loggedInUser = jwt_decode(userWithToken);
-  }
-  const [user, setUser] = useState(loggedInUser);
+export const UserContext= createContext<UserContextProviderProps> ({
+    user: null,
+    setUser: () => {},
+    conversation: null,
+    setConversation: () => {},
+    selectId: null, 
+    setSelectId: () => {}
+})
 
-  return (
-    <UserContext.Provider value={{ user, setUser }}>
-      {children}
-    </UserContext.Provider>
-  );
-};
+
+export const UserContextProvider:React.FC<{children: ReactNode}> = ({children}) => {
+
+    let loggedInUser: string | null
+
+    const userWithToken = JSON.parse(localStorage.getItem('token') || 'null')
+    if (userWithToken) {
+        loggedInUser = jwt_decode(userWithToken)
+    } else {
+        loggedInUser  = null
+    }
+    const [user, setUser] = useState<string | null>(loggedInUser)
+    const [conversation, setConversation] = useState<number|null>(null)
+    const [selectId, setSelectId] = useState<number|null>(null)
+
+
+    return (
+        <UserContext.Provider value={{user, setUser, conversation, setConversation, selectId, setSelectId}}>
+            {children}
+        </UserContext.Provider>
+    )
+}

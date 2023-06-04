@@ -12,7 +12,9 @@ import 'react-toastify/dist/ReactToastify.css';
 // CALL IT ONCE IN YOUR APP
 injectStyle();
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
+
+
+const root = ReactDOM.createRoot(document.getElementById('root')!);
 root.render(
     <>
 

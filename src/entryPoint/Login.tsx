@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, ChangeEvent } from 'react';
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import emailRegex from "../util/constants.tsx";
@@ -22,12 +22,12 @@ const LogIn = () => {
     setIsFormValid(email.trim() !== "" && password.trim() !== "");
   }, [email, password]);
 
-  const handleEmailChange = (e: any) => {
+  const handleEmailChange = (e:ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
     setEmailError("");
   };
 
-  const handlePasswordChange = (e: any) => {
+  const handlePasswordChange = (e:ChangeEvent<HTMLInputElement>) => {
     setPassword(e.target.value);
     setPasswordError("");
   };
@@ -55,9 +55,8 @@ const LogIn = () => {
     validatePassword();
   };
 
-  const navigate = useNavigate();
-
-  const handleSubmit = async (e: any) => {
+const navigate = useNavigate()
+  const handleSubmit = async (e:ChangeEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     validateForm();
@@ -89,7 +88,16 @@ const LogIn = () => {
     }
   };
 
-  const isButtonDisabled = emailError || passwordError || !isFormValid;
+  
+
+  const showNotification = (message:string) => {
+    // Show notification message with timeout of 5 seconds
+    // Replace this with your own notification implementation
+    // Example using window.alert:
+    window.alert(message);
+  };
+
+  const isButtonDisabled = !!emailError || !!passwordError || !isFormValid;
 
   const togglePasswordVisibility = () => {
     setShowPassword((prevShowPassword) => !prevShowPassword);
