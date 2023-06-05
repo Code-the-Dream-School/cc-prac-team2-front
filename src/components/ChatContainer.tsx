@@ -25,7 +25,7 @@ const ChatContainer = (): JSX.Element => {
     const token: {token: string } | null = JSON.parse(localStorage.getItem("token") || "null")
 
 console.log(user);
-// console.log(selectId);
+console.log(selectId);
 
 
     const sendMessage = async (messageText:any) => {
