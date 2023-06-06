@@ -15,7 +15,7 @@ interface Messages {
 const ChatContainer = (): JSX.Element => {
     const {
         user, setUser, 
-        conversation, setConversation, 
+        conversationId, setConversationId, 
         selectId, setSelectId
     } = useContext(UserContext)
 
@@ -57,8 +57,8 @@ console.log(selectId);
 
     const fetchMessages = async () => {
         try {
-            if (conversation) {
-                const {data} = await axios.get(`http://localhost:8000/api/v1/users/${user.userId}/conversations/${conversation}`, 
+            if (conversationId) {
+                const {data} = await axios.get(`http://localhost:8000/api/v1/users/${user.userId}/conversations/${conversationId}`, 
                 {
                     headers: {
                       Authorization: `Bearer ${token}`
@@ -76,9 +76,8 @@ console.log(selectId);
 
     useEffect(() => {
         fetchMessages()
-    }, [conversation])
+    }, [conversationId])
 
-    
 
     return (
         <>
@@ -94,7 +93,7 @@ console.log(selectId);
                         className={(msg.sender === user?.userId ? 'text-right' : 'text-left')}
                         key={msg._id}
                         >
-                        <div className={('max-w-md text-left inline-block rounded-lg bg-white m-2 p-2 ' + (msg.sender === user?.userId ? 'bg-slate-500' : null) )}>{msg.message}</div>
+                        <div className={('max-w-md text-left inline-block rounded-lg bg-white m-2 p-2 ' + (msg.sender === user?.userId ? 'bg-yellow-400' : null) )}>{msg.message}</div>
                         </div>
                     )) : null}
                 </div>

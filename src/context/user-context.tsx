@@ -5,8 +5,8 @@ import jwt_decode from "jwt-decode";
 interface UserContextProviderProps {
     user: string | null;
     setUser: React.Dispatch<React.SetStateAction<string | null>>;
-    conversation: number | null,
-    setConversation: React.Dispatch<React.SetStateAction<number | null>>
+    conversationId: number | null,
+    setConversationId: React.Dispatch<React.SetStateAction<number | null>>
     selectId: number | null, 
     setSelectId: React.Dispatch<React.SetStateAction<number | null>>
 
@@ -15,8 +15,8 @@ interface UserContextProviderProps {
 export const UserContext= createContext<UserContextProviderProps> ({
     user: null,
     setUser: () => {},
-    conversation: null,
-    setConversation: () => {},
+    conversationId: null,
+    setConversationId: () => {},
     selectId: null, 
     setSelectId: () => {}
 })
@@ -33,12 +33,12 @@ export const UserContextProvider:React.FC<{children: ReactNode}> = ({children}) 
         loggedInUser  = null
     }
     const [user, setUser] = useState<string | null>(loggedInUser)
-    const [conversation, setConversation] = useState<number|null>(null)
+    const [conversationId, setConversationId] = useState<number|null>(null)
     const [selectId, setSelectId] = useState<number|null>(null)
 
 
     return (
-        <UserContext.Provider value={{user, setUser, conversation, setConversation, selectId, setSelectId}}>
+        <UserContext.Provider value={{user, setUser, conversationId, setConversationId, selectId, setSelectId}}>
             {children}
         </UserContext.Provider>
     )

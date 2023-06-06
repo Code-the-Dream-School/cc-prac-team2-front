@@ -1,5 +1,5 @@
 
-import {useState, useContext, useEffect} from 'react'
+import {useState, useContext, useEffect, useRef} from 'react'
 import axios from "axios"
 import ChatContainer from "../components/ChatContainer"
 import ChatWelcome from '../components/ChatWelcome';
@@ -11,10 +11,11 @@ import {getContactName} from "../util/getContactName"
 const Chat = () => {
     const {
         user, setUser, 
-        conversation, setConversation, 
+        conversationId, setConversationId, 
         selectId, setSelectId
     } = useContext(UserContext)
 
+    const containerRef = useRef()
     const [conversations, setConversations] = useState<any[] | undefined>()
     const [uncontactedUsers, setUncontactedUsers] = useState<any[] | undefined>()
     const token: {token: string } | null = JSON.parse(localStorage.getItem("token") || "null")
@@ -58,7 +59,7 @@ console.log(conversations);
 
 
     const handleSelectContact = (conversation:any) => {
-            setConversation(conversation._id)
+            setConversationId(conversation._id)
             console.log(conversation.users);
             let convUser = conversation.users
             let id
@@ -70,14 +71,6 @@ console.log(conversations);
             setSelectId(id)
     }
 
-
-    const handleSelectUnContact = (unContact) => {
-        console.log("click");
-        console.log(unContact._id);
-        setSelectId(unContact._id)
-    
-    }
-
     
     
     return (
@@ -87,13 +80,13 @@ console.log(conversations);
             <div className="w-80 h-screen p-2 bg-slate-400">
                 <div className='text-xl p-3 text-center'>Contact
                 </div>
-                
                 {conversations ? conversations.map((conversation) => {
                     return (
                         <>
                     <div 
+
                     key={conversation._id}
-                    className={'flex bg-slate-300 rounded-lg m-3 p-2 cursor-pointer ' + (conversation === conversation._id ?  "text-yellow-400"  : '')}
+                    className={'flex bg-slate-300 rounded-lg m-3 p-2 cursor-pointer ' + (conversationId === conversation._id ?  "bg-slate-600"  : '')}
                     onClick={() => handleSelectContact(conversation)} >
                         <div className='w-1/5'>
                             <img className='w-10 h-10 rounded-full' src={COCKATOO} />
@@ -110,6 +103,7 @@ console.log(conversations);
                     )
                 }
         ) : null}
+                        
                 <div className='text-xl p-3 text-center'>People
                 </div>
                 <div>
@@ -118,9 +112,11 @@ console.log(conversations);
                     return (
                     <>
                     <div 
+
                     key={unContact._id}
-                    className='flex bg-slate-300 rounded-lg m-3 p-2 cursor-pointer '
-                    onClick={() => handleSelectUnContact(unContact)}
+                    className={'flex bg-slate-300 rounded-lg m-3 p-2 cursor-pointer ' + (selectId === unContact._id ?  "bg-slate-600"  : '')}
+                    onClick={() => setSelectId(unContact._id)}
+                    onBlur={() => setSelectId(null)}
                     >
                    {unContact.userName}
                     </div>
@@ -132,10 +128,6 @@ console.log(conversations);
 
             <ChatContainer />
             </div>
-     
-
-
-        
         </>
     )
 }
