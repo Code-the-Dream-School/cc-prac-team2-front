@@ -1,6 +1,7 @@
-import React, { createContext, useState, ReactNode, useEffect } from "react";
+import React, { createContext, useState, ReactNode, useEffect, useRef } from "react";
 // import axios from "axios"
 import jwt_decode from "jwt-decode";
+import { Socket } from "dgram";
 
 interface UserContextProviderProps {
     user: string | null;
@@ -35,6 +36,7 @@ export const UserContextProvider:React.FC<{children: ReactNode}> = ({children}) 
     const [user, setUser] = useState<string | null>(loggedInUser)
     const [conversationId, setConversationId] = useState<number|null>(null)
     const [selectId, setSelectId] = useState<number|null>(null)
+ 
 
 
     return (

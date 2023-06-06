@@ -4,6 +4,7 @@ import { toast } from "react-toastify";
 import axios from "axios"
 import ChatInput from "../components/ChatInput"
 import {UserContext} from "../context/user-context"
+import { Socket } from 'dgram';
 
 
 interface Messages {
@@ -20,6 +21,7 @@ const ChatContainer = (): JSX.Element => {
     } = useContext(UserContext)
 
     const [messages, setMessages] = useState<Messages[]>([])
+
  
     const scrollRef = useRef<HTMLDivElement | null>(null)
     const token: {token: string } | null = JSON.parse(localStorage.getItem("token") || "null")
@@ -46,6 +48,13 @@ console.log(selectId);
                 to: selectId, 
                 message: messageText
             }])
+            // I would emit an event in here as well, example below
+            Socket.emit("send-messsage", {
+                from: user.userId,
+                to: selectId, 
+                message: messageText
+            })
+
         } catch (err) {
             console.log(err);
             toast.error("Error sending messages, please try again");

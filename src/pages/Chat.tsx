@@ -6,7 +6,7 @@ import ChatWelcome from '../components/ChatWelcome';
 import {UserContext} from "../context/user-context"
 import COCKATOO from "./../assests/cockatoo.png";
 import {getContactName} from "../util/getContactName"
-
+import { io, Socket } from 'socket.io-client';
 
 const Chat = () => {
     const {
@@ -16,9 +16,18 @@ const Chat = () => {
     } = useContext(UserContext)
 
     const containerRef = useRef()
+    const socket = useRef()
     const [conversations, setConversations] = useState<any[] | undefined>()
     const [uncontactedUsers, setUncontactedUsers] = useState<any[] | undefined>()
     const token: {token: string } | null = JSON.parse(localStorage.getItem("token") || "null")
+
+
+    useEffect(() => {
+        if (user) {
+            socket.current = io("http://localhost:8000")
+            socket.current.emit("add-user", user.userName)
+        }
+    }, [user])
 
     const fetchConversations = async () => {
         const {data} = await axios.get(`http://localhost:8000/api/v1/users/${user.userId}/conversations`, 
