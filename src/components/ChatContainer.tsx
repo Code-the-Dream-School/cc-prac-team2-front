@@ -87,6 +87,7 @@ const ChatContainer = (): JSX.Element => {
         className={`flex-grow h-screen ${
           isDarkMode ? "bg-gray-900" : "bg-gray-100"
         }`}
+        style={{ borderLeft: "2px solid #000" }}
       >
         <div
           className={`w-full h-5/6 ${

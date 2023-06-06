@@ -47,9 +47,10 @@ const Navbar = () => {
 
   return (
     <nav
-      className={`py-2 px-3 flex justify-between items-center ${
+      className={`py-2 px-3 flex justify-between items-center  ${
         isDarkMode ? "bg-gray-900" : "bg-white"
       }`}
+      style={{borderBottom: '1px solid #000'}}
     >
       <div className={`text-${isDarkMode ? "white" : "black"} text-3xl`}>
         TALCKATOO
