@@ -4,8 +4,10 @@ import { toast } from "react-toastify";
 import axios from "axios"
 import ChatInput from "../components/ChatInput"
 import {UserContext} from "../context/user-context"
-import { Socket } from 'dgram';
+import { io, Socket } from 'socket.io-client';
+import ChatWelcome from '../components/ChatWelcome';
 
+import {getTime} from "../util/getTime"
 
 interface Messages {
     _id: string,
@@ -13,7 +15,7 @@ interface Messages {
     message: string,
 }
 
-const ChatContainer = (): JSX.Element => {
+const ChatContainer = ({socket}): JSX.Element => {
     const {
         user, setUser, 
         conversationId, setConversationId, 
@@ -27,7 +29,7 @@ const ChatContainer = (): JSX.Element => {
     const token: {token: string } | null = JSON.parse(localStorage.getItem("token") || "null")
 
 console.log(user);
-console.log(selectId);
+
 
 
     const sendMessage = async (messageText:any) => {
@@ -48,12 +50,11 @@ console.log(selectId);
                 to: selectId, 
                 message: messageText
             }])
-            // I would emit an event in here as well, example below
-            Socket.emit("send-messsage", {
-                from: user.userId,
-                to: selectId, 
-                message: messageText
-            })
+
+
+
+
+
 
         } catch (err) {
             console.log(err);
@@ -95,17 +96,28 @@ console.log(selectId);
                 <div className="w-full h-5/6 bg-blue-100" > 
                 <div className="relative h-full">
                 <div className="overflow-y-scroll absolute top-0 left-0 right-0 bottom-2"> 
-                <div className=''>
+                {!!selectId && !!conversationId ? 
+                
+                    <div className=''>
                     {messages ? messages.map((msg) => (
 
                         <div 
                         className={(msg.sender === user?.userId ? 'text-right' : 'text-left')}
                         key={msg._id}
                         >
-                        <div className={('max-w-md text-left inline-block rounded-lg bg-white m-2 p-2 ' + (msg.sender === user?.userId ? 'bg-yellow-400' : null) )}>{msg.message}</div>
+                        <div className={('max-w-md text-left inline-block rounded-lg bg-white m-2 p-2 ' + (msg.sender === user?.userId ? 'bg-yellow-400' : null) )}>
+                            {msg.message}
+                        <div className='text-xxs text-gray-600 text-right items-right'>{getTime(msg.createdAt)}</div>
+                        </div>
+             
                         </div>
                     )) : null}
                 </div>
+    
+                : 
+                <ChatWelcome />}
+
+
                 <div ref={scrollRef}></div>
                 </div>
                 </div> 
