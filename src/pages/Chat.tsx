@@ -2,7 +2,7 @@
 import {useState, useContext, useEffect, useRef} from 'react'
 import axios from "axios"
 import ChatContainer from "../components/ChatContainer"
-import ChatWelcome from '../components/ChatWelcome';
+
 import {UserContext} from "../context/user-context"
 import COCKATOO from "./../assests/cockatoo.png";
 import {getContactName} from "../util/getContactName"
@@ -71,6 +71,12 @@ console.log(conversations);
             setSelectId(id)
     }
 
+    console.log(selectId);
+
+    const handleSelectUnContact = (unContact) => {
+        setSelectId(unContact._id)
+        setConversationId(null)
+    }
     
     
     return (
@@ -115,8 +121,8 @@ console.log(conversations);
 
                     key={unContact._id}
                     className={'flex bg-slate-300 rounded-lg m-3 p-2 cursor-pointer ' + (selectId === unContact._id ?  "bg-slate-600"  : '')}
-                    onClick={() => setSelectId(unContact._id)}
-                    onBlur={() => setSelectId(null)}
+                    onClick={() => handleSelectUnContact(unContact)}
+                
                     >
                    {unContact.userName}
                     </div>

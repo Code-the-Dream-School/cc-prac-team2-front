@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 import axios from "axios"
 import ChatInput from "../components/ChatInput"
 import {UserContext} from "../context/user-context"
-
+import ChatWelcome from '../components/ChatWelcome';
 
 interface Messages {
     _id: string,
@@ -25,7 +25,7 @@ const ChatContainer = (): JSX.Element => {
     const token: {token: string } | null = JSON.parse(localStorage.getItem("token") || "null")
 
 console.log(user);
-console.log(selectId);
+
 
 
     const sendMessage = async (messageText:any) => {
@@ -86,7 +86,9 @@ console.log(selectId);
                 <div className="w-full h-5/6 bg-blue-100" > 
                 <div className="relative h-full">
                 <div className="overflow-y-scroll absolute top-0 left-0 right-0 bottom-2"> 
-                <div className=''>
+                {!!selectId && !!conversationId ? 
+                
+                    <div className=''>
                     {messages ? messages.map((msg) => (
 
                         <div 
@@ -97,6 +99,11 @@ console.log(selectId);
                         </div>
                     )) : null}
                 </div>
+    
+                : 
+                <ChatWelcome />}
+
+
                 <div ref={scrollRef}></div>
                 </div>
                 </div> 
