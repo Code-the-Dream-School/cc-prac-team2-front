@@ -3,19 +3,21 @@ import { useNavigate } from "react-router-dom";
 import { UserContext } from "../context/user-context";
 import { toast } from "react-toastify";
 import { HiOutlineUserCircle } from "react-icons/hi";
+import { BsFillSunFill, BsFillMoonFill } from "react-icons/bs";
 
 const Navbar = () => {
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false); // State to track dropdown visibility
-  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false); // State to track profile modal visibility
-  const [name, setName] = useState(""); // State for name input
-  const [password, setPassword] = useState(""); // State for password input
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
+  const [name, setName] = useState("");
+  const [password, setPassword] = useState("");
+  const { user, setUser, isDarkMode, setIsDarkMode } = useContext(UserContext);
 
   const handleDropdownClick = () => {
-    setIsDropdownOpen(!isDropdownOpen); // Toggle dropdown visibility
+    setIsDropdownOpen(!isDropdownOpen);
   };
 
   const handleProfileClick = () => {
-    setIsProfileModalOpen(true); // Show profile modal
+    setIsProfileModalOpen(true);
   };
 
   const handleLogout = () => {
@@ -25,32 +27,48 @@ const Navbar = () => {
     navigate("/");
   };
 
-  const { user, setUser } = useContext(UserContext);
   const navigate = useNavigate();
 
   const closeModal = () => {
-    setIsProfileModalOpen(false); // Close the profile modal
+    setIsProfileModalOpen(false);
   };
 
-  const handleNameChange = (e: any) => {
-    setName(e.target.value); // Update name state with input value
+  const handleNameChange = (e) => {
+    setName(e.target.value);
   };
 
-  const handlePasswordChange = (e: any) => {
-    setPassword(e.target.value); // Update password state with input value
+  const handlePasswordChange = (e) => {
+    setPassword(e.target.value);
+  };
+
+  const toggleTheme = () => {
+    setIsDarkMode(!isDarkMode); // Toggle theme
   };
 
   return (
-    <nav className="bg-black py-4 px-6 flex justify-between items-center">
-      <div className="text-white text-3xl">TALCKATOO</div>
+    <nav
+      className={`py-2 px-3 flex justify-between items-center  ${
+        isDarkMode ? "bg-gray-900" : "bg-white"
+      }`}
+      style={{borderBottom: '1px solid #000'}}
+    >
+      <div className={`text-${isDarkMode ? "white" : "black"} text-3xl`}>
+        TALCKATOO
+      </div>
       <div className="flex items-center">
         {user && (
           <>
-            <h5 className="text-white hover:text-gray-300  mr-2 focus:outline-none hidden sm:block">
+            <h5
+              className={`text-${
+                isDarkMode ? "white" : "black"
+              } hover:text-gray-300  mr-2 focus:outline-none hidden sm:block`}
+            >
               {user && user.userName ? <p>Welcome, {user.userName}</p> : ""}
             </h5>
             <button
-              className="text-white hover:text-gray-300 focus:outline-none"
+              className={`text-${
+                isDarkMode ? "white" : "black"
+              } hover:text-gray-300 focus:outline-none`}
               onClick={handleDropdownClick}
             >
               <svg
@@ -66,14 +84,18 @@ const Navbar = () => {
                 <div className="absolute right-0 mt-2 py-2 w-48 bg-white rounded-lg shadow-xl z-999999">
                   <a
                     href="#"
-                    className="block px-4 py-2 text-gray-800 hover:bg-gray-300"
+                    className={`block px-4 py-2 text-${
+                      isDarkMode ? "gray-800" : "gray-700"
+                    } hover:bg-gray-300`}
                     onClick={handleLogout}
                   >
                     Logout
                   </a>
                   <a
                     href="#"
-                    className="block px-4 py-2 text-gray-800 hover:bg-gray-300"
+                    className={`block px-4 py-2 text-${
+                      isDarkMode ? "gray-800" : "gray-700"
+                    } hover:bg-gray-300`}
                     onClick={handleProfileClick}
                   >
                     Profile
@@ -81,10 +103,16 @@ const Navbar = () => {
                 </div>
               </div>
             )}
-            <HiOutlineUserCircle className="text-white text-2xl ml-4" />
+            <HiOutlineUserCircle
+              className={`text-${isDarkMode ? "white" : "black"} text-2xl ml-4`}
+            />
             {isProfileModalOpen && (
               <div className="fixed top-0 left-0 right-0 bottom-0 flex items-center justify-center">
-                <div className="bg-white rounded-lg shadow-lg px-4 py-2">
+                <div
+                  className={`bg-${
+                    isDarkMode ? "gray-900" : "white"
+                  } rounded-lg shadow-lg px-4 py-2`}
+                >
                   <p>Profile Information</p>
                   <div>
                     <label htmlFor="nameInput">Name:</label>
@@ -105,7 +133,9 @@ const Navbar = () => {
                     />
                   </div>
                   <button
-                    className="text-gray-500 hover:text-gray-700"
+                    className={`text-${
+                      isDarkMode ? "gray-500" : "gray-700"
+                    } hover:text-${isDarkMode ? "gray-700" : "gray-900"}`}
                     onClick={closeModal}
                   >
                     Close
@@ -115,6 +145,19 @@ const Navbar = () => {
             )}
           </>
         )}
+        <div className="ml-4">
+          {isDarkMode ? (
+            <BsFillSunFill
+              className="text-yellow-500 cursor-pointer"
+              onClick={toggleTheme}
+            />
+          ) : (
+            <BsFillMoonFill
+              className="text-gray-500 cursor-pointer"
+              onClick={toggleTheme}
+            />
+          )}
+        </div>
       </div>
     </nav>
   );
