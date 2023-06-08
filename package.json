@@ -21,6 +21,7 @@
     "socket.io-client": "^4.6.2",
     "styled-components": "^5.3.8",
     "tsconfig.json": "^1.0.11",
+    "uuid": "^9.0.0",
     "vite-plugin-svgr": "^3.2.0",
     "web-vitals": "^2.1.4"
   },

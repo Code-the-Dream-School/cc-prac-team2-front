@@ -6,16 +6,21 @@ import ChatInput from "../components/ChatInput"
 import {UserContext} from "../context/user-context"
 import { io, Socket } from 'socket.io-client';
 import ChatWelcome from '../components/ChatWelcome';
-
 import {getTime} from "../util/getTime"
+import {v4 as uuidv4} from "uuid" 
 
 interface Messages {
-    _id: string,
-    sender: string
-    message: string,
+    createdAt: string,
+    message: string, 
+    sender: string, 
+    _id: string
 }
 
+
 const ChatContainer = ({socket}): JSX.Element => {
+
+    console.log(socket.current);
+    
     const {
         user, setUser, 
         conversationId, setConversationId, 
@@ -23,12 +28,42 @@ const ChatContainer = ({socket}): JSX.Element => {
     } = useContext(UserContext)
 
     const [messages, setMessages] = useState<Messages[]>([])
-
- 
+    const [usersArray, setUsersArray] = useState()
+    const [arrivalMessages, setArrivalMessages] = useState<null>(null)
     const scrollRef = useRef<HTMLDivElement | null>(null)
     const token: {token: string } | null = JSON.parse(localStorage.getItem("token") || "null")
 
-console.log(user);
+    console.log(user);
+
+    const fetchMessages = async () => {
+        try {
+            if (conversationId) {
+                const {data} = await axios.get(`http://localhost:8000/api/v1/users/${user.userId}/conversations/${conversationId}`, 
+                {
+                    headers: {
+                      Authorization: `Bearer ${token}`
+                    }
+                  }
+                )
+                console.log(data);
+                
+                const {messages} = data.conversation
+                setMessages(messages)
+                setUsersArray(data.conversation.users)
+            }
+        } catch (err) {
+            console.log(err);
+            toast.error("Error fetching messages, please try again");
+        }
+    }
+
+    
+
+    useEffect(() => {
+        fetchMessages()
+    }, [selectId])
+
+    const idArray = usersArray?.map((obj) => obj._id);
 
 
 
@@ -45,15 +80,19 @@ console.log(user);
                 }
               }
             )
-            setMessages( prev => [...prev, {
-                from: user.userId,
+
+            socket.current.emit("sendMessage", {
+                from: user?.userId,
                 to: selectId, 
                 message: messageText
+            })
+
+            setMessages( prev => [...prev, {
+                createdAt: JSON.stringify(Date.now()),
+                message: messageText, 
+                sender: user?.userId, 
+                _id: uuidv4(),
             }])
-
-
-
-
 
 
         } catch (err) {
@@ -62,31 +101,30 @@ console.log(user);
         }
     }
 
-    console.log(messages);
-    
+    useEffect(() => {
+        if (socket.current) {
+            socket.current.on("getMessage", (data:any) => {
+            console.log(data);
+                setArrivalMessages({
+                    createdAt: JSON.stringify(Date.now()),
+                    message: data.message, 
+                    sender: data.from, 
+                    _id: uuidv4(),
+                })
+            } )}
+        
+    }, [socket.current])
 
-    const fetchMessages = async () => {
-        try {
-            if (conversationId) {
-                const {data} = await axios.get(`http://localhost:8000/api/v1/users/${user.userId}/conversations/${conversationId}`, 
-                {
-                    headers: {
-                      Authorization: `Bearer ${token}`
-                    }
-                  }
-                )
-                const {messages} = data.conversation
-                setMessages(messages)
-            }
-        } catch (err) {
-            console.log(err);
-            toast.error("Error fetching messages, please try again");
-        }
-    }
+
 
     useEffect(() => {
-        fetchMessages()
-    }, [conversationId])
+        arrivalMessages  && idArray?.includes(arrivalMessages.sender) && setMessages((prev) =>[...prev, arrivalMessages])
+    }, [arrivalMessages])
+
+    useEffect(() => {
+        scrollRef.current?.scrollIntoView({behavior: 'smooth', block:'end'})
+    }, [messages])
+
 
 
     return (

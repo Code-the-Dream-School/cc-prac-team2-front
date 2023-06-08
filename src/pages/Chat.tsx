@@ -5,16 +5,16 @@ import ChatContainer from "../components/ChatContainer"
 import {UserContext} from "../context/user-context"
 import COCKATOO from "./../assests/cockatoo.png";
 import {getContactName} from "../util/getContactName"
-import { io, Socket } from 'socket.io-client';
+import { io } from 'socket.io-client';
 
 const Chat = () => {
     const {
-        user, setUser, 
+        user, 
         conversationId, setConversationId, 
         selectId, setSelectId
     } = useContext(UserContext)
 
-    const containerRef = useRef()
+
     const socket = useRef()
     const [conversations, setConversations] = useState<any[] | undefined>()
     const [uncontactedUsers, setUncontactedUsers] = useState<any[] | undefined>()
@@ -22,11 +22,20 @@ const Chat = () => {
 
 
     useEffect(() => {
-        if (user) {
-            socket.current = io("http://localhost:8000")
-            socket.current.emit("add-user", user.userId)
+        socket.current = io("http://localhost:8000");
+      }, []);
+
+    useEffect(() => {
+        if (socket.current) {
+            socket.current.emit("addUser", user.userId);
+            socket.current.on("getUsers", (users) => {
+                console.log(users);
+            })
         }
-    }, [user])
+
+      }, [socket.current]);
+
+
 
     const fetchConversations = async () => {
         const {data} = await axios.get(`http://localhost:8000/api/v1/users/${user.userId}/conversations`, 
@@ -38,7 +47,6 @@ const Chat = () => {
         )
         setConversations(data.conversations)
     }
-
 
 
 
@@ -56,7 +64,7 @@ const Chat = () => {
         setUncontactedUsers(uncontactedUsers)
     }
 
-console.log(conversations);
+
 
     
 
@@ -68,7 +76,6 @@ console.log(conversations);
 
     const handleSelectContact = (conversation:any) => {
             setConversationId(conversation._id)
-            console.log(conversation.users);
             let convUser = conversation.users
             let id
             if (convUser[0]._id === user?.userId as string) {
@@ -79,7 +86,7 @@ console.log(conversations);
             setSelectId(id)
     }
 
-    console.log(selectId);
+
 
     const handleSelectUnContact = (unContact) => {
         setSelectId(unContact._id)
