@@ -5,7 +5,21 @@ import ChatContainer from "../components/ChatContainer"
 import {UserContext} from "../context/user-context"
 import COCKATOO from "./../assests/cockatoo.png";
 import {getContactName} from "../util/getContactName"
-import { io } from 'socket.io-client';
+import { io, Socket } from 'socket.io-client';
+
+type MyEventMap = {
+    connect: () => void;
+    disconnect: () => void;
+    "addUser": (userID: number) => void;
+    "getUsers": (users: string[]) => void;
+  };
+
+interface unContactUsers {
+    conversation: string[],
+    _id: string,
+    userName: string
+}
+
 
 const Chat = () => {
     const {
@@ -15,9 +29,9 @@ const Chat = () => {
     } = useContext(UserContext)
 
 
-    const socket = useRef()
+    const socket = useRef<Socket<MyEventMap> | null>()
     const [conversations, setConversations] = useState<any[] | undefined>()
-    const [uncontactedUsers, setUncontactedUsers] = useState<any[] | undefined>()
+    const [uncontactedUsers, setUncontactedUsers] = useState<unContactUsers>()
     const token: {token: string } | null = JSON.parse(localStorage.getItem("token") || "null")
 
 
@@ -26,7 +40,7 @@ const Chat = () => {
       }, []);
 
     useEffect(() => {
-        if (socket.current) {
+        if (socket.current && user) {
             socket.current.emit("addUser", user.userId);
             socket.current.on("getUsers", (users) => {
                 console.log(users);
@@ -63,6 +77,8 @@ const Chat = () => {
 
         setUncontactedUsers(uncontactedUsers)
     }
+    console.log(uncontactedUsers);
+    
 
 
 
@@ -88,7 +104,7 @@ const Chat = () => {
 
 
 
-    const handleSelectUnContact = (unContact) => {
+    const handleSelectUnContact = (unContact: unContactUsers) => {
         setSelectId(unContact._id)
         setConversationId(null)
     }
@@ -107,7 +123,7 @@ const Chat = () => {
                     <div 
 
                     key={conversation._id}
-                    className={'flex bg-slate-300 rounded-lg m-3 p-2 cursor-pointer ' + (conversationId === conversation._id ?  "bg-slate-600"  : '')}
+                    className={'flex bg-slate-300 rounded-lg m-3 p-2 cursor-pointer ' + (conversationId === conversation._id ?  "bg-slate-500"  : '')}
                     onClick={() => handleSelectContact(conversation)} >
                         <div className='w-1/5'>
                             <img className='w-10 h-10 rounded-full' src={COCKATOO} />
@@ -133,9 +149,8 @@ const Chat = () => {
                     return (
                     <>
                     <div 
-
                     key={unContact._id}
-                    className={'flex bg-slate-300 rounded-lg m-3 p-2 cursor-pointer ' + (selectId === unContact._id ?  "bg-slate-600"  : '')}
+                    className={'flex bg-slate-300 rounded-lg m-3 p-2 cursor-pointer ' + (selectId === unContact._id ?  "bg-slate-500"  : '')}
                     onClick={() => handleSelectUnContact(unContact)}
                 
                     >

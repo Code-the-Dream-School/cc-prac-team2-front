@@ -1,15 +1,15 @@
 import React, { createContext, useState, ReactNode, useEffect, useRef } from "react";
 // import axios from "axios"
 import jwt_decode from "jwt-decode";
-import { Socket } from "dgram";
+
 
 interface UserContextProviderProps {
     user: string | null;
     setUser: React.Dispatch<React.SetStateAction<string | null>>;
-    conversationId: number | null,
-    setConversationId: React.Dispatch<React.SetStateAction<number | null>>
-    selectId: number | null, 
-    setSelectId: React.Dispatch<React.SetStateAction<number | null>>
+    conversationId: string | null,
+    setConversationId: React.Dispatch<React.SetStateAction<string | null>>
+    selectId: string | null, 
+    setSelectId: React.Dispatch<React.SetStateAction<string | null>>
 
 }
 
@@ -34,8 +34,8 @@ export const UserContextProvider:React.FC<{children: ReactNode}> = ({children}) 
         loggedInUser  = null
     }
     const [user, setUser] = useState<string | null>(loggedInUser)
-    const [conversationId, setConversationId] = useState<number|null>(null)
-    const [selectId, setSelectId] = useState<number|null>(null)
+    const [conversationId, setConversationId] = useState<string|null>(null)
+    const [selectId, setSelectId] = useState<string|null>(null)
  
 
 

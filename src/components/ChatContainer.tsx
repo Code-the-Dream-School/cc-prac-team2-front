@@ -4,20 +4,23 @@ import { toast } from "react-toastify";
 import axios from "axios"
 import ChatInput from "../components/ChatInput"
 import {UserContext} from "../context/user-context"
-import { io, Socket } from 'socket.io-client';
 import ChatWelcome from '../components/ChatWelcome';
 import {getTime} from "../util/getTime"
 import {v4 as uuidv4} from "uuid" 
 
 interface Messages {
-    createdAt: string,
+    createdAt?: string | null,
     message: string, 
-    sender: string, 
+    sender: string | null, 
     _id: string
 }
 
+interface Socket {
+    current: any;
+  }
 
-const ChatContainer = ({socket}): JSX.Element => {
+
+const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
 
     console.log(socket.current);
     
@@ -29,7 +32,7 @@ const ChatContainer = ({socket}): JSX.Element => {
 
     const [messages, setMessages] = useState<Messages[]>([])
     const [usersArray, setUsersArray] = useState()
-    const [arrivalMessages, setArrivalMessages] = useState<null>(null)
+    const [arrivalMessages, setArrivalMessages] = useState<Messages[] | null>(null)
     const scrollRef = useRef<HTMLDivElement | null>(null)
     const token: {token: string } | null = JSON.parse(localStorage.getItem("token") || "null")
 
@@ -69,7 +72,7 @@ const ChatContainer = ({socket}): JSX.Element => {
 
     const sendMessage = async (messageText:any) => {
         try {
-            const {data} = await axios.post('http://localhost:8000/api/v1/messages', {
+            await axios.post('http://localhost:8000/api/v1/messages', {
                 from: user?.userId,
                 to: selectId, 
                 message: messageText
@@ -88,7 +91,7 @@ const ChatContainer = ({socket}): JSX.Element => {
             })
 
             setMessages( prev => [...prev, {
-                createdAt: JSON.stringify(Date.now()),
+                createdAt: JSON.stringify(new Date().toLocaleString()),
                 message: messageText, 
                 sender: user?.userId, 
                 _id: uuidv4(),
@@ -106,7 +109,7 @@ const ChatContainer = ({socket}): JSX.Element => {
             socket.current.on("getMessage", (data:any) => {
             console.log(data);
                 setArrivalMessages({
-                    createdAt: JSON.stringify(Date.now()),
+                    createdAt: JSON.stringify(new Date().toLocaleString()),
                     message: data.message, 
                     sender: data.from, 
                     _id: uuidv4(),
@@ -143,11 +146,10 @@ const ChatContainer = ({socket}): JSX.Element => {
                         className={(msg.sender === user?.userId ? 'text-right' : 'text-left')}
                         key={msg._id}
                         >
-                        <div className={('max-w-md text-left inline-block rounded-lg bg-white m-2 p-2 ' + (msg.sender === user?.userId ? 'bg-yellow-400' : null) )}>
+                        <div className={('max-w-md text-left inline-block rounded-lg bg-white m-2 p-2 ' + (msg.sender === user?.userId ? 'bg-slate-500' : null))}>
                             {msg.message}
                         <div className='text-xxs text-gray-600 text-right items-right'>{getTime(msg.createdAt)}</div>
                         </div>
-             
                         </div>
                     )) : null}
                 </div>
