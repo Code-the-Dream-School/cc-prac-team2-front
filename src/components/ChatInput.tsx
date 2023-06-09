@@ -29,9 +29,11 @@ const ChatInput = ({onHandleSendMessage}: ChatInputProps): JSX.Element => {
     return (
 
         <>
-        <div className="p-2">
+<div className="">
+
             <form 
-            onSubmit={handleSendMessage} className='flex gap-2 items-center'>
+            onSubmit={handleSendMessage} 
+            className='p-2 flex'>
               <div className="m-auto" onClick={handleShowEmoji}>
                 {!showEmoji ? (
                   <span className="cursor-pointer">
@@ -62,8 +64,8 @@ const ChatInput = ({onHandleSendMessage}: ChatInputProps): JSX.Element => {
               </svg>
               </button>
             </form>
-        </div>
 
+</div>
         
         </>
     )

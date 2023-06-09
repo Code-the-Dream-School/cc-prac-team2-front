@@ -142,28 +142,25 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
     return (
         <>
         <div
-        className={`flex-grow h-screen flex flex-col ${
-          isDarkMode ? "bg-gray-900" : "bg-gray-100"
-        }`}
-        style={{ borderLeft: "2px solid #000" }}
+        className={`flex-grow h-screen flex flex-col shadow  ${
+          isDarkMode ? "bg-gray-900" : "bg-gray-100"}`}
+        
         >
         <div
-          className={`w-full h-14 text-red-300 bg-slate-800 pt-4 cursor-pointer text-center font-medium ${
-            isDarkMode ? "bg-gray-800" : "bg-gray-200"
-          }`}
+          className={`w-full h-14 text-red-300 bg-slate-800 pt-4 cursor-pointer rounded-xl shadow  text-center font-medium ${
+            isDarkMode ? "bg-gray-800" : "bg-gray-200"}`}
         >
             <p>{recipient}</p>
         </div>
         <div
           className={`w-full flex-grow ${
-            isDarkMode ? "bg-gray-800" : "bg-gray-200"
-          }`}
+            isDarkMode ? "bg-gray-800" : "bg-gray-200"}`}
         >
                 <div className="relative h-full">
-                <div className="overflow-y-scroll absolute top-0 left-0 right-0 bottom-2"> 
+                <div className="overflow-y-scroll absolute top-0 left-0 right-0 bottom-0"> 
                 {!!selectId && !!conversationId ? 
                 
-                    <div className=''>
+                    <div className='m-2 p-2'>
                     {messages ? messages.map((msg) => (
 
                         <div 
@@ -174,17 +171,19 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
                             {msg.message}
                         <div className='text-xxs text-gray-600 text-right items-right'>{getTime(msg.createdAt)}</div>
                         </div>
+                        <div ref={scrollRef}></div>
                         </div>
                     )) : null}
                 </div>
                 : 
                 <ChatWelcome />}
-                <div ref={scrollRef}></div>
+                
                 </div>
                 </div> 
                 </div>
+
                 <div
-          className={`w-full h-14 ${
+          className={`w-full h-16 pt-2 my-2 ${
             isDarkMode ? "bg-gray-800" : "bg-gray-200"
           }`}
         >

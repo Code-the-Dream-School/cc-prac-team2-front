@@ -24,11 +24,13 @@ const App = () => {
 
   return (
     <>
+    <div className="h-screen">
         <Navbar />
         <Routes>
             <Route path="/"       element={<Main />} />
             <Route path="/chat"   element={<Chat />} />
         </Routes>
+    </div>
     </>
   );
 }
