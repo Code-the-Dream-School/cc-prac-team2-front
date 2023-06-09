@@ -22,13 +22,15 @@ interface Socket {
 
 const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
 
-    console.log(socket.current);
-    
     const {
         user, setUser, 
         conversationId, setConversationId, 
-        selectId, setSelectId
+        selectId, setSelectId,
+        isDarkMode,
+        recipient, setRecipient,
     } = useContext(UserContext)
+
+
 
     const [messages, setMessages] = useState<Messages[]>([])
     const [usersArray, setUsersArray] = useState()
@@ -36,7 +38,7 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
     const scrollRef = useRef<HTMLDivElement | null>(null)
     const token: {token: string } | null = JSON.parse(localStorage.getItem("token") || "null")
 
-    console.log(user);
+
 
     const fetchMessages = async () => {
         try {
@@ -48,9 +50,16 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
                     }
                   }
                 )
-                console.log(data);
+
                 
                 const {messages} = data.conversation
+                const {users} = data.conversation
+                console.log(users)
+                if (users[0].userName === user?.userName) {
+                    setRecipient(users[1].userName)
+                } else {
+                    setRecipient(users[0].userName)
+                }
                 setMessages(messages)
                 setUsersArray(data.conversation.users)
             }
@@ -60,13 +69,12 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
         }
     }
 
-    
 
     useEffect(() => {
         fetchMessages()
     }, [selectId])
 
-    const idArray = usersArray?.map((obj) => obj._id);
+
 
 
 
@@ -107,7 +115,7 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
     useEffect(() => {
         if (socket.current) {
             socket.current.on("getMessage", (data:any) => {
-            console.log(data);
+
                 setArrivalMessages({
                     createdAt: JSON.stringify(new Date().toLocaleString()),
                     message: data.message, 
@@ -119,6 +127,8 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
     }, [socket.current])
 
 
+    const idArray = usersArray?.map((obj) => obj._id);
+
 
     useEffect(() => {
         arrivalMessages  && idArray?.includes(arrivalMessages.sender) && setMessages((prev) =>[...prev, arrivalMessages])
@@ -129,12 +139,26 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
     }, [messages])
 
 
-
     return (
         <>
-
-            <div className="flex-grow h-screen bg-slate-200">
-                <div className="w-full h-5/6 bg-blue-100" > 
+        <div
+        className={`flex-grow h-screen flex flex-col ${
+          isDarkMode ? "bg-gray-900" : "bg-gray-100"
+        }`}
+        style={{ borderLeft: "2px solid #000" }}
+        >
+        <div
+          className={`w-full h-14 text-red-300 bg-slate-800 pt-4 cursor-pointer text-center font-medium ${
+            isDarkMode ? "bg-gray-800" : "bg-gray-200"
+          }`}
+        >
+            <p>{recipient}</p>
+        </div>
+        <div
+          className={`w-full flex-grow ${
+            isDarkMode ? "bg-gray-800" : "bg-gray-200"
+          }`}
+        >
                 <div className="relative h-full">
                 <div className="overflow-y-scroll absolute top-0 left-0 right-0 bottom-2"> 
                 {!!selectId && !!conversationId ? 
@@ -146,23 +170,24 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
                         className={(msg.sender === user?.userId ? 'text-right' : 'text-left')}
                         key={msg._id}
                         >
-                        <div className={('max-w-md text-left inline-block rounded-lg bg-white m-2 p-2 ' + (msg.sender === user?.userId ? 'bg-slate-500' : null))}>
+                        <div className={('max-w-md text-left inline-block rounded-lg bg-red-300 m-2 p-2 ' + (msg.sender === user?.userId ?  "bg-white " : null)  )}>
                             {msg.message}
                         <div className='text-xxs text-gray-600 text-right items-right'>{getTime(msg.createdAt)}</div>
                         </div>
                         </div>
                     )) : null}
                 </div>
-    
                 : 
                 <ChatWelcome />}
-
-
                 <div ref={scrollRef}></div>
                 </div>
                 </div> 
                 </div>
-                <div className="w-full h-1/6 bg-slate-300" >   
+                <div
+          className={`w-full h-14 ${
+            isDarkMode ? "bg-gray-800" : "bg-gray-200"
+          }`}
+        >
                 <ChatInput onHandleSendMessage={sendMessage} />
                 </div>
   

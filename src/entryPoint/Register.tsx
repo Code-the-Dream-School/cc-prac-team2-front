@@ -104,7 +104,7 @@ const Register = () => {
         const token = response.data.token;
         localStorage.setItem("token", JSON.stringify(token));
         const register = jwt_decode(token);
-        console.log(register);
+
         setUser(register);
 
         toast.success("User signed up");

@@ -25,13 +25,17 @@ const Chat = () => {
     const {
         user, 
         conversationId, setConversationId, 
-        selectId, setSelectId
+        selectId, setSelectId,
+        isDarkMode,
     } = useContext(UserContext)
 
 
     const socket = useRef<Socket<MyEventMap> | null>()
     const [conversations, setConversations] = useState<any[] | undefined>()
     const [uncontactedUsers, setUncontactedUsers] = useState<unContactUsers>()
+    const [contactedUsers, setContactedUsers] = useState()
+    const [onlineFriends, setOnlineFriends] = useState([])
+    const [onlineUsers, setOnlineUsers] = useState([])
     const token: {token: string } | null = JSON.parse(localStorage.getItem("token") || "null")
 
 
@@ -43,12 +47,28 @@ const Chat = () => {
         if (socket.current && user) {
             socket.current.emit("addUser", user.userId);
             socket.current.on("getUsers", (users) => {
-                console.log(users);
+             let usersMap = new Set()
+             users.map((user) => {
+                usersMap.add(user[0])
+                let usersArray = Array.from(usersMap)
+                setOnlineUsers(usersArray)
+             })
+             console.log(usersMap)
             })
         }
-
       }, [socket.current]);
+    console.log(onlineUsers)
+    console.log(contactedUsers)
 
+
+    useEffect(() => {
+        if (contactedUsers) {
+            const a = contactedUsers.filter((u) => onlineUsers.includes(u._id))
+            console.log(a)
+        }
+    }, [onlineUsers, contactedUsers])
+
+    console.log(onlineFriends)
 
 
     const fetchConversations = async () => {
@@ -74,15 +94,11 @@ const Chat = () => {
         )
 
         const uncontactedUsers = data.users.uncontactedUsers
-
+        const contactedUsers = data.users.contactedUsers
+        setContactedUsers(contactedUsers)
         setUncontactedUsers(uncontactedUsers)
     }
-    console.log(uncontactedUsers);
-    
 
-
-
-    
 
     useEffect(()=>{
         fetchConversations()
@@ -91,6 +107,7 @@ const Chat = () => {
 
 
     const handleSelectContact = (conversation:any) => {
+
             setConversationId(conversation._id)
             let convUser = conversation.users
             let id
@@ -113,9 +130,19 @@ const Chat = () => {
     return (
         <>
         
-        <div className="flex">
-            <div className="w-80 h-screen p-2 bg-slate-400">
-                <div className='text-xl p-3 text-center'>Contact
+        <div className={`flex h-full ${isDarkMode ? "bg-dark" : "bg-light"}`}>
+        <div
+          className={`w-80 h-screen p-2 ${
+            isDarkMode ? "bg-slate-600" : "bg-slate-200"
+          }`}
+        >
+          <div
+            className={`text-xl p-3 text-center ${
+              isDarkMode ? "text-white" : "text-black"
+            }`}
+          >
+                    
+                    Contact
                 </div>
                 {conversations ? conversations.map((conversation) => {
                     return (
@@ -132,7 +159,7 @@ const Chat = () => {
                         
                     {
                     getContactName(user, conversation.users)
-                    // conversation._id
+           
                     }
                     </div>
                     </div>
@@ -140,8 +167,12 @@ const Chat = () => {
                     )
                 }
         ) : null}
-                        
-                <div className='text-xl p-3 text-center'>People
+                        <div
+            className={`text-xl p-3 text-center ${
+              isDarkMode ? "text-white" : "text-black"
+            }`}
+          >
+                    People
                 </div>
                 <div>
                     {uncontactedUsers ? uncontactedUsers.map((unContact) => {

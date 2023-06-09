@@ -29,7 +29,7 @@ const ChatInput = ({onHandleSendMessage}: ChatInputProps): JSX.Element => {
     return (
 
         <>
-        <div className="p-4">
+        <div className="p-2">
             <form 
             onSubmit={handleSendMessage} className='flex gap-2 items-center'>
               <div className="m-auto" onClick={handleShowEmoji}>
