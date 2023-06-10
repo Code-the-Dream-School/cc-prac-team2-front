@@ -1,137 +1,147 @@
-import { useState, useContext, useEffect, useRef } from "react";
-import { toast } from "react-toastify";
-import axios from "axios";
-import ChatInput from "../components/ChatInput";
-import { UserContext } from "../context/user-context";
+import { useState, useContext, useEffect, useRef } from 'react';
+import axios from 'axios';
+import ChatContainer from '../components/ChatContainer';
+import { UserContext } from '../context/user-context';
+import COCKATOO from './../assests/cockatoo.png';
+import { getContactName } from '../util/getContactName';
+import { io, Socket } from 'socket.io-client';
 
-interface Messages {
+type MyEventMap = {
+  connect: () => void;
+  disconnect: () => void;
+  'addUser': (userID: number) => void;
+  'getUsers': (users: string[]) => void;
+};
+
+interface unContactUsers {
+  conversation: string[];
   _id: string;
-  sender: string;
-  message: string;
+  userName: string;
 }
 
-const ChatContainer = (): JSX.Element => {
-  const {
-    user,
-    setUser,
-    conversation,
-    setConversation,
-    selectId,
-    setSelectId,
-    isDarkMode,
-  } = useContext(UserContext);
+const Chat = () => {
+  const { user, conversationId, setConversationId, selectId, setSelectId, isDarkMode } = useContext(UserContext);
 
-  const [messages, setMessages] = useState<Messages[]>([]);
-
-  const scrollRef = useRef<HTMLDivElement | null>(null);
-  const token: { token: string } | null = JSON.parse(
-    localStorage.getItem("token") || "null"
-  );
-
-  const sendMessage = async (messageText: any) => {
-    try {
-      const { data } = await axios.post(
-        "http://localhost:8000/api/v1/messages",
-        {
-          from: user?.userId,
-          to: selectId,
-          message: messageText,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      setMessages((prev) => [
-        ...prev,
-        {
-          from: user.userId,
-          to: selectId,
-          message: messageText,
-        },
-      ]);
-    } catch (err) {
-      console.log(err);
-      toast.error("Error sending messages, please try again");
-    }
-  };
-
-  const fetchMessages = async () => {
-    try {
-      if (conversation) {
-        const { data } = await axios.get(
-          `http://localhost:8000/api/v1/users/${user.userId}/conversations/${conversation}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        const { messages } = data.conversation;
-        setMessages(messages);
-      }
-    } catch (err) {
-      console.log(err);
-      toast.error("Error fetching messages, please try again");
-    }
-  };
+  const socket = useRef<Socket<MyEventMap> | null>();
+  const [conversations, setConversations] = useState<any[] | undefined>();
+  const [uncontactedUsers, setUncontactedUsers] = useState<unContactUsers>();
+  const token: { token: string } | null = JSON.parse(localStorage.getItem('token') || 'null');
 
   useEffect(() => {
-    fetchMessages();
-  }, [conversation]);
+    socket.current = io('http://localhost:8000');
+  }, []);
+
+  useEffect(() => {
+    if (socket.current && user) {
+      socket.current.emit('addUser', user.userId);
+      socket.current.on('getUsers', (users) => {
+        console.log(users);
+      });
+    }
+  }, [socket.current]);
+
+  const fetchConversations = async () => {
+    const { data } = await axios.get(`http://localhost:8000/api/v1/users/${user.userId}/conversations`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    setConversations(data.conversations);
+  };
+
+  const fetchUsers = async () => {
+    const { data } = await axios.get(`http://localhost:8000/api/v1/users`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const uncontactedUsers = data.users.uncontactedUsers;
+
+    setUncontactedUsers(uncontactedUsers);
+  };
+  console.log(uncontactedUsers);
+
+  useEffect(() => {
+    fetchConversations();
+    fetchUsers();
+  }, []);
+
+  const handleSelectContact = (conversation: any) => {
+    setConversationId(conversation._id);
+    let convUser = conversation.users;
+    let id;
+    if (convUser[0]._id === (user?.userId as string)) {
+      id = convUser[1]._id;
+    } else {
+      id = convUser[0]._id;
+    }
+    setSelectId(id);
+  };
+
+  const handleSelectUnContact = (unContact: unContactUsers) => {
+    setSelectId(unContact._id);
+    setConversationId(null);
+  };
 
   return (
     <>
-      <div
-        className={`flex-grow h-screen ${
-          isDarkMode ? "bg-gray-900" : "bg-gray-100"
-        }`}
-        style={{ borderLeft: "2px solid #000" }}
-      >
-        <div
-          className={`w-full h-5/6 ${
-            isDarkMode ? "bg-gray-800" : "bg-gray-200"
-          }`}
-        >
-          <div className="relative h-full">
-            <div className="overflow-y-scroll absolute top-0 left-0 right-0 bottom-2">
-              <div className="">
-                {messages
-                  ? messages.map((msg) => (
-                      <div
-                        className={
-                          msg.sender === user?.userId
-                            ? "text-right"
-                            : "text-left"
-                        }
-                        key={msg._id}
-                      >
-                        <div
-                          className={`max-w-md text-left inline-block rounded-lg ${
-                            isDarkMode ? "bg-gray-500 text-white" : "bg-white"
-                          } m-2 p-2`}
-                        >
-                          {msg.message}
-                        </div>
-                      </div>
-                    ))
-                  : null}
-              </div>
-              <div ref={scrollRef}></div>
+      <div className={`flex ${isDarkMode ? 'bg-dark' : 'bg-light'}`}>
+        <div className={`w-80 h-screen p-2 ${isDarkMode ? 'bg-slate-400' : 'bg-slate-200'}`}>
+          <div className={`text-xl p-3 text-center ${isDarkMode ? 'text-white' : 'text-black'}`}>Contact</div>
+          {conversations ? (
+            conversations.map((conversation) => {
+              return (
+                <div
+                  key={conversation._id}
+                  className={`flex ${
+                    isDarkMode ? 'bg-slate-300' : 'bg-slate-300'
+                  } rounded-lg m-3 p-2 cursor-pointer ${conversationId === conversation._id ? 'bg-slate-500' : ''}`}
+                  onClick={() => handleSelectContact(conversation)}
+                >
+                  <div className="w-1/5">
+                    <img className="w-10 h-10 rounded-full" src={COCKATOO} />
+                  </div>
+                  <div className="w-4/5 p-2">{getContactName(user, conversation.users)}</div>
+                </div>
+              );
+            })
+          ) : (
+            <div className="flex justify-center items-center h-screen">
+              <div className="text-2xl text-center">You have no conversation yet</div>
             </div>
+          )}
+
+          <div className={`text-xl p-3 text-center ${isDarkMode ? 'text-white' : 'text-black'}`}>People</div>
+          <div>
+            {uncontactedUsers ? (
+              uncontactedUsers.map((unContact) => {
+                if (unContact._id === user?.userId) {
+                  return null;
+                }
+                return (
+                  <div
+                    key={unContact._id}
+                    className={`flex ${
+                      isDarkMode ? 'bg-slate-300' : 'bg-slate-300'
+                    } rounded-lg m-3 p-2 cursor-pointer ${selectId === unContact._id ? 'bg-slate-500' : ''}`}
+                    onClick={() => handleSelectUnContact(unContact)}
+                  >
+                    {unContact.userName}
+                  </div>
+                );
+              })
+            ) : (
+              null
+            )}
           </div>
         </div>
-        <div
-          className={`w-full h-1/6 ${
-            isDarkMode ? "bg-gray-700" : "bg-gray-300"
-          }`}
-        >
-          <ChatInput onHandleSendMessage={sendMessage} />
-        </div>
+
+        <ChatContainer socket={socket} />
       </div>
     </>
   );
 };
 
-export default ChatContainer;
+export default Chat;
+

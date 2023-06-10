@@ -93,7 +93,7 @@ const Register = () => {
     if (isFormValid) {
       try {
         const response = await axios.post(
-          "http://localhost:8000/api/v1/users/sign-up",
+          "http://localhost:8000/api/v1/account/sign-up",
           {
             userName,
             email,

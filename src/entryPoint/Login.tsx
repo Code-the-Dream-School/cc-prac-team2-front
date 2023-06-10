@@ -64,7 +64,7 @@ const navigate = useNavigate()
     if (isFormValid) {
       try {
         const response = await axios.post(
-          "http://localhost:8000/api/v1/users/log-in",
+          "http://localhost:8000/api/v1/account/log-in",
           {
             email: email,
             password: password,
