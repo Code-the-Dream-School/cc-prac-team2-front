@@ -24,7 +24,7 @@ const App = () => {
 
   return (
     <>
-    <div className="h-screen">
+    <div className="flex flex-col h-screen ">
         <Navbar />
         <Routes>
             <Route path="/"       element={<Main />} />
@@ -36,3 +36,6 @@ const App = () => {
 }
 
 export default App;
+
+
+

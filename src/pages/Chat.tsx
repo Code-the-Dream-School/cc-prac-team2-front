@@ -47,6 +47,7 @@ const Chat = () => {
         if (socket.current && user) {
             socket.current.emit("addUser", user.userId);
             socket.current.on("getUsers", (users) => {
+                console.log(users)
              let usersMap = new Set()
              users.map((user) => {
                 usersMap.add(user[0])
@@ -57,18 +58,20 @@ const Chat = () => {
             })
         }
       }, [socket.current]);
-    console.log(onlineUsers)
-    console.log(contactedUsers)
 
 
     useEffect(() => {
-        if (contactedUsers) {
+        
+        if (contactedUsers &&onlineUsers) {
             const a = contactedUsers.filter((u) => onlineUsers.includes(u._id))
             console.log(a)
+            setOnlineFriends(a)
+            
         }
     }, [onlineUsers, contactedUsers])
 
-    console.log(onlineFriends)
+    console.log(onlineFriends) // my online friends
+    console.log(contactedUsers) // all of my friends
 
 
     const fetchConversations = async () => {
@@ -125,14 +128,16 @@ const Chat = () => {
         setSelectId(unContact._id)
         setConversationId(null)
     }
+
+    
     
     
     return (
         <>
         
-        <div className={`flex h-full ${isDarkMode ? "bg-dark" : "bg-light"}`}>
+        <div className={`flex flex-grow ${isDarkMode ? "bg-dark" : "bg-light"}`}>
         <div
-          className={`w-80 h-screen p-2 ${
+          className={`w-80 p-2 ${
             isDarkMode ? "bg-slate-600" : "bg-slate-200"
           }`}
         >
@@ -158,11 +163,11 @@ const Chat = () => {
                     <div className="w-4/5 p-2">
                         
                     {
-                    getContactName(user, conversation.users)
-           
+                    getContactName(user, conversation.users, onlineFriends)
                     }
                     </div>
                     </div>
+                    
                         </>
                     )
                 }
@@ -183,17 +188,17 @@ const Chat = () => {
                     key={unContact._id}
                     className={'flex bg-slate-300 rounded-lg m-3 p-2 cursor-pointer ' + (selectId === unContact._id ?  "bg-slate-500"  : '')}
                     onClick={() => handleSelectUnContact(unContact)}
-                
                     >
-                   {unContact.userName}
+                   <div className="items-center text-center justify-between">{unContact.userName}</div>
                     </div>
                     </>
                     )
                 }): null}
                     </div>
                 </div>
-
+       
             <ChatContainer socket={socket}/>
+          
             </div>
         </>
     )

@@ -38,8 +38,6 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
     const scrollRef = useRef<HTMLDivElement | null>(null)
     const token: {token: string } | null = JSON.parse(localStorage.getItem("token") || "null")
 
-
-
     const fetchMessages = async () => {
         try {
             if (conversationId) {
@@ -50,8 +48,6 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
                     }
                   }
                 )
-
-                
                 const {messages} = data.conversation
                 const {users} = data.conversation
                 console.log(users)
@@ -115,7 +111,6 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
     useEffect(() => {
         if (socket.current) {
             socket.current.on("getMessage", (data:any) => {
-
                 setArrivalMessages({
                     createdAt: JSON.stringify(new Date().toLocaleString()),
                     message: data.message, 
@@ -142,22 +137,21 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
     return (
         <>
         <div
-        className={`flex-grow h-screen flex flex-col shadow  ${
-          isDarkMode ? "bg-gray-900" : "bg-gray-100"}`}
-        
+        className={`flex flex-grow flex-col shadow  ${
+          isDarkMode ? "bg-gray-900" : "bg-slate-200"}`}
         >
         <div
-          className={`w-full h-14 text-red-300 bg-slate-800 pt-4 cursor-pointer rounded-xl shadow  text-center font-medium ${
-            isDarkMode ? "bg-gray-800" : "bg-gray-200"}`}
+          className={`w-full h-14 text-red-300 pt-4 cursor-pointer rounded-tl-lg shadow text-center font-medium ${
+            isDarkMode ? "bg-slate-200" : "bg-gray-800" }`}
         >
             <p>{recipient}</p>
         </div>
         <div
-          className={`w-full flex-grow ${
-            isDarkMode ? "bg-gray-800" : "bg-gray-200"}`}
+          className={`w-full flex-grow flex flex-col ${
+            isDarkMode ? "bg-gray-800" : "bg-slate-200"}`}
         >
                 <div className="relative h-full">
-                <div className="overflow-y-scroll absolute top-0 left-0 right-0 bottom-0"> 
+                <div className="overflow-y-auto absolute top-0 left-0 right-0 bottom-0"> 
                 {!!selectId && !!conversationId ? 
                 
                     <div className='m-2 p-2'>
@@ -183,16 +177,13 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
                 </div>
 
                 <div
-          className={`w-full h-16 pt-2 my-2 ${
+          className={`w-full h-20 pt-2 ${
             isDarkMode ? "bg-gray-800" : "bg-gray-200"
           }`}
         >
                 <ChatInput onHandleSendMessage={sendMessage} />
                 </div>
-  
             </div>
-            
-        
         </>
     )
 }
