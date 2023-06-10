@@ -3,6 +3,7 @@ import Chat from "./pages/Chat"
 import Main from "./pages/Main"
 import { Route, Routes, useNavigate } from "react-router-dom";
 import Navbar from "./navbar/NavBar"
+import Navbar from "./navbar/Navbar"
 // import {UserContext} from "./context/user-context"
 
 
