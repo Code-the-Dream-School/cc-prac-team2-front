@@ -2,7 +2,7 @@ import { useEffect} from 'react';
 import Chat from "./pages/Chat"
 import Main from "./pages/Main"
 import { Route, Routes, useNavigate } from "react-router-dom";
-import Navbar from "./navbar/Navbar"
+import Navbar from "./navbar/NavBar"
 // import {UserContext} from "./context/user-context"
 
 
@@ -24,11 +24,13 @@ const App = () => {
 
   return (
     <>
+    <div className="flex flex-col h-screen ">
         <Navbar />
         <Routes>
             <Route path="/"       element={<Main />} />
             <Route path="/chat"   element={<Chat />} />
         </Routes>
+    </div>
     </>
   );
 }
