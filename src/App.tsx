@@ -2,7 +2,7 @@ import { useEffect} from 'react';
 import Chat from "./pages/Chat"
 import Main from "./pages/Main"
 import { Route, Routes, useNavigate } from "react-router-dom";
-import Navbar from "./navbar/Nav"
+import Navbar from "./navbar/Navbar"
 // import {UserContext} from "./context/user-context"
 
 

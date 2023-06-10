@@ -1,47 +1,65 @@
+
 import React, { createContext, useState, ReactNode, useEffect, useRef } from "react";
 // import axios from "axios"
+
 import jwt_decode from "jwt-decode";
 
 
 interface UserContextProviderProps {
-    user: string | null;
-    setUser: React.Dispatch<React.SetStateAction<string | null>>;
-    conversationId: string | null,
-    setConversationId: React.Dispatch<React.SetStateAction<string | null>>
-    selectId: string | null, 
-    setSelectId: React.Dispatch<React.SetStateAction<string | null>>
-
+  user: string | null;
+  setUser: React.Dispatch<React.SetStateAction<string | null>>;
+  isDarkMode: boolean;
+  setIsDarkMode: React.Dispatch<React.SetStateAction<boolean>>;
+  conversation: number | null;
+  setConversation: React.Dispatch<React.SetStateAction<number | null>>;
+  selectId: number | null;
+  setSelectId: React.Dispatch<React.SetStateAction<number | null>>;
 }
 
-export const UserContext= createContext<UserContextProviderProps> ({
-    user: null,
-    setUser: () => {},
-    conversationId: null,
-    setConversationId: () => {},
-    selectId: null, 
-    setSelectId: () => {}
-})
+export const UserContext = createContext<UserContextProviderProps>({
+  user: null,
+  setUser: () => {},
+  isDarkMode: false,
+  setIsDarkMode: () => {},
+  conversation: null,
+  setConversation: () => {},
+  selectId: null,
+  setSelectId: () => {},
+});
 
+export const UserContextProvider: React.FC<{ children: ReactNode }> = ({
+  children,
+}) => {
+  let loggedInUser: string | null;
 
-export const UserContextProvider:React.FC<{children: ReactNode}> = ({children}) => {
+  const userWithToken = JSON.parse(localStorage.getItem("token") || "null");
+  if (userWithToken) {
+    loggedInUser = jwt_decode(userWithToken);
+  } else {
+    loggedInUser = null;
+  }
 
-    let loggedInUser: string | null
+  const [user, setUser] = useState<string | null>(loggedInUser);
+  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [conversation, setConversation] = useState<number | null>(null);
+  const [selectId, setSelectId] = useState<number | null>(null);
 
-    const userWithToken = JSON.parse(localStorage.getItem('token') || 'null')
-    if (userWithToken) {
-        loggedInUser = jwt_decode(userWithToken)
-    } else {
-        loggedInUser  = null
-    }
-    const [user, setUser] = useState<string | null>(loggedInUser)
-    const [conversationId, setConversationId] = useState<string|null>(null)
-    const [selectId, setSelectId] = useState<string|null>(null)
- 
+  return (
+    <UserContext.Provider
+      value={{
+        user,
+        setUser,
+        isDarkMode,
+        setIsDarkMode,
+        conversation,
+        setConversation,
+        selectId,
+        setSelectId,
+      }}
+    >
+      {children}
+    </UserContext.Provider>
+  );
+};
 
-
-    return (
-        <UserContext.Provider value={{user, setUser, conversationId, setConversationId, selectId, setSelectId}}>
-            {children}
-        </UserContext.Provider>
-    )
-}
+                

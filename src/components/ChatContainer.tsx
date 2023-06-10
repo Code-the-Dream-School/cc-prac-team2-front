@@ -1,180 +1,147 @@
+import { useState, useContext, useEffect, useRef } from 'react';
+import axios from 'axios';
+import ChatContainer from '../components/ChatContainer';
+import { UserContext } from '../context/user-context';
+import COCKATOO from './../assests/cockatoo.png';
+import { getContactName } from '../util/getContactName';
+import { io, Socket } from 'socket.io-client';
 
-import {useState, useContext, useEffect, useRef} from 'react'
-import { toast } from "react-toastify";
-import axios from "axios"
-import ChatInput from "../components/ChatInput"
-import {UserContext} from "../context/user-context"
-import ChatWelcome from '../components/ChatWelcome';
-import {getTime} from "../util/getTime"
-import {v4 as uuidv4} from "uuid" 
+type MyEventMap = {
+  connect: () => void;
+  disconnect: () => void;
+  'addUser': (userID: number) => void;
+  'getUsers': (users: string[]) => void;
+};
 
-interface Messages {
-    createdAt?: string | null,
-    message: string, 
-    sender: string | null, 
-    _id: string
+interface unContactUsers {
+  conversation: string[];
+  _id: string;
+  userName: string;
 }
 
-interface Socket {
-    current: any;
-  }
+const Chat = () => {
+  const { user, conversationId, setConversationId, selectId, setSelectId, isDarkMode } = useContext(UserContext);
 
+  const socket = useRef<Socket<MyEventMap> | null>();
+  const [conversations, setConversations] = useState<any[] | undefined>();
+  const [uncontactedUsers, setUncontactedUsers] = useState<unContactUsers>();
+  const token: { token: string } | null = JSON.parse(localStorage.getItem('token') || 'null');
 
-const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
+  useEffect(() => {
+    socket.current = io('http://localhost:8000');
+  }, []);
 
-    console.log(socket.current);
-    
-    const {
-        user, setUser, 
-        conversationId, setConversationId, 
-        selectId, setSelectId
-    } = useContext(UserContext)
-
-    const [messages, setMessages] = useState<Messages[]>([])
-    const [usersArray, setUsersArray] = useState()
-    const [arrivalMessages, setArrivalMessages] = useState<Messages[] | null>(null)
-    const scrollRef = useRef<HTMLDivElement | null>(null)
-    const token: {token: string } | null = JSON.parse(localStorage.getItem("token") || "null")
-
-    console.log(user);
-
-    const fetchMessages = async () => {
-        try {
-            if (conversationId) {
-                const {data} = await axios.get(`http://localhost:8000/api/v1/users/${user.userId}/conversations/${conversationId}`, 
-                {
-                    headers: {
-                      Authorization: `Bearer ${token}`
-                    }
-                  }
-                )
-                console.log(data);
-                
-                const {messages} = data.conversation
-                setMessages(messages)
-                setUsersArray(data.conversation.users)
-            }
-        } catch (err) {
-            console.log(err);
-            toast.error("Error fetching messages, please try again");
-        }
+  useEffect(() => {
+    if (socket.current && user) {
+      socket.current.emit('addUser', user.userId);
+      socket.current.on('getUsers', (users) => {
+        console.log(users);
+      });
     }
+  }, [socket.current]);
 
-    
+  const fetchConversations = async () => {
+    const { data } = await axios.get(`http://localhost:8000/api/v1/users/${user.userId}/conversations`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    setConversations(data.conversations);
+  };
 
-    useEffect(() => {
-        fetchMessages()
-    }, [selectId])
+  const fetchUsers = async () => {
+    const { data } = await axios.get(`http://localhost:8000/api/v1/users`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
 
-    const idArray = usersArray?.map((obj) => obj._id);
+    const uncontactedUsers = data.users.uncontactedUsers;
 
+    setUncontactedUsers(uncontactedUsers);
+  };
+  console.log(uncontactedUsers);
 
+  useEffect(() => {
+    fetchConversations();
+    fetchUsers();
+  }, []);
 
-    const sendMessage = async (messageText:any) => {
-        try {
-            await axios.post('http://localhost:8000/api/v1/messages', {
-                from: user?.userId,
-                to: selectId, 
-                message: messageText
-            },
-            {
-                headers: {
-                  Authorization: `Bearer ${token}`
-                }
-              }
-            )
+  const handleSelectContact = (conversation: any) => {
+    setConversationId(conversation._id);
+    let convUser = conversation.users;
+    let id;
+    if (convUser[0]._id === (user?.userId as string)) {
+      id = convUser[1]._id;
+    } else {
+      id = convUser[0]._id;
+    }
+    setSelectId(id);
+  };
 
-            socket.current.emit("sendMessage", {
-                from: user?.userId,
-                to: selectId, 
-                message: messageText
+  const handleSelectUnContact = (unContact: unContactUsers) => {
+    setSelectId(unContact._id);
+    setConversationId(null);
+  };
+
+  return (
+    <>
+      <div className={`flex ${isDarkMode ? 'bg-dark' : 'bg-light'}`}>
+        <div className={`w-80 h-screen p-2 ${isDarkMode ? 'bg-slate-400' : 'bg-slate-200'}`}>
+          <div className={`text-xl p-3 text-center ${isDarkMode ? 'text-white' : 'text-black'}`}>Contact</div>
+          {conversations ? (
+            conversations.map((conversation) => {
+              return (
+                <div
+                  key={conversation._id}
+                  className={`flex ${
+                    isDarkMode ? 'bg-slate-300' : 'bg-slate-300'
+                  } rounded-lg m-3 p-2 cursor-pointer ${conversationId === conversation._id ? 'bg-slate-500' : ''}`}
+                  onClick={() => handleSelectContact(conversation)}
+                >
+                  <div className="w-1/5">
+                    <img className="w-10 h-10 rounded-full" src={COCKATOO} />
+                  </div>
+                  <div className="w-4/5 p-2">{getContactName(user, conversation.users)}</div>
+                </div>
+              );
             })
-
-            setMessages( prev => [...prev, {
-                createdAt: JSON.stringify(new Date().toLocaleString()),
-                message: messageText, 
-                sender: user?.userId, 
-                _id: uuidv4(),
-            }])
-
-
-        } catch (err) {
-            console.log(err);
-            toast.error("Error sending messages, please try again");
-        }
-    }
-
-    useEffect(() => {
-        if (socket.current) {
-            socket.current.on("getMessage", (data:any) => {
-            console.log(data);
-                setArrivalMessages({
-                    createdAt: JSON.stringify(new Date().toLocaleString()),
-                    message: data.message, 
-                    sender: data.from, 
-                    _id: uuidv4(),
-                })
-            } )}
-        
-    }, [socket.current])
-
-
-
-    useEffect(() => {
-        arrivalMessages  && idArray?.includes(arrivalMessages.sender) && setMessages((prev) =>[...prev, arrivalMessages])
-    }, [arrivalMessages])
-
-    useEffect(() => {
-        scrollRef.current?.scrollIntoView({behavior: 'smooth', block:'end'})
-    }, [messages])
-
-
-
-    return (
-        <>
-
-            <div className="flex-grow h-screen bg-slate-200">
-                <div className="w-full h-5/6 bg-blue-100" > 
-                <div className="relative h-full">
-                <div className="overflow-y-scroll absolute top-0 left-0 right-0 bottom-2"> 
-                {!!selectId && !!conversationId ? 
-                
-                    <div className=''>
-                    {messages ? messages.map((msg) => (
-
-                        <div 
-                        className={(msg.sender === user?.userId ? 'text-right' : 'text-left')}
-                        key={msg._id}
-                        >
-                        <div className={('max-w-md text-left inline-block rounded-lg bg-white m-2 p-2 ' + (msg.sender === user?.userId ? 'bg-slate-500' : null))}>
-                            {msg.message}
-                        <div className='text-xxs text-gray-600 text-right items-right'>{getTime(msg.createdAt)}</div>
-                        </div>
-                        </div>
-                    )) : null}
-                </div>
-    
-                : 
-                <ChatWelcome />}
-
-
-                <div ref={scrollRef}></div>
-                </div>
-                </div> 
-                </div>
-                <div className="w-full h-1/6 bg-slate-300" >   
-                <ChatInput onHandleSendMessage={sendMessage} />
-                </div>
-  
+          ) : (
+            <div className="flex justify-center items-center h-screen">
+              <div className="text-2xl text-center">You have no conversation yet</div>
             </div>
-            
-        
-        </>
-    )
-}
+          )}
 
-export default ChatContainer
+          <div className={`text-xl p-3 text-center ${isDarkMode ? 'text-white' : 'text-black'}`}>People</div>
+          <div>
+            {uncontactedUsers ? (
+              uncontactedUsers.map((unContact) => {
+                if (unContact._id === user?.userId) {
+                  return null;
+                }
+                return (
+                  <div
+                    key={unContact._id}
+                    className={`flex ${
+                      isDarkMode ? 'bg-slate-300' : 'bg-slate-300'
+                    } rounded-lg m-3 p-2 cursor-pointer ${selectId === unContact._id ? 'bg-slate-500' : ''}`}
+                    onClick={() => handleSelectUnContact(unContact)}
+                  >
+                    {unContact.userName}
+                  </div>
+                );
+              })
+            ) : (
+              null
+            )}
+          </div>
+        </div>
 
+        <ChatContainer socket={socket} />
+      </div>
+    </>
+  );
+};
 
-
+export default Chat;
 
