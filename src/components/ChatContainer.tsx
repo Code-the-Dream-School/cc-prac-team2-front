@@ -50,7 +50,6 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
                 )
                 const {messages} = data.conversation
                 const {users} = data.conversation
-                console.log(users)
                 if (users[0].userName === user?.userName) {
                     setRecipient(users[1].userName)
                 } else {
@@ -71,12 +70,9 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
     }, [selectId])
 
 
-
-
-
     const sendMessage = async (messageText:any) => {
         try {
-            await axios.post('http://localhost:8000/api/v1/messages', {
+           const {data} = await axios.post('http://localhost:8000/api/v1/messages', {
                 from: user?.userId,
                 to: selectId, 
                 message: messageText
@@ -88,17 +84,20 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
               }
             )
 
+            const {message} = data
+
             socket.current.emit("sendMessage", {
+                createdAt: message.createdAt,
                 from: user?.userId,
                 to: selectId, 
                 message: messageText
             })
 
             setMessages( prev => [...prev, {
-                createdAt: JSON.stringify(new Date().toLocaleString()),
+                createdAt: message.createdAt,
                 message: messageText, 
                 sender: user?.userId, 
-                _id: uuidv4(),
+                _id: message._id,
             }])
 
 
@@ -107,12 +106,13 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
             toast.error("Error sending messages, please try again");
         }
     }
+    console.log(messages)
 
     useEffect(() => {
         if (socket.current) {
             socket.current.on("getMessage", (data:any) => {
                 setArrivalMessages({
-                    createdAt: JSON.stringify(new Date().toLocaleString()),
+                    createdAt: data.createdAt,
                     message: data.message, 
                     sender: data.from, 
                     _id: uuidv4(),

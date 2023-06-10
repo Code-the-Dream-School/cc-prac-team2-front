@@ -5,7 +5,6 @@ export const getContactName = (user:any, users:any, onlineFriends:any) => {
     } else {
         name = users[0].userName
     }
-    console.log(onlineFriends)
 
     const checkUserName = (name, onlFr) => {
         return onlFr.some((o) => (
