@@ -47,14 +47,12 @@ const Chat = () => {
     if (socket.current && user) {
       socket.current.emit("addUser", user.userId);
       socket.current.on("getUsers", (users) => {
-        console.log(users);
         let usersMap = new Set();
         users.map((user) => {
           usersMap.add(user[0]);
           let usersArray = Array.from(usersMap);
           setOnlineUsers(usersArray);
         });
-        console.log(usersMap);
       });
     }
   }, [socket.current]);
@@ -62,13 +60,9 @@ const Chat = () => {
   useEffect(() => {
     if (contactedUsers && onlineUsers) {
       const a = contactedUsers.filter((u) => onlineUsers.includes(u._id));
-      console.log(a);
       setOnlineFriends(a);
     }
   }, [onlineUsers, contactedUsers]);
-
-  console.log(onlineFriends); // my online friends
-  console.log(contactedUsers); // all of my friends
 
   const fetchConversations = async () => {
     const { data } = await axios.get(
