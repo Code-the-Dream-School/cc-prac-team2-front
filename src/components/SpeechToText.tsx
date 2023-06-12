@@ -1,6 +1,6 @@
 
-import React, { useEffect, useState } from 'react';
-
+import React, { useEffect, useState, useContext} from 'react';
+import {UserContext} from "../context/user-context"
 declare var window: any;
 
 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
@@ -15,6 +15,12 @@ interface SpeechTextProps {
 }
 
 const SpeechToText = ({setMessageText}:SpeechTextProps ) => {
+
+const {
+        user, 
+        selectId, 
+        setMessages,
+    } = useContext(UserContext)
 
 const [isListening, setIsListening] = useState(false)
 const [isClick, setIsClick] = useState(false)
@@ -60,17 +66,14 @@ const handleMouseDown = () => {
 
   return (
     <>
-   
-        <div className="m-auto p-2">
-          <button 
-            onMouseDown={handleMouseDown} 
-            onMouseUp={handleMouseUp}
-            >
-            Transcribe
-          </button>
-        </div>  
-
-
+            <div className="m-auto p-2">
+                <button 
+                  onMouseDown={handleMouseDown} 
+                  onMouseUp={handleMouseUp}
+                  >
+                  Transcribe
+                </button>
+            </div>  
     </>
 )}
 

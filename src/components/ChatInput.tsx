@@ -29,8 +29,8 @@ const ChatInput = ({onHandleSendMessage, socket}): JSX.Element => {
 
     return (
         <>
-        <div className="flex flex-row">
-          <div className="w-5/6">
+        <div className="flex flex-col">
+          <div className="h-2/3">
             <form 
             onSubmit={handleSendMessage} 
             className='flex flex-row'>
@@ -66,12 +66,19 @@ const ChatInput = ({onHandleSendMessage, socket}): JSX.Element => {
               </button>
             </form>
             </div>
-            <div className="w-1/6 text-center justify-between">
+          
+          <div className="h-1/3">
+            <div className='flex flex-row'>
+   
+            <div className="w-1/2 text-center justify-between">
                   <SpeechToText  setMessageText={setMessageText}/>
             </div>
-            <div className="w-1/6 text-center justify-between">
+            <div className="w-1/2 text-center justify-between">
                   <VoiceMessage socket={socket}/>
             </div>
+          
+            </div>
+          </div>
 
         </div>
         </>

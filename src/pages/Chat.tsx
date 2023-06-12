@@ -121,7 +121,7 @@ const Chat = () => {
     <>
       <div className={`flex flex-grow ${isDarkMode ? "bg-dark" : "bg-light"}`}>
         <div
-          className={`w-80 p-2 ${isDarkMode ? "bg-slate-600" : "bg-slate-200"}`}
+          className={`w-70 p-2 ${isDarkMode ? "bg-slate-600" : "bg-slate-200"}`}
         >
           <div
             className={`text-xl p-3 text-center ${

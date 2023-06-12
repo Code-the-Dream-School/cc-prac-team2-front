@@ -192,11 +192,13 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
                 </div>
 
                 <div
-          className={`w-full h-20 pt-2 ${
+          className={`w-full h-24 pt-2 ${
             isDarkMode ? "bg-gray-800" : "bg-gray-200"
           }`}
         >
+            {selectId ? (
                 <ChatInput onHandleSendMessage={sendMessage} socket={socket}/>
+            ) : null}
                 </div>
             </div>
         </>
