@@ -2,6 +2,14 @@ import React, { createContext, useState, ReactNode, useEffect, useRef } from "re
 // import axios from "axios"
 import jwt_decode from "jwt-decode";
 
+interface Messages {
+    createdAt?: string | null,
+    message: string, 
+    audioURL: string, // URL of the audio file
+    sender: string | null, 
+    _id: string
+}
+
 
 interface UserContextProviderProps {
     user: string | null;
@@ -14,7 +22,8 @@ interface UserContextProviderProps {
     setConversationId: React.Dispatch<React.SetStateAction<string | null>>
     selectId: string | null, 
     setSelectId: React.Dispatch<React.SetStateAction<string | null>>
-
+    messages: Messages[] | null; // Update the type of messages to an array of Messages or null
+    setMessages: React.Dispatch<React.SetStateAction<Messages[] | null>>; // Update the type of setMessages
 }
 
 export const UserContext= createContext<UserContextProviderProps> ({
@@ -27,7 +36,9 @@ export const UserContext= createContext<UserContextProviderProps> ({
     conversationId: null,
     setConversationId: () => {},
     selectId: null, 
-    setSelectId: () => {}
+    setSelectId: () => {},
+    messages: null, 
+    setMessages: () => {},
 })
 
 
@@ -46,7 +57,7 @@ export const UserContextProvider:React.FC<{children: ReactNode}> = ({children}) 
     const [isDarkMode, setIsDarkMode] = useState(false);
     const [conversationId, setConversationId] = useState<string|null>(null)
     const [selectId, setSelectId] = useState<string|null>(null)
- 
+    const [messages, setMessages] = useState<Messages[] | null>([])
 
 
     return (
@@ -55,7 +66,8 @@ export const UserContextProvider:React.FC<{children: ReactNode}> = ({children}) 
             conversationId, setConversationId, 
             selectId, setSelectId, 
             isDarkMode, setIsDarkMode,
-            recipient, setRecipient
+            recipient, setRecipient,
+            messages, setMessages,
         }}
             >
             {children}

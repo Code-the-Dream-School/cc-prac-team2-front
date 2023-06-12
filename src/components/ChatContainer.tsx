@@ -8,12 +8,6 @@ import ChatWelcome from '../components/ChatWelcome';
 import {getTime} from "../util/getTime"
 import {v4 as uuidv4} from "uuid" 
 
-interface Messages {
-    createdAt?: string | null,
-    message: string, 
-    sender: string | null, 
-    _id: string
-}
 
 interface Socket {
     current: any;
@@ -28,15 +22,15 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
         selectId, setSelectId,
         isDarkMode,
         recipient, setRecipient,
+        messages, setMessages,
     } = useContext(UserContext)
 
 
-
-    const [messages, setMessages] = useState<Messages[]>([])
     const [usersArray, setUsersArray] = useState()
     const [arrivalMessages, setArrivalMessages] = useState<Messages[] | null>(null)
     const scrollRef = useRef<HTMLDivElement | null>(null)
     const token: {token: string } | null = JSON.parse(localStorage.getItem("token") || "null")
+    console.log(messages)
 
     const fetchMessages = async () => {
         try {
@@ -84,6 +78,7 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
               }
             )
 
+
             const {message} = data
 
             socket.current.emit("sendMessage", {
@@ -106,20 +101,34 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
             toast.error("Error sending messages, please try again");
         }
     }
-    console.log(messages)
+
 
     useEffect(() => {
         if (socket.current) {
             socket.current.on("getMessage", (data:any) => {
-                setArrivalMessages({
-                    createdAt: data.createdAt,
-                    message: data.message, 
-                    sender: data.from, 
-                    _id: uuidv4(),
-                })
+                console.log(data)
+                if(data.message) {
+                    setArrivalMessages({
+                        createdAt: data.createdAt,
+                        message: data.message, 
+                        sender: data.from, 
+                        _id: uuidv4(),
+                    })
+                } else if (data.voiceNote) {
+                    setArrivalMessages({
+                        createdAt: data.createdAt,
+                        voiceNote: {
+                            url: data.voiceNote.url
+                        }, 
+                        sender: data.from, 
+                        _id: uuidv4(),
+                    })
+                }
             } )}
         
     }, [socket.current])
+
+   
 
 
     const idArray = usersArray?.map((obj) => obj._id);
@@ -156,14 +165,20 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
                 
                     <div className='m-2 p-2'>
                     {messages ? messages.map((msg) => (
-
+         
+                    
                         <div 
                         className={(msg.sender === user?.userId ? 'text-right' : 'text-left')}
                         key={msg._id}
                         >
-                        <div className={('max-w-md text-left inline-block rounded-lg bg-red-300 m-2 p-2 ' + (msg.sender === user?.userId ?  "bg-white " : null)  )}>
+                        <div className={('max-w-md text-left inline-block rounded-lg bg-slate-500 m-2 p-2 ' + (msg.sender === user?.userId ?  "bg-white " : null)  )}>
                             {msg.message}
                         <div className='text-xxs text-gray-600 text-right items-right'>{getTime(msg.createdAt)}</div>
+                       {msg.voiceNote && (
+                        <audio className="w-60 h-15" controls>
+                        <source src={msg.voiceNote?.url} type="audio/mpeg" />
+                        </audio>)
+                        }
                         </div>
                         <div ref={scrollRef}></div>
                         </div>
@@ -181,7 +196,7 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
             isDarkMode ? "bg-gray-800" : "bg-gray-200"
           }`}
         >
-                <ChatInput onHandleSendMessage={sendMessage} />
+                <ChatInput onHandleSendMessage={sendMessage} socket={socket}/>
                 </div>
             </div>
         </>

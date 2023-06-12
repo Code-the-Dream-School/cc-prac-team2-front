@@ -9,7 +9,7 @@ import SpeechToText from './SpeechToText'
 interface ChatInputProps {
   onHandleSendMessage: (message: string) => void
 }
-const ChatInput = ({onHandleSendMessage}: ChatInputProps): JSX.Element => {
+const ChatInput = ({onHandleSendMessage, socket}): JSX.Element => {
 
     const [showEmoji, setShowEmoji] = useState<boolean>(false)
     const [messageText, setMessageText] = useState<string>("")
@@ -70,7 +70,7 @@ const ChatInput = ({onHandleSendMessage}: ChatInputProps): JSX.Element => {
                   <SpeechToText  setMessageText={setMessageText}/>
             </div>
             <div className="w-1/6 text-center justify-between">
-                  <VoiceMessage />
+                  <VoiceMessage socket={socket}/>
             </div>
 
         </div>

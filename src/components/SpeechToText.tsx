@@ -46,15 +46,12 @@ const handleMouseDown = () => {
     mic.stop()
     mic.onend = () => {
     }
-
-
     mic.onresult = (event: any) => {
         const transcript = Array.from(event.results as Array<{ [key: string]: any}>)
           .map(result => result[0])
           .map(result => result.transcript)
           .join('')
           setMessageText(transcript)
-        console.log(transcript)
         mic.onerror = (event: any) => {
           console.log(event.error)
         }
@@ -69,7 +66,7 @@ const handleMouseDown = () => {
             onMouseDown={handleMouseDown} 
             onMouseUp={handleMouseUp}
             >
-            Start/Stop
+            Transcribe
           </button>
         </div>  
 
