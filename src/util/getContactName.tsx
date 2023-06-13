@@ -1,24 +1,19 @@
-export const getContactName = (user:any, users:any, onlineFriends:any) => {
-    let name
-    if (users[0]._id === user.userId) {
-        name = users[1].userName
-    } else {
-        name = users[0].userName
-    }
+export const getContactName = (userName:any, onlineFriends:any) => {
+console.log(userName)
 
-    const checkUserName = (name, onlFr) => {
+    const checkUserName = (userName, onlFr) => {
         return onlFr.some((o) => (
-            o.userName === name 
+            o.userName === userName 
         ))
     }
 
-    const userNameExists = checkUserName(name,onlineFriends);
+    const userNameExists = checkUserName(userName,onlineFriends);
 
-    if(users) {
+    if(userName) {
         return (
         <>
         <div className="flex flex-row space-x-4 items-center">
-            <div className="">{name}</div>
+            <div className="">{userName}</div>
             {userNameExists ? (<div className="rounded-full bg-green-400 h-4 w-4"></div>): (<div className="rounded-full bg-red-400 h-4 w-4"></div>)}
         </div>
         </>

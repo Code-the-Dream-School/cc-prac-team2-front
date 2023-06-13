@@ -30,9 +30,7 @@ const Chat = () => {
   } = useContext(UserContext);
 
   const socket = useRef<Socket<MyEventMap> | null>();
-  const [conversations, setConversations] = useState<any[] | undefined>();
-  const [uncontactedUsers, setUncontactedUsers] = useState<unContactUsers>();
-  const [contactedUsers, setContactedUsers] = useState();
+  const [usersList, setUsersList] = useState();
   const [onlineFriends, setOnlineFriends] = useState([]);
   const [onlineUsers, setOnlineUsers] = useState([]);
   const token: { token: string } | null = JSON.parse(
@@ -58,25 +56,11 @@ const Chat = () => {
   }, [socket.current]);
 
   useEffect(() => {
-    if (contactedUsers && onlineUsers) {
-      const a = contactedUsers.filter((u) => onlineUsers.includes(u._id));
+    if (usersList?.contactedUsers && onlineUsers) {
+      const a = usersList.contactedUsers.filter((u) => onlineUsers.includes(u._id));
       setOnlineFriends(a);
     }
-  }, [onlineUsers, contactedUsers]);
-
-
-  const fetchConversations = async () => {
-    const { data } = await axios.get(
-      `http://localhost:8000/api/v1/users/${user.userId}/conversations`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-    console.log(data)
-    setConversations(data.conversations);
-  };
+  }, [onlineUsers, usersList?.contactedUsers]);
 
 
 
@@ -87,34 +71,23 @@ const Chat = () => {
       },
     });
     console.log(data)
-    const uncontactedUsers = data.users.uncontactedUsers;
-    const contactedUsers = data.users.contactedUsers;
-    setContactedUsers(contactedUsers);
-    setUncontactedUsers(uncontactedUsers);
+    const usersList = data.users
+    setUsersList(usersList)
   };
-
 
 
   useEffect(() => {
-    fetchConversations();
     fetchUsers();
   }, []);
 
-  const handleSelectContact = (conversation: any) => {
-    setConversationId(conversation._id);
-    let convUser = conversation.users;
-    let id;
-    if (convUser[0]._id === (user?.userId as string)) {
-      id = convUser[1]._id;
-    } else {
-      id = convUser[0]._id;
-    }
-    setSelectId(id);
+  const handleSelectContact = (u: any) => {
+    setConversationId(u.conversation);
+    setSelectId(u._id);
   };
 
   const handleSelectUnContact = (unContact: unContactUsers) => {
-    setSelectId(unContact._id);
     setConversationId(null);
+    setSelectId(unContact._id);
   };
 
   return (
@@ -130,38 +103,30 @@ const Chat = () => {
           >
             Contact
           </div>
-          {conversations
-            ? conversations.map((conversation) => {
-                return (
-                  <>
-                    <div
-                      key={conversation._id}
-                      className={
-                        "flex bg-slate-300 rounded-lg m-3 p-2 cursor-pointer " +
-                        (conversationId === conversation._id
-                          ? "bg-slate-500"
-                          : "")
-                      }
-                      onClick={() => handleSelectContact(conversation)}
-                    >
-                      <div className="w-1/5">
-                        <img
-                          className="w-10 h-10 rounded-full"
-                          src={COCKATOO}
-                        />
-                      </div>
-                      <div className="w-4/5 p-2">
-                        {getContactName(
-                          user,
-                          conversation.users,
-                          onlineFriends
-                        )}
-                      </div>
-                    </div>
-                  </>
-                );
-              })
-            : null}
+          {usersList ? usersList.contactedUsers.map((u) => {
+            return (
+                <div
+                key={u._id}
+                className={
+                    "flex bg-slate-300 rounded-lg m-3 p-2 cursor-pointer " +
+                    (conversationId === u.conversation
+                    ? "bg-slate-500"
+                    : "")
+                }
+                onClick={() => handleSelectContact(u)}
+                >
+                <div className="w-1/5">
+                    <img
+                    className="w-10 h-10 rounded-full"
+                    src={COCKATOO}
+                    />
+                </div>
+                <div className="w-4/5 p-2">
+                    {getContactName(u.userName, onlineFriends )}
+                </div>
+                </div>
+            );
+            }) : null }
           <div
             className={`text-xl p-3 text-center ${
               isDarkMode ? "text-white" : "text-black"
@@ -170,8 +135,8 @@ const Chat = () => {
             People
           </div>
           <div>
-            {uncontactedUsers
-              ? uncontactedUsers.map((unContact) => {
+            {usersList
+              ? usersList.uncontactedUsers.map((unContact) => {
                   if (unContact._id === user?.userId) {
                     return null;
                   }
