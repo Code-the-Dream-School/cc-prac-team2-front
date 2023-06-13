@@ -1,5 +1,4 @@
 export const getContactName = (userName:any, onlineFriends:any) => {
-console.log(userName)
 
     const checkUserName = (userName, onlFr) => {
         return onlFr.some((o) => (

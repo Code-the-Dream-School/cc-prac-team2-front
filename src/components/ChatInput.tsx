@@ -7,9 +7,10 @@ import VoiceMessage from './VoiceMessage'
 import SpeechToText from './SpeechToText'
 
 interface ChatInputProps {
-  onHandleSendMessage: (message: string) => void
+  onHandleSendMessage: (message: string) => void,
+  socket: any
 }
-const ChatInput = ({onHandleSendMessage, socket}): JSX.Element => {
+const ChatInput = ({onHandleSendMessage, socket}: ChatInputProps): JSX.Element => {
 
     const [showEmoji, setShowEmoji] = useState<boolean>(false)
     const [messageText, setMessageText] = useState<string>("")

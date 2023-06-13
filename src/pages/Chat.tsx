@@ -9,15 +9,20 @@ import { io, Socket } from "socket.io-client";
 type MyEventMap = {
   connect: () => void;
   disconnect: () => void;
-  addUser: (userID: number) => void;
+  addUser: (userID: string) => void;
   getUsers: (users: string[]) => void;
 };
 
-interface unContactUsers {
-  conversation: string[];
-  _id: string;
-  userName: string;
-}
+interface User {
+    _id: string;
+    userName: string;
+    conversation: string;
+  }
+
+interface UsersList {
+    contactedUsers: User[];
+    uncontactedUsers: User[];
+  }
 
 const Chat = () => {
   const {
@@ -30,9 +35,9 @@ const Chat = () => {
   } = useContext(UserContext);
 
   const socket = useRef<Socket<MyEventMap> | null>();
-  const [usersList, setUsersList] = useState();
-  const [onlineFriends, setOnlineFriends] = useState([]);
-  const [onlineUsers, setOnlineUsers] = useState([]);
+  const [usersList, setUsersList] = useState<UsersList | null>(null);
+  const [onlineFriends, setOnlineFriends] = useState<User[]>([]);
+  const [onlineUsers, setOnlineUsers] = useState<string[]>([]);
   const token: { token: string } | null = JSON.parse(
     localStorage.getItem("token") || "null"
   );
@@ -44,11 +49,11 @@ const Chat = () => {
   useEffect(() => {
     if (socket.current && user) {
       socket.current.emit("addUser", user.userId);
-      socket.current.on("getUsers", (users) => {
+      socket.current.on("getUsers", (users: unknown[]) => {
         let usersMap = new Set();
-        users.map((user) => {
+        users.map((user:any) => {
           usersMap.add(user[0]);
-          let usersArray = Array.from(usersMap);
+          let usersArray:any[] = Array.from(usersMap);
           setOnlineUsers(usersArray);
         });
       });
@@ -56,11 +61,12 @@ const Chat = () => {
   }, [socket.current]);
 
   useEffect(() => {
-    if (usersList?.contactedUsers && onlineUsers) {
-      const a = usersList.contactedUsers.filter((u) => onlineUsers.includes(u._id));
-      setOnlineFriends(a);
+    if (usersList?.contactedUsers && usersList?.uncontactedUsers  && onlineUsers) {
+      const onlContact = usersList.contactedUsers.filter((u) => onlineUsers.includes(u._id));
+      const onlUnContact = usersList.uncontactedUsers.filter((u) => onlineUsers.includes(u._id));
+      setOnlineFriends([...onlContact, ...onlUnContact]);
     }
-  }, [onlineUsers, usersList?.contactedUsers]);
+  }, [onlineUsers, usersList?.contactedUsers, usersList?.uncontactedUsers]);
 
 
 
@@ -80,12 +86,12 @@ const Chat = () => {
     fetchUsers();
   }, []);
 
-  const handleSelectContact = (u: any) => {
+  const handleSelectContact = (u: User) => {
     setConversationId(u.conversation);
     setSelectId(u._id);
   };
 
-  const handleSelectUnContact = (unContact: unContactUsers) => {
+  const handleSelectUnContact = (unContact:User) => {
     setConversationId(null);
     setSelectId(unContact._id);
   };
@@ -105,8 +111,7 @@ const Chat = () => {
           </div>
           {usersList ? usersList.contactedUsers.map((u) => {
             return (
-                <div
-                key={u._id}
+                <div key={u._id}
                 className={
                     "flex bg-slate-300 rounded-lg m-3 p-2 cursor-pointer " +
                     (conversationId === u.conversation
@@ -142,8 +147,7 @@ const Chat = () => {
                   }
                   return (
                     <>
-                      <div
-                        key={unContact._id}
+                      <div key={unContact._id}
                         className={
                           "flex bg-slate-300 rounded-lg m-3 p-2 cursor-pointer " +
                           (selectId === unContact._id ? "bg-slate-500" : "")
@@ -151,7 +155,7 @@ const Chat = () => {
                         onClick={() => handleSelectUnContact(unContact)}
                       >
                         <div className="items-center text-center justify-between">
-                          {unContact.userName}
+                          {getContactName(unContact.userName, onlineFriends )}
                         </div>
                       </div>
                     </>

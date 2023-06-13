@@ -17,9 +17,9 @@ interface Socket {
 const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
 
     const {
-        user, setUser, 
-        conversationId, setConversationId, 
-        selectId, setSelectId,
+        user, 
+        conversationId, 
+        selectId, 
         isDarkMode,
         recipient, setRecipient,
         messages, setMessages,
@@ -27,14 +27,13 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
 
 
     const [usersArray, setUsersArray] = useState()
-    const [arrivalMessages, setArrivalMessages] = useState<Messages[] | null>(null)
+    const [arrivalMessages, setArrivalMessages] = useState(null)
     const scrollRef = useRef<HTMLDivElement | null>(null)
     const token: {token: string } | null = JSON.parse(localStorage.getItem("token") || "null")
-    console.log(messages)
 
     const fetchMessages = async () => {
         try {
-            if (conversationId) {
+            if (user && conversationId) {
                 const {data} = await axios.get(`http://localhost:8000/api/v1/users/${user.userId}/conversations/${conversationId}`, 
                 {
                     headers: {
@@ -77,8 +76,6 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
                 }
               }
             )
-
-
             const {message} = data
 
             socket.current.emit("sendMessage", {
@@ -161,7 +158,7 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
         >
                 <div className="relative h-full">
                 <div className="overflow-y-auto absolute top-0 left-0 right-0 bottom-0"> 
-                {!!selectId && !!conversationId ? 
+                {!!selectId ? 
                 
                     <div className='m-2 p-2'>
                     {messages ? messages.map((msg) => (

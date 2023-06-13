@@ -2,8 +2,7 @@ import React, { useState, useContext } from 'react';
 import { toast } from "react-toastify";
 import axios from "axios"
 import {UserContext} from "../context/user-context"
-import Bird from "../assests/Bird.gif"
-import Wave1 from "../assests/Wave1.gif"
+import Wave from "../assests/Wave.gif"
 
 const VoiceMessage = ({ socket }: { socket: Socket }) => {
 
@@ -15,8 +14,8 @@ const VoiceMessage = ({ socket }: { socket: Socket }) => {
 
 
     const [isRecording, setIsRecording] = useState(false);
-  const [mediaStream, setMediaStream] = useState(null);
-  const [mediaRecorder, setMediaRecorder] = useState(null);
+  const [mediaStream, setMediaStream] = useState<MediaStream | null>(null);
+  const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(null);
   const token: {token: string } | null = JSON.parse(localStorage.getItem("token") || "null")
 
   const startRecording = async () => {
@@ -47,7 +46,7 @@ const VoiceMessage = ({ socket }: { socket: Socket }) => {
     }
   };
 
-  const handleDataAvailable = async (event) => {
+  const handleDataAvailable = async (event:BlobEvent) => {
     
     // Access the recorded audio data (e.g., event.data)
     // Blob {size: 22788, type: 'audio/webm;codecs=opus'}
@@ -108,11 +107,11 @@ const VoiceMessage = ({ socket }: { socket: Socket }) => {
         <>
       <div className="w-1/3">
         <div className='flex items-center justify-center'>
-        <img  src={Wave1} alt="Wave" width="30" height="80"/>
+        <img  src={Wave} alt="Wave" width="30" height="80"/>
         </div>
       </div> 
         <button
-            onMouseUp={stopRecording}
+            onClick={stopRecording}
             className="bg-slate-300 hover:bg-red-300 w-1/3 rounded-md px-2 mx-2"
           >
             Stop
