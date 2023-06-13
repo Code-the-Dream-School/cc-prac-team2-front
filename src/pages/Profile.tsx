@@ -25,73 +25,46 @@ const Profile = () => {
 
   const handleImageUpload = (e: any) => {
     const file = e.target.files[0];
-
-    const getImageData = () => {
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          resolve(reader.result);
-        };
-        reader.onerror = (error) => {
-          reject(error);
-        };
-        if (file) {
-          reader.readAsDataURL(file);
-        }
-      });
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onloadend = () => {
+      setImage(reader.result as string);
     };
-
-    getImageData()
-      .then((result: any) => {
-        setImage(result);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
   };
-
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
 
-    const formData = new FormData();
-
-    formData.append("userName", name);
-    formData.append("public_id", user?.profileImage?.public_id || ""); // Include the current public_id if it exists
-
-    if (image) {
-      formData.append("image", image);
-    }
     try {
+      const formData = new FormData();
+      formData.append("userName", name || user.userName);
+      formData.append("image", image);
+
       const response = await axios.patch(
         `http://localhost:8000/api/v1/users/${user.userId}/update-user`,
         formData,
         {
           headers: {
             Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data",
           },
         }
       );
 
-      if (response.status === 200) {
-        
-        const { user: updatedUser, success } = response.data;
-        if (success) {
-          setUser(updatedUser);
-          toast.success("Your Profile has been updated!");
-          navigate("/chat");
-        } else {
-          toast.error("Something went wrong!");
-        }
-      } else {
-        console.log("Error:", response.status);
-        toast.error("Something went wrong!");
-      }
+      // Handle successful response
+      toast.success("Profile updated successfully!");
+
+      // Update the user context with the updated profile image
+      const updatedUser = { ...user };
+      updatedUser.profileImage = response.data.profileImage;
+      setUser(updatedUser);
     } catch (error) {
-      console.log(error);
-      toast.error("Something went wrong!");
+      // Handle error
+      toast.error("Failed to update profile.");
+      console.error(error);
     }
   };
+
   return (
     <div
       className={`flex justify-center items-center h-full ${

@@ -4,15 +4,43 @@ import { UserContext } from "../context/user-context";
 import { toast } from "react-toastify";
 import { HiOutlineUserCircle } from "react-icons/hi";
 import { BsFillSunFill, BsFillMoonFill } from "react-icons/bs";
+import axios from "axios";
 
 const Navbar = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [profileImage, setProfileImage] = useState("");
+  const token: { token: string } | null = JSON.parse(
+    localStorage.getItem("token") || "null"
+  );
 
   const { user, setUser, isDarkMode, setIsDarkMode } = useContext(UserContext);
 
   useEffect(() => {
     setIsDropdownOpen(false); // Reset dropdown state
   }, [user]);
+
+  useEffect(() => {
+    const fetchProfileImage = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:8000/api/v1/users/${user.userId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        setProfileImage(response.data.user.profileImage.url);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    if (user && user.userId) {
+      fetchProfileImage();
+    }
+  }, [user, token]);
 
   const handleDropdownClick = () => {
     setIsDropdownOpen(!isDropdownOpen);
@@ -54,18 +82,27 @@ const Navbar = () => {
             >
               {user && user.userName ? <p>Welcome, {user.userName}</p> : ""}
             </h5>
-            <button
-              className={`text-${
-                isDarkMode ? "white" : "black"
-              } hover:text-gray-300 focus:outline-none`}
-              onClick={handleDropdownClick}
-            >
-              <HiOutlineUserCircle
+            {profileImage ? (
+              <img
+                src={profileImage}
+                alt="Profile"
+                className="w-8 h-8 rounded-full cursor-pointer"
+                onClick={handleDropdownClick}
+              />
+            ) : (
+              <button
                 className={`text-${
                   isDarkMode ? "white" : "black"
-                } text-2xl ml-4`}
-              />
-            </button>
+                } hover:text-gray-300 focus:outline-none`}
+                onClick={handleDropdownClick}
+              >
+                <HiOutlineUserCircle
+                  className={`text-${
+                    isDarkMode ? "white" : "black"
+                  } text-2xl ml-4`}
+                />
+              </button>
+            )}
             {isDropdownOpen && (
               <div className="ml-2 relative">
                 <div className="absolute right-0 mt-2 py-2 w-48 bg-white rounded-lg shadow-xl z-999999">
