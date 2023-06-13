@@ -4,10 +4,11 @@ import { UserContext } from "../context/user-context";
 import { FaArrowLeft, FaPlus } from "react-icons/fa";
 import { toast } from "react-toastify";
 import axios from "axios";
+
 const Profile = () => {
   const { user, setUser, isDarkMode } = useContext(UserContext);
   const [name, setName] = useState("");
-  const [image, setImage] = useState("");
+  const [image, setImage] = useState(null); // Store image as a file object
 
   const token: { token: string } | null = JSON.parse(
     localStorage.getItem("token") || "null"
@@ -25,11 +26,7 @@ const Profile = () => {
 
   const handleImageUpload = (e: any) => {
     const file = e.target.files[0];
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onloadend = () => {
-      setImage(reader.result as string);
-    };
+    setImage(file);
   };
 
   const handleSubmit = async (e: any) => {
@@ -99,7 +96,7 @@ const Profile = () => {
             <div className="relative w-48 h-48 rounded-full overflow-hidden mb-4">
               {image ? (
                 <img
-                  src={image}
+                  src={URL.createObjectURL(image)} // Display the selected image
                   alt="User"
                   className="w-full h-full object-cover"
                 />
@@ -134,4 +131,5 @@ const Profile = () => {
     </div>
   );
 };
+
 export default Profile;
