@@ -1,4 +1,4 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "../context/user-context";
 import { toast } from "react-toastify";
@@ -9,6 +9,10 @@ const Navbar = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const { user, setUser, isDarkMode, setIsDarkMode } = useContext(UserContext);
+
+  useEffect(() => {
+    setIsDropdownOpen(false); // Reset dropdown state
+  }, [user]);
 
   const handleDropdownClick = () => {
     setIsDropdownOpen(!isDropdownOpen);
@@ -70,18 +74,18 @@ const Navbar = () => {
                     className={`block px-4 py-2 text-${
                       isDarkMode ? "gray-800" : "gray-700"
                     } hover:bg-gray-300`}
-                    onClick={handleLogout}
+                    onClick={handleProfileClick}
                   >
-                    Logout
+                    Profile
                   </a>
                   <a
                     href="#"
                     className={`block px-4 py-2 text-${
                       isDarkMode ? "gray-800" : "gray-700"
                     } hover:bg-gray-300`}
-                    onClick={handleProfileClick}
+                    onClick={handleLogout}
                   >
-                    Profile
+                    Logout
                   </a>
                 </div>
               </div>

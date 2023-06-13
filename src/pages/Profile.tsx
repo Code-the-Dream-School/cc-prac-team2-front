@@ -4,11 +4,14 @@ import { UserContext } from "../context/user-context";
 import { FaArrowLeft, FaPlus } from "react-icons/fa";
 import { toast } from "react-toastify";
 import axios from "axios";
-
 const Profile = () => {
-  const { user, setUser, isDarkMode, setIsDarkMode } = useContext(UserContext);
+  const { user, setUser, isDarkMode } = useContext(UserContext);
   const [name, setName] = useState("");
   const [image, setImage] = useState("");
+
+  const token: { token: string } | null = JSON.parse(
+    localStorage.getItem("token") || "null"
+  );
 
   const navigate = useNavigate();
 
@@ -16,25 +19,22 @@ const Profile = () => {
     navigate("/chat");
   };
 
-  const handleNameUpdate = (e) => {
+  const handleNameUpdate = (e: any) => {
     setName(e.target.value);
   };
 
-  const handleImageUpload = (e) => {
+  const handleImageUpload = (e: any) => {
     const file = e.target.files[0];
 
     const getImageData = () => {
       return new Promise((resolve, reject) => {
         const reader = new FileReader();
-
         reader.onloadend = () => {
           resolve(reader.result);
         };
-
         reader.onerror = (error) => {
           reject(error);
         };
-
         if (file) {
           reader.readAsDataURL(file);
         }
@@ -42,7 +42,7 @@ const Profile = () => {
     };
 
     getImageData()
-      .then((result) => {
+      .then((result: any) => {
         setImage(result);
       })
       .catch((error) => {
@@ -50,9 +50,12 @@ const Profile = () => {
       });
   };
 
+
   const handleSubmit = async (e: any) => {
     e.preventDefault();
+
     const formData = new FormData();
+
     formData.append("userName", name);
     formData.append("public_id", user?.profileImage?.public_id || ""); // Include the current public_id if it exists
 
@@ -60,26 +63,23 @@ const Profile = () => {
       formData.append("image", image);
     }
     try {
-      const token = localStorage.getItem("token"); // Get the token from localStorage
-      console.log(token);
-
       const response = await axios.patch(
         `http://localhost:8000/api/v1/users/${user.userId}/update-user`,
         formData,
         {
           headers: {
-            Authorization: `Bearer ${token}`, // Include the token in the Authorization header
-            "Content-Type": "multipart/form-data", // Set the Content-Type header to handle form data
+            Authorization: `Bearer ${token}`,
           },
         }
       );
 
       if (response.status === 200) {
+        
         const { user: updatedUser, success } = response.data;
-
         if (success) {
           setUser(updatedUser);
           toast.success("Your Profile has been updated!");
+          navigate("/chat");
         } else {
           toast.error("Something went wrong!");
         }
@@ -92,7 +92,6 @@ const Profile = () => {
       toast.error("Something went wrong!");
     }
   };
-
   return (
     <div
       className={`flex justify-center items-center h-full ${
@@ -146,14 +145,14 @@ const Profile = () => {
             <input
               type="text"
               placeholder="Name"
-              className={`w-96 px-5 py-2 mt-4 mb-4 border-b-2 outline-none ${isDarkMode ? "bg-gray-800" : ""}`}
+              className={`w-96 px-5 py-2 mt-4 mb-4 border-b-2 outline-none ${
+                isDarkMode ? "bg-gray-800" : ""
+              }`}
               style={{ color: isDarkMode ? "#fff" : "#000" }}
-  
               value={name}
               onChange={handleNameUpdate}
             />
           </div>
-
           <button className="bg-orange-50 text-gray-800 px-8 py-3 text-2xl w-96 mt-4 mb-4 rounded-full shadow-md transition-colors hover:bg-green-500 hover:text-white">
             Save
           </button>
@@ -162,5 +161,4 @@ const Profile = () => {
     </div>
   );
 };
-
 export default Profile;
