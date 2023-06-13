@@ -146,7 +146,7 @@ const Chat = () => {
                     return null;
                   }
                   return (
-                    <>
+           
                       <div key={unContact._id}
                         className={
                           "flex bg-slate-300 rounded-lg m-3 p-2 cursor-pointer " +
@@ -158,7 +158,7 @@ const Chat = () => {
                           {getContactName(unContact.userName, onlineFriends )}
                         </div>
                       </div>
-                    </>
+                 
                   );
                 })
               : null}

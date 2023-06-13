@@ -2,6 +2,7 @@ import React, { useEffect, useState} from 'react';
 import Wave from "../assests/Wave.gif"
 declare var window: any;
 
+
 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
 const mic = new SpeechRecognition()
 
