@@ -25,6 +25,7 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
         messages, setMessages,
     } = useContext(UserContext)
 
+    console.log(selectId)
 
     const [usersArray, setUsersArray] = useState()
     const [arrivalMessages, setArrivalMessages] = useState(null)
@@ -61,6 +62,22 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
     useEffect(() => {
         fetchMessages()
     }, [selectId])
+
+    const sendAIMessage = (messageAI: any) => {
+        socket.current.emit("sendMessageChatGPT", {
+            message: messageAI, 
+            from: user?.userId,
+            to: selectId, 
+            createdAt: Date.now()
+        })
+
+        setMessages( prev => [...prev, {
+            createdAt: Date.now(),
+            message: messageAI, 
+            sender: user?.userId, 
+            _id: uuidv4(),
+        }])
+    }
 
 
     const sendMessage = async (messageText:any) => {
@@ -107,7 +124,7 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
                 if(data.message) {
                     setArrivalMessages({
                         createdAt: data.createdAt,
-                        message: data.message, 
+                        message: data.message , 
                         sender: data.from, 
                         _id: uuidv4(),
                     })
@@ -120,19 +137,28 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
                         sender: data.from, 
                         _id: uuidv4(),
                     })
+                } else if (data.messageReply) {
+                    setArrivalMessages({
+                        createdAt: data.messageReply.createdAt,
+                        message: data.messageReply.message, 
+                        sender: data.sender, 
+                        _id: uuidv4(),
+                    })
                 }
             } )}
         
-    }, [socket.current])
+    }, [socket.current, arrivalMessages])
+console.log(messages)
+
 
    
 
 
     const idArray = usersArray?.map((obj) => obj._id);
-
+    const AI_ASSISTANT_ID= "6487be19c6c6a7054bb52072"
 
     useEffect(() => {
-        arrivalMessages  && idArray?.includes(arrivalMessages.sender) && setMessages((prev) =>[...prev, arrivalMessages])
+        arrivalMessages  && setMessages((prev) =>[...prev, arrivalMessages])
     }, [arrivalMessages])
 
     useEffect(() => {
@@ -165,10 +191,18 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
          
                     
                         <div 
-                        className={(msg.sender === user?.userId ? 'text-right' : 'text-left')}
+                        className={('text-left ' + 
+                            (msg.sender === user?.userId ? 'text-right' : '') +
+                            (msg.sender === AI_ASSISTANT_ID ? 'text-center' : '') 
+        
+                    )}
                         key={msg._id}
                         >
-                        <div className={('max-w-md text-left inline-block rounded-lg bg-slate-500 m-2 p-2 ' + (msg.sender === user?.userId ?  "bg-white " : null)  )}>
+                        <div className={('max-w-md text-left inline-block rounded-lg bg-slate-500 m-2 p-2 ' + 
+                            (msg.sender === AI_ASSISTANT_ID ? 'bg-red-300 ' : '') +
+                            (msg.sender === user?.userId ? 'bg-white ' : '')
+                        
+                        )}>
                             {msg.message}
                         <div className='text-xxs text-gray-600 text-right items-right'>{getTime(msg.createdAt)}</div>
                        {msg.voiceNote && (
@@ -194,7 +228,14 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
           }`}
         >
             {selectId ? (
-                <ChatInput onHandleSendMessage={sendMessage} socket={socket}/>
+                <>
+                <ChatInput 
+                onHandleSendMessage={sendMessage} 
+                onHandleSendAIMessage={sendAIMessage}
+                socket={socket}/>
+            
+                </>
+                
             ) : null}
                 </div>
             </div>
