@@ -52,6 +52,8 @@ export const UserContextProvider:React.FC<{children: ReactNode}> = ({children}) 
 
     let loggedInUser: User| null
 
+    //get Request for single user --> setUser
+
     const userWithToken = JSON.parse(localStorage.getItem('token') || 'null')
     if (userWithToken) {
         loggedInUser = jwt_decode(userWithToken)
