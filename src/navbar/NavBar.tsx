@@ -1,23 +1,49 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "../context/user-context";
 import { toast } from "react-toastify";
 import { HiOutlineUserCircle } from "react-icons/hi";
 import { BsFillSunFill, BsFillMoonFill } from "react-icons/bs";
+import axios from "axios";
 
 const Navbar = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
-  const [name, setName] = useState("");
-  const [password, setPassword] = useState("");
+  const [profileImage, setProfileImage] = useState("");
+  const token: { token: string } | null = JSON.parse(
+    localStorage.getItem("token") || "null"
+  );
+
   const { user, setUser, isDarkMode, setIsDarkMode } = useContext(UserContext);
+
+  useEffect(() => {
+    setIsDropdownOpen(false); // Reset dropdown state
+  }, [user]);
+
+  useEffect(() => {
+    const fetchProfileImage = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:8000/api/v1/users/${user.userId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        setProfileImage(response.data.user.profileImage.url);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    if (user && user.userId) {
+      fetchProfileImage();
+    }
+  }, [user, token]);
 
   const handleDropdownClick = () => {
     setIsDropdownOpen(!isDropdownOpen);
-  };
-
-  const handleProfileClick = () => {
-    setIsProfileModalOpen(true);
   };
 
   const handleLogout = () => {
@@ -29,16 +55,8 @@ const Navbar = () => {
 
   const navigate = useNavigate();
 
-  const closeModal = () => {
-    setIsProfileModalOpen(false);
-  };
-
-  const handleNameChange = (e) => {
-    setName(e.target.value);
-  };
-
-  const handlePasswordChange = (e) => {
-    setPassword(e.target.value);
+  const handleProfileClick = () => {
+    navigate("/profile");
   };
 
   const toggleTheme = () => {
@@ -64,32 +82,30 @@ const Navbar = () => {
             >
               {user && user.userName ? <p>Welcome, {user.userName}</p> : ""}
             </h5>
-            <button
-              className={`text-${
-                isDarkMode ? "white" : "black"
-              } hover:text-gray-300 focus:outline-none`}
-              onClick={handleDropdownClick}
-            >
-              <svg
-                className="h-6 w-6 fill-current"
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
+            {profileImage ? (
+              <img
+                src={profileImage}
+                alt="Profile"
+                className="w-8 h-8 rounded-full cursor-pointer"
+                onClick={handleDropdownClick}
+              />
+            ) : (
+              <button
+                className={`text-${
+                  isDarkMode ? "white" : "black"
+                } hover:text-gray-300 focus:outline-none`}
+                onClick={handleDropdownClick}
               >
-                <path d="M12 16L6 10H18L12 16Z" />
-              </svg>
-            </button>
+                <HiOutlineUserCircle
+                  className={`text-${
+                    isDarkMode ? "white" : "black"
+                  } text-2xl ml-4`}
+                />
+              </button>
+            )}
             {isDropdownOpen && (
               <div className="ml-2 relative">
                 <div className="absolute right-0 mt-2 py-2 w-48 bg-white rounded-lg shadow-xl z-999999">
-                  <a
-                    href="#"
-                    className={`block px-4 py-2 text-${
-                      isDarkMode ? "gray-800" : "gray-700"
-                    } hover:bg-gray-300`}
-                    onClick={handleLogout}
-                  >
-                    Logout
-                  </a>
                   <a
                     href="#"
                     className={`block px-4 py-2 text-${
@@ -99,46 +115,15 @@ const Navbar = () => {
                   >
                     Profile
                   </a>
-                </div>
-              </div>
-            )}
-            <HiOutlineUserCircle
-              className={`text-${isDarkMode ? "white" : "black"} text-2xl ml-4`}
-            />
-            {isProfileModalOpen && (
-              <div className="fixed top-0 left-0 right-0 bottom-0 flex items-center justify-center">
-                <div
-                  className={`bg-${
-                    isDarkMode ? "gray-900" : "white"
-                  } rounded-lg shadow-lg px-4 py-2`}
-                >
-                  <p>Profile Information</p>
-                  <div>
-                    <label htmlFor="nameInput">Name:</label>
-                    <input
-                      type="text"
-                      id="nameInput"
-                      value={name}
-                      onChange={handleNameChange}
-                    />
-                  </div>
-                  <div>
-                    <label htmlFor="passwordInput">Password:</label>
-                    <input
-                      type="password"
-                      id="passwordInput"
-                      value={password}
-                      onChange={handlePasswordChange}
-                    />
-                  </div>
-                  <button
-                    className={`text-${
-                      isDarkMode ? "gray-500" : "gray-700"
-                    } hover:text-${isDarkMode ? "gray-700" : "gray-900"}`}
-                    onClick={closeModal}
+                  <a
+                    href="#"
+                    className={`block px-4 py-2 text-${
+                      isDarkMode ? "gray-800" : "gray-700"
+                    } hover:bg-gray-300`}
+                    onClick={handleLogout}
                   >
-                    Close
-                  </button>
+                    Logout
+                  </a>
                 </div>
               </div>
             )}

@@ -17,9 +17,7 @@ const Register = () => {
   const [passwordError, setPasswordError] = useState("");
   const [confirmPasswordError, setConfirmPasswordError] = useState("");
   const [isFormValid, setIsFormValid] = useState(false);
-  const { setUser } = useContext(UserContext) as unknown as {
-    setUser: (user: any) => void;
-  };
+  const { setUser, isDarkMode } = useContext(UserContext);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
@@ -69,19 +67,19 @@ const Register = () => {
     setIsFormValid(validateForm());
   }, [userName, email, password, confirmPassword]);
 
-  const handleUsernameChange = (e:ChangeEvent<HTMLInputElement>) => {
+  const handleUsernameChange = (e: ChangeEvent<HTMLInputElement>) => {
     setUserName(e.target.value);
   };
 
-  const handleEmailChange = (e:ChangeEvent<HTMLInputElement>) => {
+  const handleEmailChange = (e: ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
   };
 
-  const handlePasswordChange = (e:ChangeEvent<HTMLInputElement>) => {
+  const handlePasswordChange = (e: ChangeEvent<HTMLInputElement>) => {
     setPassword(e.target.value);
   };
 
-  const handleConfirmPasswordChange = (e:ChangeEvent<HTMLInputElement>) => {
+  const handleConfirmPasswordChange = (e: ChangeEvent<HTMLInputElement>) => {
     setConfirmPassword(e.target.value);
   };
 
@@ -117,122 +115,90 @@ const Register = () => {
   };
 
   const isButtonDisabled =
-      !!usernameError ||
-      !!emailError ||
-      !!passwordError ||
-      !!confirmPasswordError ||
-      !isFormValid;
+    !!usernameError ||
+    !!emailError ||
+    !!passwordError ||
+    !!confirmPasswordError ||
+    !isFormValid;
 
   const togglePasswordVisibility = () => {
-        setShowPassword((prevShowPassword) => !prevShowPassword);
-      };
-    
+    setShowPassword((prevShowPassword) => !prevShowPassword);
+  };
+
   const toggleConfirmPasswordVisibility = () => {
-        setShowConfirmPassword(
-          (prevShowConfirmPassword) => !prevShowConfirmPassword
-        );
-      };
+    setShowConfirmPassword(
+      (prevShowConfirmPassword) => !prevShowConfirmPassword
+    );
+  };
 
   return (
-    <div className="flex justify-center items-center h-full">
-      <div className="flex justify-center items-center">
-        <form
-          className="flex flex-col items-center rounded-2xl p-10"
-          onSubmit={handleSubmit}
-        >
-          <h2
-            className="mb-8 text-5xl"
-            style={{
-              marginRight: "180px",
-              fontFamily: "Montserrat, sans-serif",
-            }}
-          >
-            Sign up
-          </h2>
-          <div className="mb-6">
-            <input
-              type="text"
-              placeholder="User Name"
-              className={`w-96 px-4 py-2 border-b-2 outline-none ${
-                usernameError ? "border-red-500" : "border-gray-300"
-              }`}
-              value={userName}
-              onChange={handleUsernameChange}
-            />
-            {usernameError && (
-              <div className="text-red-500 text-sm mt-1">{usernameError}</div>
-            )}
-          </div>
-          <div className="mb-6">
-            <input
-              type="email"
-              placeholder="Email"
-              className={`w-96 px-4 py-2 border-b-2 outline-none ${
-                emailError ? "border-red-500" : "border-gray-300"
-              }`}
-              value={email}
-              onChange={handleEmailChange}
-            />
-            {emailError && (
-              <div className="text-red-500 text-sm mt-1">{emailError}</div>
-            )}
-          </div>
-
-          <div className="mb-6 relative">
-            <input
-              type={showPassword ? "text" : "password"}
-              placeholder="Password"
-              className={`w-96 px-4 py-2 border-b-2 outline-none ${
-                passwordError ? "border-red-500" : "border-gray-300"
-              }`}
-              value={password}
-              onChange={handlePasswordChange}
-            />
-            <button
-              className="password-toggle-btn"
-              onClick={togglePasswordVisibility}
-            >
-              {showPassword ? <AiFillEyeInvisible /> : <AiFillEye />}
-            </button>
-            {passwordError && (
-              <div className="text-red-500 text-sm mt-1">{passwordError}</div>
-            )}
-          </div>
-          <div className="mb-6 relative">
-            <input
-              type={showConfirmPassword ? "text" : "password"}
-              placeholder="Confirm Password"
-              className={`w-96 px-4 py-2 border-b-2 outline-none ${
-                confirmPasswordError ? "border-red-500" : "border-gray-300"
-              }`}
-              value={confirmPassword}
-              onChange={handleConfirmPasswordChange}
-            />
-            <button
-              className="password-toggle-btn"
-              onClick={toggleConfirmPasswordVisibility}
-            >
-              {showConfirmPassword ? <AiFillEyeInvisible /> : <AiFillEye />}
-            </button>
-            {confirmPasswordError && (
-              <div className="text-red-500 text-sm mt-1">
-                {confirmPasswordError}
-              </div>
-            )}
-          </div>
-          <button
-            className={`bg-orange-50 text-gray-800 px-8 py-3 text-2xl w-96 mt-4 mb-4 rounded-full shadow-md transition-colors ${
-              isButtonDisabled
-                ? "bg-gray-300 cursor-not-allowed"
-                : "hover:bg-green-500 hover:text-white"
-            }`}
-            disabled={isButtonDisabled as boolean}
-          >
-            Sign Up
+    <div className={`flex justify-center items-center h-full ${isDarkMode ? "bg-gray-900" : ""}`}>
+    <div className="flex justify-center items-center">
+      <form className={`flex flex-col items-center rounded-2xl p-10 ${isDarkMode ? "bg-slate-900" : "bg-slate-100"}`} onSubmit={handleSubmit}>
+        <h2 className={`mb-8 text-5xl ${isDarkMode ? "text-white" : "text-black"}`} style={{ marginRight: "180px", fontFamily: "Montserrat, sans-serif" }}>
+          Sign up
+        </h2>
+        <div className="mb-6">
+          <input
+            type="text"
+            placeholder="User Name"
+            className={`w-96 px-4 py-2 border-b-2 outline-none ${usernameError ? "border-red-500" : "border-gray-300"} ${isDarkMode ? "bg-gray-800" : ""}`}
+            value={userName}
+            onChange={handleUsernameChange}
+            style={{ color: isDarkMode ? "#fff" : "#000" }}
+          />
+          {usernameError && <div className="text-red-500 text-sm mt-1">{usernameError}</div>}
+        </div>
+        <div className="mb-6">
+          <input
+            type="email"
+            placeholder="Email"
+            className={`w-96 px-4 py-2 border-b-2 outline-none ${emailError ? "border-red-500" : "border-gray-300"} ${isDarkMode ? "bg-gray-800" : ""}`}
+            value={email}
+            onChange={handleEmailChange}
+            style={{ color: isDarkMode ? "#fff" : "#000" }}
+          />
+          {emailError && <div className="text-red-500 text-sm mt-1">{emailError}</div>}
+        </div>
+        <div className="mb-6 relative">
+          <input
+            type={showPassword ? "text" : "password"}
+            placeholder="Password"
+            className={`w-96 px-4 py-2 border-b-2 outline-none ${passwordError ? "border-red-500" : "border-gray-300"} ${isDarkMode ? "bg-gray-800" : ""}`}
+            value={password}
+            onChange={handlePasswordChange}
+            style={{ color: isDarkMode ? "#fff" : "#000" }}
+          />
+          <button className="password-toggle-btn" onClick={togglePasswordVisibility}>
+            {showPassword ? <AiFillEyeInvisible /> : <AiFillEye />}
           </button>
-        </form>
-      </div>
+          {passwordError && <div className="text-red-500 text-sm mt-1">{passwordError}</div>}
+        </div>
+        <div className="mb-6 relative">
+          <input
+            type={showConfirmPassword ? "text" : "password"}
+            placeholder="Confirm Password"
+            className={`w-96 px-4 py-2 border-b-2 outline-none ${confirmPasswordError ? "border-red-500" : "border-gray-300"} ${isDarkMode ? "bg-gray-800" : ""}`}
+            value={confirmPassword}
+            onChange={handleConfirmPasswordChange}
+            style={{ color: isDarkMode ? "#fff" : "#000" }}
+          />
+          <button className="password-toggle-btn" onClick={toggleConfirmPasswordVisibility}>
+            {showConfirmPassword ? <AiFillEyeInvisible /> : <AiFillEye />}
+          </button>
+          {confirmPasswordError && <div className="text-red-500 text-sm mt-1">{confirmPasswordError}</div>}
+        </div>
+        <button
+          className={`bg-orange-50 text-gray-800 px-8 py-3 text-2xl w-96 mt-4 mb-4 rounded-full shadow-md transition-colors ${isButtonDisabled ? "bg-gray-300 cursor-not-allowed" : "hover:bg-blue-500 hover:text-white"} ${isDarkMode ? "text-white" : "text-black"}`}
+          disabled={isButtonDisabled as boolean}
+          style={{ backgroundColor: isDarkMode ? "#333" : "" }}
+        >
+          Sign Up
+        </button>
+      </form>
     </div>
+  </div>
+  
   );
 };
 
