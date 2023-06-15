@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext, ChangeEvent } from 'react';
+import { useState, useEffect, useContext, ChangeEvent } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import emailRegex from "../util/constants.tsx";
@@ -13,21 +13,19 @@ const LogIn = () => {
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [isFormValid, setIsFormValid] = useState(false);
-  const { setUser } = useContext(UserContext) as unknown as {
-    setUser: (user: any) => void;
-  };
+  const { setUser, isDarkMode } = useContext(UserContext);
   const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
     setIsFormValid(email.trim() !== "" && password.trim() !== "");
   }, [email, password]);
 
-  const handleEmailChange = (e:ChangeEvent<HTMLInputElement>) => {
+  const handleEmailChange = (e: ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
     setEmailError("");
   };
 
-  const handlePasswordChange = (e:ChangeEvent<HTMLInputElement>) => {
+  const handlePasswordChange = (e: ChangeEvent<HTMLInputElement>) => {
     setPassword(e.target.value);
     setPasswordError("");
   };
@@ -55,8 +53,8 @@ const LogIn = () => {
     validatePassword();
   };
 
-const navigate = useNavigate()
-  const handleSubmit = async (e:ChangeEvent<HTMLFormElement>) => {
+  const navigate = useNavigate();
+  const handleSubmit = async (e: ChangeEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     validateForm();
@@ -88,15 +86,6 @@ const navigate = useNavigate()
     }
   };
 
-  
-
-  const showNotification = (message:string) => {
-    // Show notification message with timeout of 5 seconds
-    // Replace this with your own notification implementation
-    // Example using window.alert:
-    window.alert(message);
-  };
-
   const isButtonDisabled = !!emailError || !!passwordError || !isFormValid;
 
   const togglePasswordVisibility = () => {
@@ -104,14 +93,22 @@ const navigate = useNavigate()
   };
 
   return (
-    <div className="flex justify-center items-center h-full">
+    <div
+      className={`flex justify-center items-center h-full ${
+        isDarkMode ? "bg-gray-900" : ""
+      }`}
+    >
       <div className="flex justify-center items-center">
         <form
-          className="flex flex-col items-center rounded-2xl p-10"
+          className={`flex flex-col items-center rounded-2xl p-10 ${
+            isDarkMode ? "bg-slate-900" : "bg-slate-100"
+          }`}
           onSubmit={handleSubmit}
         >
           <h2
-            className="mb-8 text-5xl"
+            className={`mb-8 text-5xl ${
+              isDarkMode ? "text-white" : "text-black"
+            }`}
             style={{
               marginRight: "180px",
               fontFamily: "Montserrat, sans-serif",
@@ -124,10 +121,11 @@ const navigate = useNavigate()
               type="text"
               placeholder="Email"
               className={`w-96 px-5 py-2 mt-4 mb-4 border-b-2 outline-none ${
-                emailError ? "border-red-500" : "border-gray-300"
-              }`}
+                emailError ? "border-red-500" : "border-gray-100"
+              } ${isDarkMode ? "bg-gray-800" : ""}`}
               value={email}
               onChange={handleEmailChange}
+              style={{ color: isDarkMode ? "#fff" : "#000" }}
             />
             {emailError && (
               <div className="text-red-500 text-sm mt-1">{emailError}</div>
@@ -139,9 +137,10 @@ const navigate = useNavigate()
               placeholder="Password"
               className={`w-96 px-5 py-2 mt-4 mb-4 border-b-2 outline-none ${
                 passwordError ? "border-red-500" : "border-gray-300"
-              }`}
+              } ${isDarkMode ? "bg-gray-800" : ""}`}
               value={password}
               onChange={handlePasswordChange}
+              style={{ color: isDarkMode ? "#fff" : "#000" }}
             />
             <button
               className="password-toggle-btn"
@@ -158,8 +157,9 @@ const navigate = useNavigate()
               isButtonDisabled
                 ? "bg-gray-300 cursor-not-allowed"
                 : "hover:bg-green-500 hover:text-white"
-            }`}
+            } ${isDarkMode ? "text-white" : "text-black"}`}
             disabled={isButtonDisabled as boolean}
+            style={{ backgroundColor: isDarkMode ? "#333" : "" }}
           >
             Sign In
           </button>
