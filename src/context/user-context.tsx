@@ -30,6 +30,8 @@ interface UserContextProviderProps {
     setSelectId: React.Dispatch<React.SetStateAction<string | null>>
     messages: Messages[] | null; // Update the type of messages to an array of Messages or null
     setMessages: React.Dispatch<React.SetStateAction<Messages[] | null>>; // Update the type of setMessages
+    isLoading: boolean, 
+    setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export const UserContext= createContext<UserContextProviderProps> ({
@@ -45,6 +47,8 @@ export const UserContext= createContext<UserContextProviderProps> ({
     setSelectId: () => {},
     messages: null, 
     setMessages: () => {},
+    isLoading: false, 
+    setIsLoading: () => {},
 })
 
 
@@ -66,6 +70,7 @@ export const UserContextProvider:React.FC<{children: ReactNode}> = ({children}) 
     const [conversationId, setConversationId] = useState<string|null>(null)
     const [selectId, setSelectId] = useState<string|null>(null)
     const [messages, setMessages] = useState<Messages[] | null>([])
+    const [isLoading, setIsLoading] = useState(false)
 
     console.log(user);
     
@@ -79,6 +84,7 @@ export const UserContextProvider:React.FC<{children: ReactNode}> = ({children}) 
             isDarkMode, setIsDarkMode,
             recipient, setRecipient,
             messages, setMessages,
+            isLoading, setIsLoading,
         }}
             >
             {children}

@@ -23,6 +23,7 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
         isDarkMode,
         recipient, setRecipient,
         messages, setMessages,
+        isLoading, setIsLoading,
     } = useContext(UserContext)
 
     console.log(selectId)
@@ -64,6 +65,8 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
     }, [selectId])
 
     const sendAIMessage = (messageAI: any) => {
+
+
         socket.current.emit("sendMessageChatGPT", {
             message: messageAI, 
             from: user?.userId,
@@ -78,6 +81,8 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
             _id: uuidv4(),
         }])
     }
+
+    console.log(messages)
 
 
     const sendMessage = async (messageText:any) => {
@@ -138,6 +143,7 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
                         _id: uuidv4(),
                     })
                 } else if (data.messageReply) {
+                    setIsLoading(false)
                     setArrivalMessages({
                         createdAt: data.messageReply.createdAt,
                         message: data.messageReply.message, 
@@ -148,7 +154,7 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
             } )}
         
     }, [socket.current, arrivalMessages])
-console.log(messages)
+
 
 
    
@@ -188,14 +194,12 @@ console.log(messages)
                 
                     <div className='m-2 p-2'>
                     {messages ? messages.map((msg) => (
-         
-                    
-                        <div 
-                        className={('text-left ' + 
-                            (msg.sender === user?.userId ? 'text-right' : '') +
-                            (msg.sender === AI_ASSISTANT_ID ? 'text-center' : '') 
         
-                    )}
+                        <div 
+                        className={('text-left ' +
+                        (msg.sender === user?.userId || msg.sender ===  AI_ASSISTANT_ID && msg.message.startsWith('hey gpt') ? 'text-center ' : '') +
+                        (msg.sender !== user?.userId ? 'text-left ' : 'text-right ')
+                      )}
                         key={msg._id}
                         >
                         <div className={('max-w-md text-left inline-block rounded-lg bg-slate-500 m-2 p-2 ' + 
@@ -214,6 +218,11 @@ console.log(messages)
                         <div ref={scrollRef}></div>
                         </div>
                     )) : null}
+                    {isLoading ?
+                    <div className='items-center text-center justify-between'>
+                        <div aria-label="Loading..." role="status" className="flex items-center space-x-2"><svg className="h-6 w-6 animate-spin stroke-gray-500" viewBox="0 0 256 256"><line x1="128" y1="32" x2="128" y2="64" stroke-linecap="round" stroke-linejoin="round" stroke-width="24"></line><line x1="195.9" y1="60.1" x2="173.3" y2="82.7" stroke-linecap="round" stroke-linejoin="round" stroke-width="24"></line><line x1="224" y1="128" x2="192" y2="128" stroke-linecap="round" stroke-linejoin="round" stroke-width="24"></line><line x1="195.9" y1="195.9" x2="173.3" y2="173.3" stroke-linecap="round" stroke-linejoin="round" stroke-width="24"></line><line x1="128" y1="224" x2="128" y2="192" stroke-linecap="round" stroke-linejoin="round" stroke-width="24"></line><line x1="60.1" y1="195.9" x2="82.7" y2="173.3" stroke-linecap="round" stroke-linejoin="round" stroke-width="24"></line><line x1="32" y1="128" x2="64" y2="128" stroke-linecap="round" stroke-linejoin="round" stroke-width="24"></line><line x1="60.1" y1="60.1" x2="82.7" y2="82.7" stroke-linecap="round" stroke-linejoin="round" stroke-width="24"></line></svg><span className="text-xs font-medium text-gray-500">Loading...</span></div>
+                    </div>
+                    : null}
                 </div>
                 : 
                 <ChatWelcome />}
