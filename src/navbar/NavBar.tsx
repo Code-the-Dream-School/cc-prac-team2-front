@@ -30,8 +30,9 @@ const Navbar = () => {
             },
           }
         );
-
-        setProfileImage(response.data.user.profileImage.url);
+          if (response.data.user.profileImage){
+            setProfileImage(response.data.user.profileImage.url);
+          }
       } catch (error) {
         console.error(error);
       }

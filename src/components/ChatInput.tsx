@@ -38,7 +38,6 @@ const ChatInput = ({onHandleSendMessage, socket, onHandleSendAIMessage}: ChatInp
       }
       setMessageText("")
     }
-    console.log(messageText);
     
 
     return (

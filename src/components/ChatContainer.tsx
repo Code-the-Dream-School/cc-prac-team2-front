@@ -24,12 +24,14 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
         isLoading, setIsLoading,
     } = useContext(UserContext)
 
-    console.log(selectId)
 
-    const [usersArray, setUsersArray] = useState()
+    const [usersArray, setUsersArray] = useState([])
     const [arrivalMessages, setArrivalMessages] = useState(null)
     const scrollRef = useRef<HTMLDivElement | null>(null)
     const token: {token: string } | null = JSON.parse(localStorage.getItem("token") || "null")
+    const idArray = usersArray?.map((obj) => obj._id);
+    const AI_ASSISTANT_ID= "6487be19c6c6a7054bb52072"
+
 
     const fetchMessages = async () => {
         try {
@@ -49,7 +51,12 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
                     setRecipient(users[0].userName)
                 }
                 setMessages(messages)
-                setUsersArray(data.conversation.users)
+                const AIuser = {
+                  userName: "AI Assistant",
+                  _id: "6487be19c6c6a7054bb52072"
+                }
+                setUsersArray([...data.conversation.users, AIuser])
+
             }
         } catch (err) {
             console.log(err);
@@ -79,8 +86,6 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
             _id: uuidv4(),
         }])
     }
-
-    console.log(messages)
 
 
     const sendMessage = async (messageText:any) => {
@@ -145,7 +150,7 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
                     setArrivalMessages({
                         createdAt: data.messageReply.createdAt,
                         message: data.messageReply.message, 
-                        sender: data.sender, 
+                        sender: data.messageReply.sender, 
                         _id: uuidv4(),
                     })
                 }
@@ -153,16 +158,12 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
         
     }, [socket.current, arrivalMessages])
 
-
-
-   
-
-
-    const idArray = usersArray?.map((obj) => obj._id);
-    const AI_ASSISTANT_ID= "6487be19c6c6a7054bb52072"
+    
 
     useEffect(() => {
-        arrivalMessages  && setMessages((prev) =>[...prev, arrivalMessages])
+        arrivalMessages  
+        && idArray?.includes(arrivalMessages.sender) 
+        && setMessages((prev) =>[...prev, arrivalMessages])
     }, [arrivalMessages])
 
   useEffect(() => {
