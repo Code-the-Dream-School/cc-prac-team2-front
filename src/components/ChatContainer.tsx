@@ -43,6 +43,8 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
                     }
                   }
                 )
+                console.log(data);
+                
                 const {messages} = data.conversation
                 const {users} = data.conversation
                 if (users[0].userName === user?.userName) {
@@ -178,10 +180,11 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
         }`}
       >
         <div
-          className={`w-full h-14 text-red-300 pt-4 cursor-pointer rounded-tl-lg shadow text-center font-medium ${
-            isDarkMode ? "bg-slate-200" : "bg-gray-800"
+          className={`w-full h-14 text-black pt-4 cursor-pointer rounded-tl-lg shadow text-center font-medium border-b-2 border-slate-300 ${
+            isDarkMode ? "bg-slate-200" : "bg-slate-200"
           }`}
         >
+
           <p>{recipient}</p>
         </div>
         <div

@@ -68,7 +68,7 @@ const ChatInput = ({onHandleSendMessage, socket, onHandleSendAIMessage}: ChatInp
               <input
               type="text"
               placeholder='Type your message'
-              className={`border mr-2 flex-grow bg-slate-800 rounded-xl p-2 text-white hover:border-white focus:border-white shadow-lg ${
+              className={`mr-2 flex-grow bg-slate-800 rounded-xl p-2 text-white hover:border-white focus:border-white shadow-lg ${
                 messageText.startsWith('hey gpt') ? 'text-yellow-400 font-bold' : ''
               }`}
               value={messageText}
