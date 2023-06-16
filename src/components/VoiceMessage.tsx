@@ -57,7 +57,7 @@ const VoiceMessage = ({ socket }: { socket: Socket }) => {
     const formData = new FormData();
 
     formData.append('audio', recordedAudio);
-    formData.append('from', user?.userId,);
+    formData.append('from', user?._id,);
     formData.append('to', selectId);
 
     try {
@@ -72,7 +72,7 @@ const VoiceMessage = ({ socket }: { socket: Socket }) => {
         voiceNote: {
             url: message.voiceNote.url
         }, 
-        sender: user?.userId, 
+        sender: user?._id, 
         _id: message._id,
     }])
 
@@ -81,7 +81,7 @@ const VoiceMessage = ({ socket }: { socket: Socket }) => {
         voiceNote: {
             url: message.voiceNote.url
         }, 
-        from: user?.userId, 
+        from: user?._id, 
         to: selectId,
     })
 

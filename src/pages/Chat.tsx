@@ -42,13 +42,17 @@ const Chat = () => {
     localStorage.getItem("token") || "null"
   );
 
+  console.log(user?._id);
+
   useEffect(() => {
     socket.current = io("http://localhost:8000");
   }, []);
 
+  
+
   useEffect(() => {
     if (socket.current && user) {
-      socket.current.emit("addUser", user.userId);
+      socket.current.emit("addUser", user._id);
       socket.current.on("getUsers", (users: unknown[]) => {
         let usersMap = new Set();
         users.map((user:any) => {
@@ -58,7 +62,9 @@ const Chat = () => {
         });
       });
     }
-  }, [socket.current]);
+  }, [socket.current, user]);
+
+
 
   useEffect(() => {
     if (usersList?.contactedUsers && usersList?.uncontactedUsers  && onlineUsers) {
@@ -76,6 +82,8 @@ const Chat = () => {
         Authorization: `Bearer ${token}`,
       },
     });
+    console.log(data);
+    
     setUsersList(data.users)
   };
 
@@ -122,7 +130,7 @@ const Chat = () => {
                 <div className="w-1/5">
                     <img
                     className="w-10 h-10 rounded-full"
-                    src={COCKATOO}
+                    src={u.profileImage?.url}
                     />
                 </div>
                 <div className="w-4/5 p-2">
@@ -141,7 +149,7 @@ const Chat = () => {
           <div>
             {usersList
               ? usersList.uncontactedUsers.map((unContact) => {
-                  if (unContact._id === user?.userId) {
+                  if (unContact._id === user?._id) {
                     return null;
                   }
                   return (

@@ -6,8 +6,10 @@ export const getContactName = (userName:any, onlineFriends:any) => {
         ))
     }
 
+    
     const userNameExists = checkUserName(userName,onlineFriends);
-
+    console.log(userNameExists)
+ 
     if(userName) {
         return (
         <>
