@@ -41,7 +41,7 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
     const scrollRef = useRef<HTMLDivElement | null>(null)
     const token: {token: string } | null = JSON.parse(localStorage.getItem("token") || "null")
     const idArray = usersArray?.map((obj) => obj._id);
-    const AI_ASSISTANT_ID= "6487be19c6c6a7054bb52072" //should be env
+    const AI_ASSISTANT_ID = "6487be19c6c6a7054bb52072"
 
 
     const fetchMessages = async () => {
@@ -185,6 +185,8 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
     scrollRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
   }, [messages]);
 
+  console.log(messages)
+
   return (
     <>
       <div
@@ -214,42 +216,39 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
         
                         <div
                         className={('text-left ' +
-                        ((msg.sender === user?._id) || (msg.sender ===  AI_ASSISTANT_ID && msg.message.startsWith('hey gpt') ? 'text-center ' : '')) +
-                        (msg.sender !== user?._id ? 'text-left ' : 'text-right ')
+                        (msg.sender === user?._id ? 'text-right '  : '') +
+                        (msg.sender === AI_ASSISTANT_ID ?  'text-center' : '') 
                       )}
                         key={msg._id}
                         >
-                        <div className={('max-w-md text-left inline-block rounded-lg bg-slate-500 m-2 p-2 ' + 
-                            (msg.sender === AI_ASSISTANT_ID ? 'bg-red-300 ' : '') +
-                            (msg.sender === user?._id ? 'bg-white ' : '')
-                        
-                        )}>
-
-                        {msg.message && msg.message.includes('\n') ? (
-                msg.message.split('\n').map((line, index, lines) => {
-                  const prevLine = index > 0 ? lines[index - 1] : null;
-                  const isFirstLine = index === 0 || line !== prevLine;
-                  
-                  return (
-                    <React.Fragment key={index}>
-                      {isFirstLine && line}
-                      {isFirstLine && index !== lines.length - 1 && (
-                        <>
-                        {line !== lines[index + 1] && 
-                        (
-                          <>
-                          <br />
-                          <img width="15" height="15" src="https://img.icons8.com/ios-glyphs/30/right3.png" alt="right3" />                         
-                          </>
-                        )}
-                        </>
+                        <div 
+                      className={('max-w-md inline-block bg-slate-500 rounded-lg m-2 p-2 ' +
+                      (msg.sender === user?._id ? 'bg-white text-left ' : '') +
+                      (msg.sender == AI_ASSISTANT_ID ?  'bg-yellow-200 text-center' : '') 
+                      
+                    )}
+                        >
+                       {msg.message && msg.message.includes("\n") ? (
+                        msg.message.split("\n").map((line, index, lines) => {
+                          const prevLine = index > 0 ? lines[index - 1] : null;
+                          const isFirstLine = index === 0 || line !== prevLine;
+                          
+                          return (
+                            <React.Fragment key={index}>
+                              {isFirstLine && line}
+                              {isFirstLine && index !== lines.length - 1 && line !== lines[index + 1] && (
+                                <>
+                                  <br />
+                                  <img width="15" height="15" src="https://img.icons8.com/ios-glyphs/30/right3.png" alt="right3" />                         
+                                </>
+                              )}
+                            </React.Fragment>
+                          );
+                        })
+                      ) : (
+                        <>{msg.message}</>
                       )}
-                    </React.Fragment>
-                  );
-                })
-                        ) : (
-                          <>{msg.message}</>
-                        )}
+
                                 
                         <div className='text-xxs text-gray-600 text-right items-right'>{getTime(msg.createdAt)}</div>
                       {msg.voiceNote && (
@@ -261,7 +260,6 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
                         <div ref={scrollRef}></div>
                         </div>
                     )) : null}
-                    {/* SVG is candidate for sub-component */}
                     {isLoading ?
                     <div className='items-center text-center justify-between'>
                         <div aria-label="Loading..." role="status" className="flex items-center space-x-2"><svg className="h-6 w-6 animate-spin stroke-gray-500" viewBox="0 0 256 256"><line x1="128" y1="32" x2="128" y2="64" stroke-linecap="round" stroke-linejoin="round" stroke-width="24"></line><line x1="195.9" y1="60.1" x2="173.3" y2="82.7" stroke-linecap="round" stroke-linejoin="round" stroke-width="24"></line><line x1="224" y1="128" x2="192" y2="128" stroke-linecap="round" stroke-linejoin="round" stroke-width="24"></line><line x1="195.9" y1="195.9" x2="173.3" y2="173.3" stroke-linecap="round" stroke-linejoin="round" stroke-width="24"></line><line x1="128" y1="224" x2="128" y2="192" stroke-linecap="round" stroke-linejoin="round" stroke-width="24"></line><line x1="60.1" y1="195.9" x2="82.7" y2="173.3" stroke-linecap="round" stroke-linejoin="round" stroke-width="24"></line><line x1="32" y1="128" x2="64" y2="128" stroke-linecap="round" stroke-linejoin="round" stroke-width="24"></line><line x1="60.1" y1="60.1" x2="82.7" y2="82.7" stroke-linecap="round" stroke-linejoin="round" stroke-width="24"></line></svg><span className="text-xs font-medium text-gray-500">Loading...</span></div>
@@ -271,6 +269,11 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
               ) : (
                 <ChatWelcome />
               )}
+                {isLoading ?
+                <div className='items-center text-center justify-center'>
+                    <div aria-label="Loading..." role="status" className="flex items-center space-x-2"><svg className="h-10 w-10 animate-spin stroke-gray-500" viewBox="0 0 256 256"><line x1="128" y1="32" x2="128" y2="64" stroke-linecap="round" stroke-linejoin="round" stroke-width="24"></line><line x1="195.9" y1="60.1" x2="173.3" y2="82.7" stroke-linecap="round" stroke-linejoin="round" stroke-width="24"></line><line x1="224" y1="128" x2="192" y2="128" stroke-linecap="round" stroke-linejoin="round" stroke-width="24"></line><line x1="195.9" y1="195.9" x2="173.3" y2="173.3" stroke-linecap="round" stroke-linejoin="round" stroke-width="24"></line><line x1="128" y1="224" x2="128" y2="192" stroke-linecap="round" stroke-linejoin="round" stroke-width="24"></line><line x1="60.1" y1="195.9" x2="82.7" y2="173.3" stroke-linecap="round" stroke-linejoin="round" stroke-width="24"></line><line x1="32" y1="128" x2="64" y2="128" stroke-linecap="round" stroke-linejoin="round" stroke-width="24"></line><line x1="60.1" y1="60.1" x2="82.7" y2="82.7" stroke-linecap="round" stroke-linejoin="round" stroke-width="24"></line></svg><span className="text-xs font-medium text-gray-500">Loading...</span></div>
+                </div>
+                : null}
             </div>
           </div>
         </div>

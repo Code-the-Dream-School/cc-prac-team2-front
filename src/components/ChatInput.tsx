@@ -34,6 +34,8 @@ const ChatInput = ({onHandleSendMessage, socket, onHandleSendAIMessage}: ChatInp
       }
       setMessageText("")
     }
+
+
     
 
     return (
@@ -41,7 +43,7 @@ const ChatInput = ({onHandleSendMessage, socket, onHandleSendAIMessage}: ChatInp
         <div className="flex flex-col">
           <div className="h-2/3">
             <form 
-            onSubmit={handleSendMessage} 
+            onSubmit={handleSendMessage}
             className='flex flex-row'>
               <div className="m-auto pl-6" onClick={handleShowEmoji}>
                 {!showEmoji ? (
@@ -61,11 +63,11 @@ const ChatInput = ({onHandleSendMessage, socket, onHandleSendAIMessage}: ChatInp
                 )}
               </div>
 
-              <textarea
-              rows="2"
+              <input
+              type="text"
               placeholder='Type your message'
-              className={`mx-6 flex-grow bg-slate-800 rounded-xl p-2 text-white hover:border-white focus:border-white shadow-lg ${
-                messageText.startsWith('hey gpt') ? 'text-yellow-400 font-bold' : ''
+              className={`mx-8 flex-grow bg-slate-800 rounded-xl p-2 text-white hover:border-white focus:border-white shadow-lg ${
+                messageText.startsWith('hey gpt') ? 'text-yellow-300' : ''
               }`}
               value={messageText}
               onChange={e => 
@@ -76,7 +78,7 @@ const ChatInput = ({onHandleSendMessage, socket, onHandleSendAIMessage}: ChatInp
               />
               <button 
               type="submit" 
-              className="bg-slate-800  text-slate-400 mr-6 mt-2 w-10 h-10 rounded-lg flex items-center justify-center ease-in-out duration-300 hover:bg-slate-500"> 
+              className="bg-slate-800  text-slate-400 mr-6 my-2 w-10 h-10 rounded-lg flex items-center justify-center ease-in-out duration-300 hover:bg-slate-500"> 
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="items-center justify-center w-6 h-6">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />
               </svg>
