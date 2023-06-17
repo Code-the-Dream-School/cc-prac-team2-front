@@ -1,4 +1,4 @@
-import { useState, useContext, useEffect, useRef } from "react";
+import React, { useState, useContext, useEffect, useRef } from "react";
 import { toast } from "react-toastify";
 import axios from "axios";
 import ChatInput from "../components/ChatInput";
@@ -211,7 +211,37 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
                             (msg.sender === user?._id ? 'bg-white ' : '')
                         
                         )}>
-                            {msg.message}
+
+                        {msg.message && msg.message.includes('\n') ? (
+                msg.message.split('\n').map((line, index, lines) => {
+                  console.log(lines[0]);
+                  console.log(lines[1])
+                  console.log(lines[0] === lines[1])
+                  const prevLine = index > 0 ? lines[index - 1] : null;
+                  console.log(prevLine);
+                  const isFirstLine = index === 0 || line !== prevLine;
+                  
+                  return (
+                    <React.Fragment key={index}>
+                      {isFirstLine && line}
+                      {isFirstLine && index !== lines.length - 1 && (
+                        <>
+                        {line !== lines[index + 1] && 
+                        (
+                          <>
+                          <br />
+                          <img width="15" height="15" src="https://img.icons8.com/ios-glyphs/30/right3.png" alt="right3" />                         
+                          </>
+                        )}
+                        </>
+                      )}
+                    </React.Fragment>
+                  );
+                })
+                        ) : (
+                          <>{msg.message}</>
+                        )}
+                                
                         <div className='text-xxs text-gray-600 text-right items-right'>{getTime(msg.createdAt)}</div>
                        {msg.voiceNote && (
                         <audio className="w-60 h-15" controls>
