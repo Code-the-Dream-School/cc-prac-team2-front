@@ -194,7 +194,7 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
         >
                 <div className="relative h-full">
                 <div className="overflow-y-auto absolute top-0 left-0 right-0 bottom-0"> 
-                {!!selectId ? (
+                {!!selectId && conversationId ? (
                 
                     <div className='m-2 p-2'>
                     {messages ? messages.map((msg) => (

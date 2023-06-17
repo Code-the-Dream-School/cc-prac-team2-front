@@ -32,6 +32,7 @@ const Chat = () => {
     selectId,
     setSelectId,
     isDarkMode,
+    setRecipient,
   } = useContext(UserContext);
 
   const socket = useRef<Socket<MyEventMap> | null>();
@@ -41,7 +42,7 @@ const Chat = () => {
   const token: { token: string } | null = JSON.parse(
     localStorage.getItem("token") || "null"
   );
-
+console.log(usersList)
 
   useEffect(() => {
     socket.current = io("http://localhost:8000");
@@ -98,6 +99,7 @@ const Chat = () => {
   const handleSelectUnContact = (unContact:User) => {
     setConversationId(null);
     setSelectId(unContact._id);
+    setRecipient(unContact.userName)
   };
 
   return (
@@ -111,7 +113,7 @@ const Chat = () => {
               isDarkMode ? "text-white" : "text-black"
             }`}
           >
-            Contact
+            Friends
           </div>
           {usersList ? usersList.contactedUsers.map((u) => {
             return (
