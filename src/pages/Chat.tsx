@@ -92,7 +92,7 @@ console.log(usersList)
   }, []);
 
   const handleSelectContact = (u: User) => {
-    setConversationId(u.conversation);
+    setConversationId(u.conversation._id);
     setSelectId(u._id);
   };
 
@@ -120,7 +120,7 @@ console.log(usersList)
                 <div key={u._id}
                 className={
                     "flex bg-slate-300 rounded-lg m-3 p-2 cursor-pointer " +
-                    (conversationId === u.conversation
+                    (conversationId === u.conversation._id
                     ? "bg-slate-500"
                     : "")
                 }
