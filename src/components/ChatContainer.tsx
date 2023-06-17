@@ -36,13 +36,15 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
     const fetchMessages = async () => {
         try {
             if (user && conversationId) {
-                const {data} = await axios.get(`http://localhost:8000/api/v1/users/${user.userId}/conversations/${conversationId}`, 
+                const {data} = await axios.get(`http://localhost:8000/api/v1/users/${user._id}/conversations/${conversationId}`, 
                 {
                     headers: {
                       Authorization: `Bearer ${token}`
                     }
                   }
                 )
+                console.log(data);
+                
                 const {messages} = data.conversation
                 const {users} = data.conversation
                 if (users[0].userName === user?.userName) {
@@ -53,7 +55,7 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
                 setMessages(messages)
                 const AIuser = {
                   userName: "AI Assistant",
-                  _id: "6487be19c6c6a7054bb52072"
+                  _id: AI_ASSISTANT_ID
                 }
                 setUsersArray([...data.conversation.users, AIuser])
 
@@ -74,7 +76,7 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
 
         socket.current.emit("sendMessageChatGPT", {
             message: messageAI, 
-            from: user?.userId,
+            from: user?._id,
             to: selectId, 
             createdAt: Date.now()
         })
@@ -82,7 +84,7 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
         setMessages( prev => [...prev, {
             createdAt: Date.now(),
             message: messageAI, 
-            sender: user?.userId, 
+            sender: user?._id, 
             _id: uuidv4(),
         }])
     }
@@ -91,7 +93,7 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
     const sendMessage = async (messageText:any) => {
         try {
            const {data} = await axios.post('http://localhost:8000/api/v1/messages', {
-                from: user?.userId,
+                from: user?._id,
                 to: selectId, 
                 message: messageText
             },
@@ -105,7 +107,7 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
 
             socket.current.emit("sendMessage", {
                 createdAt: message.createdAt,
-                from: user?.userId,
+                from: user?._id,
                 to: selectId, 
                 message: messageText
             })
@@ -113,7 +115,7 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
             setMessages( prev => [...prev, {
                 createdAt: message.createdAt,
                 message: messageText, 
-                sender: user?.userId, 
+                sender: user?._id, 
                 _id: message._id,
             }])
 
@@ -178,10 +180,11 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
         }`}
       >
         <div
-          className={`w-full h-14 text-red-300 pt-4 cursor-pointer rounded-tl-lg shadow text-center font-medium ${
-            isDarkMode ? "bg-slate-200" : "bg-gray-800"
+          className={`w-full h-14 text-black pt-4 cursor-pointer rounded-tl-lg shadow text-center font-medium border-b-2 border-slate-300 ${
+            isDarkMode ? "bg-slate-200" : "bg-slate-200"
           }`}
         >
+
           <p>{recipient}</p>
         </div>
         <div
@@ -198,14 +201,14 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
         
                         <div 
                         className={('text-left ' +
-                        (msg.sender === user?.userId || msg.sender ===  AI_ASSISTANT_ID && msg.message.startsWith('hey gpt') ? 'text-center ' : '') +
-                        (msg.sender !== user?.userId ? 'text-left ' : 'text-right ')
+                        (msg.sender === user?._id || msg.sender ===  AI_ASSISTANT_ID && msg.message.startsWith('hey gpt') ? 'text-center ' : '') +
+                        (msg.sender !== user?._id ? 'text-left ' : 'text-right ')
                       )}
                         key={msg._id}
                         >
                         <div className={('max-w-md text-left inline-block rounded-lg bg-slate-500 m-2 p-2 ' + 
                             (msg.sender === AI_ASSISTANT_ID ? 'bg-red-300 ' : '') +
-                            (msg.sender === user?.userId ? 'bg-white ' : '')
+                            (msg.sender === user?._id ? 'bg-white ' : '')
                         
                         )}>
                             {msg.message}

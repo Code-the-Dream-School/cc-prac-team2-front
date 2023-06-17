@@ -38,7 +38,7 @@ const Profile = () => {
       formData.append("image", image);
 
       const response = await axios.patch(
-        `http://localhost:8000/api/v1/users/${user.userId}/update-user`,
+        `http://localhost:8000/api/v1/users/${user._id}/update-user`,
         formData,
         {
           headers: {

@@ -1,5 +1,5 @@
-import React, { createContext, useState, ReactNode, useEffect, useRef } from "react";
-// import axios from "axios"
+import React, { createContext, useState, ReactNode, useEffect, } from "react";
+import axios from "axios"
 import jwt_decode from "jwt-decode";
 
 interface Messages {
@@ -55,16 +55,17 @@ export const UserContext= createContext<UserContextProviderProps> ({
 export const UserContextProvider:React.FC<{children: ReactNode}> = ({children}) => {
 
     let loggedInUser: User| null
+    let loggedInUserId
 
-    //get Request for single user --> setUser
 
     const userWithToken = JSON.parse(localStorage.getItem('token') || 'null')
     if (userWithToken) {
         loggedInUser = jwt_decode(userWithToken)
+        loggedInUserId = loggedInUser?.userId
     } else {
         loggedInUser  = null
     }
-    const [user, setUser] = useState<User | null>(loggedInUser)
+    const [user, setUser] = useState<User | null>(null)
     const [recipient, setRecipient] = useState<string | null>(null)
     const [isDarkMode, setIsDarkMode] = useState(false);
     const [conversationId, setConversationId] = useState<string|null>(null)
@@ -72,7 +73,24 @@ export const UserContextProvider:React.FC<{children: ReactNode}> = ({children}) 
     const [messages, setMessages] = useState<Messages[] | null>([])
     const [isLoading, setIsLoading] = useState(false)
 
-    console.log(user);
+    console.log(loggedInUser);
+
+    const fetchUser = async () => {
+        const { data } = await axios.get(`http://localhost:8000/api/v1/users/${loggedInUserId}`, {
+          headers: {
+            Authorization: `Bearer ${userWithToken}`,
+          },
+        });
+        console.log(data);
+        setUser(data.user)
+      };
+
+      useEffect(()=>{
+        fetchUser()
+      }, [])
+
+      console.log(user);
+      
     
 
 

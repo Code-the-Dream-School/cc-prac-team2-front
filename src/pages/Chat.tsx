@@ -42,13 +42,16 @@ const Chat = () => {
     localStorage.getItem("token") || "null"
   );
 
+
   useEffect(() => {
     socket.current = io("http://localhost:8000");
   }, []);
 
+  
+
   useEffect(() => {
     if (socket.current && user) {
-      socket.current.emit("addUser", user.userId);
+      socket.current.emit("addUser", user._id);
       socket.current.on("getUsers", (users: unknown[]) => {
         let usersMap = new Set();
         users.map((user:any) => {
@@ -58,7 +61,8 @@ const Chat = () => {
         });
       });
     }
-  }, [socket.current]);
+  }, [socket.current, user]);
+
 
   useEffect(() => {
     if (usersList?.contactedUsers && usersList?.uncontactedUsers  && onlineUsers) {
@@ -76,9 +80,9 @@ const Chat = () => {
         Authorization: `Bearer ${token}`,
       },
     });
+    console.log(data);
     setUsersList(data.users)
   };
-
 
 
   useEffect(() => {
@@ -99,7 +103,7 @@ const Chat = () => {
     <>
       <div className={`flex flex-grow ${isDarkMode ? "bg-dark" : "bg-light"}`}>
         <div
-          className={`w-70 p-2 ${isDarkMode ? "bg-slate-600" : "bg-slate-200"}`}
+          className={`w-56 p-2 ${isDarkMode ? "bg-slate-600" : "bg-slate-200"}`}
         >
           <div
             className={`text-xl p-3 text-center ${
@@ -119,14 +123,19 @@ const Chat = () => {
                 }
                 onClick={() => handleSelectContact(u)}
                 >
-                <div className="w-1/5">
+                <div className="flex flex-row gap-4">
+                <div className="h-full w-1/3 items-center justify-between">
+                  <div className="relative">
                     <img
-                    className="w-10 h-10 rounded-full"
-                    src={COCKATOO}
+                    className="w-12 h-10 rounded-full shadow-xl"
+                    src={u.profileImage?.url}
                     />
-                </div>
-                <div className="w-4/5 p-2">
                     {getContactName(u.userName, onlineFriends )}
+                  </div>
+                  </div>
+                  <div className="h-full w-2/3 items-center justify-center">
+                    <div className="m-auto text-center items-center justify-center">{u.userName}</div>
+                  </div>
                 </div>
                 </div>
             );
@@ -141,7 +150,7 @@ const Chat = () => {
           <div>
             {usersList
               ? usersList.uncontactedUsers.map((unContact) => {
-                  if (unContact._id === user?.userId) {
+                  if (unContact._id === user?._id) {
                     return null;
                   }
                   return (
@@ -153,9 +162,20 @@ const Chat = () => {
                         }
                         onClick={() => handleSelectUnContact(unContact)}
                       >
-                        <div className="items-center text-center justify-between">
-                          {getContactName(unContact.userName, onlineFriends )}
-                        </div>
+                         <div className="flex flex-row gap-4">
+                <div className="h-full w-1/3 items-center justify-between">
+                  <div className="relative">
+                    <img
+                    className="w-12 h-12 rounded-full border-2 shadow-sm"
+                    src={unContact.profileImage?.url}
+                    />
+                    {getContactName(unContact.userName, onlineFriends )}
+                  </div>
+                  </div>
+                  <div className="h-full w-2/3 items-center justify-center">
+                    <div className="m-auto text-center items-center justify-center">{unContact.userName}</div>
+                  </div>
+                </div>
                       </div>
                  
                   );

@@ -23,7 +23,7 @@ const Navbar = () => {
     const fetchProfileImage = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:8000/api/v1/users/${user.userId}`,
+          `http://localhost:8000/api/v1/users/${user._id}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -38,7 +38,7 @@ const Navbar = () => {
       }
     };
 
-    if (user && user.userId) {
+    if (user && user._id) {
       fetchProfileImage();
     }
   }, [user, token]);
