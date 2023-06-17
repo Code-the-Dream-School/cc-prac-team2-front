@@ -44,6 +44,7 @@ const Chat = (): JSX.Element => {
     selectId,
     setSelectId,
     isDarkMode,
+    setRecipient,
   } = useContext(UserContext);
 
   const socket = useRef<Socket<MyEventMap> | null>();
@@ -53,7 +54,7 @@ const Chat = (): JSX.Element => {
   const token: { token: string } | null = JSON.parse(
     localStorage.getItem("token") || "null"
   );
-
+console.log(usersList)
 
   useEffect(() => {
     socket.current = io("http://localhost:8000");
@@ -114,6 +115,7 @@ const Chat = (): JSX.Element => {
   const handleSelectUnContact = (unContact:User) => {
     setConversationId(null); // why null?
     setSelectId(unContact._id);
+    setRecipient(unContact.userName)
   };
 
   return (
@@ -127,7 +129,7 @@ const Chat = (): JSX.Element => {
               isDarkMode ? "text-white" : "text-black"
             }`}
           >
-            Contact
+            Friends
           </div>
           {/* Consider decomposing this into sub-component since we are returning 
             some JSX per user in the contactedUsers. It'll simplify this component 

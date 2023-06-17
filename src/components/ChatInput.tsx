@@ -14,6 +14,7 @@ interface ChatInputProps {
 const ChatInput = ({onHandleSendMessage, socket, onHandleSendAIMessage}: ChatInputProps): JSX.Element => {
 
     const [showEmoji, setShowEmoji] = useState<boolean>(false)
+    const AIcall = "@birdie"
     const [messageText, setMessageText] = useState<string>("")
     const {setIsLoading} = useContext(UserContext)
 
@@ -26,7 +27,7 @@ const ChatInput = ({onHandleSendMessage, socket, onHandleSendAIMessage}: ChatInp
 
     const handleSendMessage = (e:ChangeEvent<HTMLFormElement>) => {
       e.preventDefault()
-      if (messageText.substring(0,7) === "hey gpt") {
+      if (messageText.substring(0,7) === AIcall) {
         onHandleSendAIMessage(messageText)
         setIsLoading(true)
       } else {
@@ -65,9 +66,9 @@ const ChatInput = ({onHandleSendMessage, socket, onHandleSendAIMessage}: ChatInp
 
               <input
               type="text"
-              placeholder='Type your message'
+              placeholder='Type your message or type @birdie to call chatGPT'
               className={`mx-8 flex-grow bg-slate-800 rounded-xl p-2 text-white hover:border-white focus:border-white shadow-lg ${
-                messageText.startsWith('hey gpt') ? 'text-yellow-300' : ''
+                messageText.startsWith(AIcall) ? 'text-yellow-300' : ''
               }`}
               value={messageText}
               onChange={e => 
