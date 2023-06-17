@@ -113,12 +113,13 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
               }
             )
             const {message} = data
+            console.log(message)
 
             socket.current.emit("sendMessage", {
                 createdAt: message.createdAt,
                 from: user?._id,
                 to: selectId, 
-                message: messageText
+                message: message.message
             })
 
             setMessages( prev => [...prev, {
@@ -226,11 +227,7 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
 
                         {msg.message && msg.message.includes('\n') ? (
                 msg.message.split('\n').map((line, index, lines) => {
-                  console.log(lines[0]);
-                  console.log(lines[1])
-                  console.log(lines[0] === lines[1])
                   const prevLine = index > 0 ? lines[index - 1] : null;
-                  console.log(prevLine);
                   const isFirstLine = index === 0 || line !== prevLine;
                   
                   return (
