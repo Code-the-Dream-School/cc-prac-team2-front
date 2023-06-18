@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { UserContext } from "../context/user-context";
 import { toast } from "react-toastify";
 import { HiOutlineUserCircle } from "react-icons/hi";
+import COCKATOO from "./../assests/cockatoo.png";
 import { BsFillSunFill, BsFillMoonFill } from "react-icons/bs";
 import axios from "axios";
 
@@ -30,9 +31,11 @@ const Navbar = () => {
             },
           }
         );
-          if (response.data.user.profileImage){
-            setProfileImage(response.data.user.profileImage.url);
-          }
+        if (response.data.user.profileImage) {
+          setProfileImage(response.data.user.profileImage.url);
+        }
+
+        console.log(response.data.user);
       } catch (error) {
         console.error(error);
       }
@@ -84,12 +87,32 @@ const Navbar = () => {
               {user && user.userName ? <p>Welcome, {user.userName}</p> : ""}
             </h5>
             {profileImage ? (
-              <img
-                src={profileImage}
-                alt="Profile"
-                className="w-8 h-8 rounded-full cursor-pointer"
+              <div
                 onClick={handleDropdownClick}
-              />
+                className="w-8 h-8 rounded-full shadow-xl flex items-center justify-center"
+                style={{
+                  backgroundImage: `url(${profileImage || COCKATOO})`,
+                  backgroundSize: "cover",
+                  backgroundPosition: "center",
+                }}
+              >
+                {!profileImage && (
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    className="w-6 h-6 text-gray-300"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                    />
+                  </svg>
+                )}
+              </div>
             ) : (
               <button
                 className={`text-${

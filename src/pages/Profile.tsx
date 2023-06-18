@@ -55,6 +55,7 @@ const Profile = () => {
       const updatedUser = { ...user };
       updatedUser.profileImage = response.data.profileImage;
       setUser(updatedUser);
+      navigateChat();
     } catch (error) {
       // Handle error
       toast.error("Failed to update profile.");

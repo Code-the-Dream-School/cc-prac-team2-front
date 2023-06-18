@@ -11,6 +11,7 @@ interface Messages {
 }
 
 interface User {
+    _id(arg0: string, _id: any): unknown;
     email: string,
     userId: string,
     userName: string
@@ -55,7 +56,7 @@ export const UserContext= createContext<UserContextProviderProps> ({
 export const UserContextProvider:React.FC<{children: ReactNode}> = ({children}) => {
 
     let loggedInUser: User| null
-    let loggedInUserId
+    let loggedInUserId: string | undefined
 
 
     const userWithToken = JSON.parse(localStorage.getItem('token') || 'null')
