@@ -27,10 +27,12 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
 
     const [usersArray, setUsersArray] = useState([])
     const [arrivalMessages, setArrivalMessages] = useState(null)
+    const [typing, setTyping] = useState(false)
+    const [isTyping, setIsTyping] = useState(false)
     const scrollRef = useRef<HTMLDivElement | null>(null)
     const token: {token: string } | null = JSON.parse(localStorage.getItem("token") || "null")
-    const idArray = usersArray?.map((obj) => obj._id);
-    // const AI_ASSISTANT_ID = "6487be19c6c6a7054bb52072"
+    const idArray = usersArray?.map((obj) => obj._id)
+
 
 
     const fetchMessages = async () => {
@@ -65,6 +67,16 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
         }
     }
 
+  useEffect(() => {
+    if (socket.current) {
+      socket.current.on("isTyping", () => {
+        console.log("isTyping")
+        setIsTyping(true)
+      }
+      );
+      socket.current.on("stopTyping", () => setIsTyping(false));
+    }
+  }, [socket.current]);
 
   useEffect(() => {
     fetchMessages();
@@ -88,6 +100,8 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
 
 
     const sendMessage = async (messageText:any) => {
+
+        socket.current.emit("stopTyping", selectId)
         try {
            const {data} = await axios.post('http://localhost:8000/api/v1/messages', {
                 from: user?._id,
@@ -258,19 +272,25 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
             </div>
           </div>
         </div>
-
+        {isTyping ? <div>Loading...</div> : null}
                 <div
           className={`w-full h-32 pt-2 ${
             isDarkMode ? "bg-gray-800" : "bg-gray-200"
           }`}
         >
+       
             {selectId ? (
                 <>
                 <ChatInput 
                 onHandleSendMessage={sendMessage} 
                 onHandleSendAIMessage={sendAIMessage}
-                socket={socket}/>
-            
+                socket={socket}
+                typing={typing}
+                setTyping={setTyping}
+                isTyping={isTyping}
+                setIsTyping={setIsTyping}
+                />
+          
                 </>
                 
             ) : null}
