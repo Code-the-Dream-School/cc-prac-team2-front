@@ -85,8 +85,6 @@ console.log(usersList)
     setUsersList(data.users)
   };
 
-
-
   useEffect(() => {
     fetchUsers();
   }, []);

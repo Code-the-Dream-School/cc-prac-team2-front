@@ -12,10 +12,11 @@ const VoiceMessage = ({ socket }: { socket: Socket }) => {
         setMessages,
     } = useContext(UserContext)
 
-
-    const [isRecording, setIsRecording] = useState(false);
+  const [isReadyToSend, setIsReadyToSend] = useState(false);
+  const [isRecording, setIsRecording] = useState(false);
   const [mediaStream, setMediaStream] = useState<MediaStream | null>(null);
   const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(null);
+  const [recordedAudio, setRecordedAudio] = useState<Blob | null>(null);
   const token: {token: string } | null = JSON.parse(localStorage.getItem("token") || "null")
 
   const startRecording = async () => {
@@ -27,7 +28,7 @@ const VoiceMessage = ({ socket }: { socket: Socket }) => {
       setMediaRecorder(recorder);
 
       // Handle dataavailable event
-      recorder.addEventListener('dataavailable', handleDataAvailable);
+      // recorder.addEventListener('dataavailable', handleDataAvailable);
       
       // Start recording
       recorder.start();
@@ -39,58 +40,70 @@ const VoiceMessage = ({ socket }: { socket: Socket }) => {
 
   const stopRecording = () => {
     if (mediaRecorder && mediaStream) {
-    console.log("mouse down");
       mediaRecorder.stop();
+      mediaRecorder.addEventListener('dataavailable', (event) => {
+        setRecordedAudio(event.data);
+      });
       setIsRecording(false);
+      setIsReadyToSend(true); // Set the audio ready to be sent
       mediaStream.getTracks().forEach(track => track.stop());
     }
   };
 
-  const handleDataAvailable = async (event:BlobEvent) => {
+  const sendAudio = async () => {
     
     // Access the recorded audio data (e.g., event.data)
     // Blob {size: 22788, type: 'audio/webm;codecs=opus'}
     // size: 22788
     // type: "audio/webm;codecs=opus"
 
-    const recordedAudio = event.data;
-    const formData = new FormData();
+    if (recordedAudio) {
+      const formData = new FormData();
 
-    formData.append('audio', recordedAudio);
-    formData.append('from', user?._id,);
-    formData.append('to', selectId);
-
-    try {
-    const {data} = await axios.post('http://localhost:8000/api/v1/messages/voice-note', 
-        formData,
-        {headers: {
-          Authorization: `Bearer ${token}`
-        }})
-    const {message} = data
-    setMessages( prev => [...prev, {
-        createdAt: message.createdAt,
-        voiceNote: {
-            url: message.voiceNote.url
-        }, 
-        sender: user?._id, 
-        _id: message._id,
-    }])
-
-    socket.current.emit("sendMessage", {
-        createdAt: message.createdAt,
-        voiceNote: {
-            url: message.voiceNote.url
-        }, 
-        from: user?._id, 
-        to: selectId,
-    })
-
-    } catch (err) {
-        console.log(err);
-        toast.error("Error sending messages, please try again");
+      formData.append('audio', recordedAudio);
+      formData.append('from', user?._id,);
+      formData.append('to', selectId);
+  
+      try {
+      const {data} = await axios.post('http://localhost:8000/api/v1/messages/voice-note', 
+          formData,
+          {headers: {
+            Authorization: `Bearer ${token}`
+          }})
+      const {message} = data
+      setMessages( prev => [...prev, {
+          createdAt: message.createdAt,
+          voiceNote: {
+              url: message.voiceNote.url
+          }, 
+          sender: user?._id, 
+          _id: message._id,
+      }])
+  
+      socket.current.emit("sendMessage", {
+          createdAt: message.createdAt,
+          voiceNote: {
+              url: message.voiceNote.url
+          }, 
+          from: user?._id, 
+          to: selectId,
+      })
+      setRecordedAudio(null)
+  
+      } catch (err) {
+          console.log(err);
+          toast.error("Error sending messages, please try again");
+      }
     }
   };
 
+  const playAudio = () => {
+    if(recordedAudio){
+        const audioUrl = URL.createObjectURL(recordedAudio)
+        const audioElement = new Audio(audioUrl)
+        audioElement.play()
+    }
+  }
 
   return (
     <>
@@ -98,29 +111,47 @@ const VoiceMessage = ({ socket }: { socket: Socket }) => {
         <div className='flex flex-row'>
       <button  
         onClick={startRecording} 
-        className="bg-slate-300 hover:bg-green-300 w-1/3 rounded-md px-2 mx-2"
+        className="bg-slate-300 hover:bg-green-300 w-1/5 rounded-md px-2 mx-2"
         >
         Record
       </button>
+      {recordedAudio ? (
+            <>
+              <button  
+              onClick={playAudio} 
+              className="bg-slate-300 hover:bg-green-300 w-1/5 rounded-md px-2 mx-2"
+              disabled={!isReadyToSend}
+              >
+              Play 
+            </button>
+            <button  
+              onClick={sendAudio} 
+              className="bg-slate-300 hover:bg-green-300 w-1/5 rounded-md px-2 mx-2"
+              disabled={!isReadyToSend}
+              >
+              Send 
+            </button>
+            </>
+      ): null }
+
+
       {isRecording ? 
       (
         <>
-      <div className="w-1/3">
+      <div className="w-1/5">
         <div className='flex items-center justify-center'>
         <img  src={Wave} alt="Wave" width="25" height="80"/>
         </div>
       </div> 
         <button
             onClick={stopRecording}
-            className="bg-slate-300 hover:bg-red-300 w-1/3 rounded-md px-2 mx-2"
+            className="bg-slate-300 hover:bg-red-300 w-1/5 rounded-md px-2 mx-2"
           >
             Stop
         </button>
         </>
         )
-      
       : null }
-
       </div>
     </div>
     
