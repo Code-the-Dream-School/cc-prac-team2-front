@@ -41,7 +41,7 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
     const scrollRef = useRef<HTMLDivElement | null>(null)
     const token: {token: string } | null = JSON.parse(localStorage.getItem("token") || "null")
     const idArray = usersArray?.map((obj) => obj._id);
-    const AI_ASSISTANT_ID = "6487be19c6c6a7054bb52072"
+    // const AI_ASSISTANT_ID = "6487be19c6c6a7054bb52072"
 
 
     const fetchMessages = async () => {
@@ -65,7 +65,7 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
                 setMessages(messages)
                 const AIuser = {
                   userName: "AI Assistant",
-                  _id: AI_ASSISTANT_ID
+                  _id: import.meta.env.VITE_AI_ASSISTANT_ID
                 }
                 setUsersArray([...data.conversation.users, AIuser])
 
@@ -217,14 +217,14 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
                         <div
                         className={('text-left ' +
                         (msg.sender === user?._id ? 'text-right '  : '') +
-                        (msg.sender === AI_ASSISTANT_ID ?  'text-center' : '') 
+                        (msg.sender == import.meta.env.VITE_AI_ASSISTANT_ID ?  'text-center' : '') 
                       )}
                         key={msg._id}
                         >
                         <div 
                       className={('max-w-md inline-block bg-slate-500 rounded-lg m-2 p-2 ' +
                       (msg.sender === user?._id ? 'bg-white text-left ' : '') +
-                      (msg.sender == AI_ASSISTANT_ID ?  'bg-yellow-200 text-center' : '') 
+                      (msg.sender == import.meta.env.VITE_AI_ASSISTANT_ID ?  'bg-yellow-200 text-center' : '') 
                       
                     )}
                         >

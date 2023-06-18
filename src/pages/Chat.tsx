@@ -100,8 +100,6 @@ console.log(usersList)
     setUsersList(data.users)
   };
 
-
-
   useEffect(() => {
     fetchUsers();
   // eslint-disable-next-line react-hooks/exhaustive-deps

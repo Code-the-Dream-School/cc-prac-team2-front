@@ -14,7 +14,7 @@ interface ChatInputProps {
 const ChatInput = ({onHandleSendMessage, socket, onHandleSendAIMessage}: ChatInputProps): JSX.Element => {
 
     const [showEmoji, setShowEmoji] = useState<boolean>(false)
-    const AIcall = "@birdie"
+    const AIcall = import.meta.env.VITE_AI_ASSISTANT_CALL
     const [messageText, setMessageText] = useState<string>("")
     const {setIsLoading} = useContext(UserContext)
 
@@ -35,9 +35,6 @@ const ChatInput = ({onHandleSendMessage, socket, onHandleSendAIMessage}: ChatInp
       }
       setMessageText("")
     }
-
-
-    
 
     return (
         <>
