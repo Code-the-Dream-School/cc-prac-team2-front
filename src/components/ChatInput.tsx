@@ -6,24 +6,60 @@ import VoiceMessage from './VoiceMessage'
 import SpeechToText from './SpeechToText'
 import {UserContext} from "../context/user-context"
 
-interface ChatInputProps {
+interface ChatInputProps {  
+  socket: any,
+  typing: boolean,
+  setTyping: (typing: boolean) => void,
+  isTyping: boolean,
+  setIsTyping: (isTyping:boolean) => void,
   onHandleSendMessage: (message: string) => void,
   onHandleSendAIMessage: (messageAI: string) => void,
-  socket: any
+
 }
-const ChatInput = ({onHandleSendMessage, socket, onHandleSendAIMessage}: ChatInputProps): JSX.Element => {
+const ChatInput = ({
+  socket, 
+  onHandleSendMessage, 
+  onHandleSendAIMessage,
+  typing,
+  setTyping,
+  isTyping,
+  setIsTyping,
+}: ChatInputProps): JSX.Element => {
 
     const [showEmoji, setShowEmoji] = useState<boolean>(false)
     const AIcall = import.meta.env.VITE_AI_ASSISTANT_CALL
     const [messageText, setMessageText] = useState<string>("")
-    const {setIsLoading} = useContext(UserContext)
+    const {
+      isLoading, setIsLoading,
+  } = useContext(UserContext)
 
     const handleShowEmoji = () => {
         setShowEmoji(!showEmoji)
     }
 
+
     const handleEmojiClick = (event: any) =>
     setMessageText(`${messageText} ${event.emoji}`)
+
+    const handleTyping = (e:ChangeEvent<HTMLInputElement>) => {
+      setMessageText(e.target.value)
+      if(!typing) {
+        setTyping(true)
+        socket.current.emit("isTyping", selectId )
+      }
+      // after user stops typing for 3 seconds we will stop typing
+      let lastTypingTime = new Date().getTime()
+      let timeLength = 3000 // 3 second
+      setTimeout(() => {
+        let currentTime = new Date().getTime()
+        let timeDiff = currentTime - lastTypingTime
+        if (timeDiff > timeLength && typing) {
+          socket.current.emit("stopTyping", selectId)
+          setTyping(false)
+        }
+      }, timeLength)
+
+    }
 
     const handleSendMessage = (e:ChangeEvent<HTMLFormElement>) => {
       e.preventDefault()
@@ -61,6 +97,7 @@ const ChatInput = ({onHandleSendMessage, socket, onHandleSendAIMessage}: ChatInp
                 )}
               </div>
 
+
               <input
               type="text"
               placeholder='Type your message or type @birdie to call chatGPT'
@@ -68,11 +105,7 @@ const ChatInput = ({onHandleSendMessage, socket, onHandleSendAIMessage}: ChatInp
                 messageText.startsWith(AIcall) ? 'text-yellow-300' : ''
               }`}
               value={messageText}
-              onChange={e => 
-                {
-                  setMessageText(e.target.value)
-                }
-              }
+              onChange={handleTyping}
               />
               <button 
               type="submit" 
