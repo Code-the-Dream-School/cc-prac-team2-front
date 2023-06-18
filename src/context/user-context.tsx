@@ -14,8 +14,10 @@ export interface Messages {
 export interface User {
     email: string,
     userId: string,
-    userName: string,
-    _id: string
+    userName: string, 
+    profileImage?: {
+        url: string
+    }
 }
 
 
