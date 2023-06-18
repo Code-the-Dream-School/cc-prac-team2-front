@@ -34,9 +34,11 @@ const Profile = () => {
 
     try {
       const formData = new FormData();
-      formData.append("userName", name || user.userName);
-      formData.append("image", image);
-
+      if (user && image) {
+        formData.append("userName", name || user.userName);
+        formData.append("image", image);
+      }
+  
       const response = await axios.patch(
         `http://localhost:8000/api/v1/users/${user._id}/update-user`,
         formData,

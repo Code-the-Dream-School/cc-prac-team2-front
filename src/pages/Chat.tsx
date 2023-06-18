@@ -2,7 +2,6 @@ import { useState, useContext, useEffect, useRef } from "react";
 import axios from "axios";
 import ChatContainer from "../components/ChatContainer";
 import { UserContext } from "../context/user-context";
-import COCKATOO from "./../assests/cockatoo.png";
 import { getContactName } from "../util/getContactName";
 import { io, Socket } from "socket.io-client";
 
@@ -17,6 +16,9 @@ interface User {
     _id: string;
     userName: string;
     conversation: string;
+    profileImage: {
+      url: string
+    }
   }
 
 interface UsersList {
