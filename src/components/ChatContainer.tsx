@@ -35,6 +35,7 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
 
 
 
+
     const fetchMessages = async () => {
         try {
             if (user && conversationId) {
@@ -45,6 +46,7 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
                     }
                   }
                 )
+
                 
                 const {messages} = data.conversation
                 const {users} = data.conversation
@@ -106,6 +108,7 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
            const {data} = await axios.post('http://localhost:8000/api/v1/messages', {
                 from: user?._id,
                 to: selectId, 
+                targetLanguage: "zh",
                 message: messageText
             },
             {
@@ -121,6 +124,7 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
                 createdAt: message.createdAt,
                 from: user?._id,
                 to: selectId, 
+                targetLanguage: "zh",
                 message: message.message
             })
 
@@ -184,7 +188,7 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
     scrollRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
   }, [messages]);
 
-  console.log(messages)
+
 
   return (
     <>

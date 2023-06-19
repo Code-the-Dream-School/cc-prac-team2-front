@@ -76,7 +76,7 @@ export const UserContextProvider:React.FC<{children: ReactNode}> = ({children}) 
     const [messages, setMessages] = useState<Messages[] | null>([])
     const [isLoading, setIsLoading] = useState(false)
 
-    console.log(loggedInUser);
+
 
     const fetchUser = async () => {
         const { data } = await axios.get(`http://localhost:8000/api/v1/users/${loggedInUserId}`, {

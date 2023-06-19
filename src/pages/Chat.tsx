@@ -44,7 +44,7 @@ const Chat = () => {
   const token: { token: string } | null = JSON.parse(
     localStorage.getItem("token") || "null"
   );
-console.log(usersList)
+
 
   useEffect(() => {
     socket.current = io("http://localhost:8000");
