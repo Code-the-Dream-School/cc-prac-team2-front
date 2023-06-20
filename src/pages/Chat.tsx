@@ -10,7 +10,6 @@ type MyEventMap = {
   disconnect: () => void;
   addUser: (userID: string) => void;
   getUsers: (users: string[]) => void;
-
 };
 
 interface User {
@@ -19,7 +18,8 @@ interface User {
     conversation: string;
     profileImage: {
       url: string
-    }
+    };
+    language: string;
   }
 
 interface UsersList {
@@ -37,6 +37,7 @@ const Chat = () => {
     isDarkMode,
     setRecipient,
     messages,
+    language, setLanguage,
   } = useContext(UserContext);
 
   const socket = useRef<Socket<MyEventMap> | null>();
@@ -102,7 +103,9 @@ console.log(data)
   const handleSelectContact = (u: User) => {
     setConversationId(u.conversation._id);
     setSelectId(u._id);
+    setLanguage(u?.language)
   };
+  console.log(conversationId)
 
   const handleSelectUnContact = (unContact:User) => {
     setConversationId(null);

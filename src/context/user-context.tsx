@@ -7,7 +7,8 @@ interface Messages {
     message: string, 
     audioURL: string, // URL of the audio file
     sender: string | null, 
-    _id: string
+    _id: string, 
+
 }
 
 interface User {
@@ -16,7 +17,8 @@ interface User {
     userName: string, 
     profileImage?: {
         url: string
-    }
+    }, 
+    language: string,
 }
 
 
@@ -35,6 +37,8 @@ interface UserContextProviderProps {
     setMessages: React.Dispatch<React.SetStateAction<Messages[] | null>>; // Update the type of setMessages
     isLoading: boolean, 
     setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
+    language: string | null , 
+    setLanguage: React.Dispatch<React.SetStateAction<string | null>>;
 }
 
 export const UserContext= createContext<UserContextProviderProps> ({
@@ -52,6 +56,8 @@ export const UserContext= createContext<UserContextProviderProps> ({
     setMessages: () => {},
     isLoading: false, 
     setIsLoading: () => {},
+    language: null , 
+    setLanguage: () => {},
 })
 
 
@@ -70,6 +76,7 @@ export const UserContextProvider:React.FC<{children: ReactNode}> = ({children}) 
     }
     const [user, setUser] = useState<User | null>(null)
     const [recipient, setRecipient] = useState<string | null>(null)
+    const [language, setLanguage] = useState<string | null>(null)
     const [isDarkMode, setIsDarkMode] = useState(false);
     const [conversationId, setConversationId] = useState<string|null>(null)
     const [selectId, setSelectId] = useState<string|null>(null)
@@ -105,6 +112,7 @@ export const UserContextProvider:React.FC<{children: ReactNode}> = ({children}) 
             recipient, setRecipient,
             messages, setMessages,
             isLoading, setIsLoading,
+            language, setLanguage,
         }}
             >
             {children}

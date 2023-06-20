@@ -22,6 +22,7 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
         recipient, setRecipient,
         messages, setMessages,
         isLoading, setIsLoading,
+        language, setLanguage,
     } = useContext(UserContext)
 
 
@@ -32,8 +33,6 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
     const scrollRef = useRef<HTMLDivElement | null>(null)
     const token: {token: string } | null = JSON.parse(localStorage.getItem("token") || "null")
     const idArray = usersArray?.map((obj) => obj._id)
-
-
 
 
     const fetchMessages = async () => {
@@ -50,6 +49,7 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
                 
                 const {messages} = data.conversation
                 const {users} = data.conversation
+                console.log(users)
                 if (users[0].userName === user?.userName) {
                     setRecipient(users[1].userName)
                 } else {
@@ -108,7 +108,7 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
            const {data} = await axios.post('http://localhost:8000/api/v1/messages', {
                 from: user?._id,
                 to: selectId, 
-                targetLanguage: "zh",
+                targetLanguage: language,
                 message: messageText
             },
             {
@@ -118,7 +118,7 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
               }
             )
             const {message} = data
-            console.log(message)
+            console.log(data)
 
             socket.current.emit("sendMessage", {
                 createdAt: message.createdAt,
@@ -294,9 +294,7 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
                 isTyping={isTyping}
                 setIsTyping={setIsTyping}
                 />
-          
                 </>
-                
             ) : null}
                 </div>
             </div>
