@@ -10,6 +10,7 @@ type MyEventMap = {
   disconnect: () => void;
   addUser: (userID: string) => void;
   getUsers: (users: string[]) => void;
+
 };
 
 interface User {
@@ -35,6 +36,7 @@ const Chat = () => {
     setSelectId,
     isDarkMode,
     setRecipient,
+    messages,
   } = useContext(UserContext);
 
   const socket = useRef<Socket<MyEventMap> | null>();
@@ -83,13 +85,19 @@ const Chat = () => {
         Authorization: `Bearer ${token}`,
       },
     });
-    console.log(data);
+console.log(data)
     setUsersList(data.users)
   };
 
   useEffect(() => {
     fetchUsers();
-  }, []);
+    if (socket.current) {
+      socket.current.on('getMessage', (data) => {
+        console.log(data)
+        fetchUsers();
+      });
+    }
+  }, [socket.current, messages]);
 
   const handleSelectContact = (u: User) => {
     setConversationId(u.conversation._id);

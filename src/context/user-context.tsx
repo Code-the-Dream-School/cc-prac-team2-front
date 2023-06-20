@@ -92,8 +92,7 @@ export const UserContextProvider:React.FC<{children: ReactNode}> = ({children}) 
         fetchUser()
       }, [])
 
-      console.log(user);
-      
+      console.log(user)
     
 
 
