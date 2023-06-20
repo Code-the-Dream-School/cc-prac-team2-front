@@ -17,6 +17,7 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
     const {
         user, 
         conversationId, 
+        setConversationId,
         selectId, 
         isDarkMode,
         recipient, setRecipient,
@@ -119,6 +120,7 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
             )
             const {message} = data
             console.log(data)
+            setConversationId(data.conversation._id)
 
             socket.current.emit("sendMessage", {
                 createdAt: message.createdAt,
