@@ -1,4 +1,3 @@
-import React from 'react'
 import Bird from "../assests/Bird.gif"
 
 export default function ChatWelcome() {
