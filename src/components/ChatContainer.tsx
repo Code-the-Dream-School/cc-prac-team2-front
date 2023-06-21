@@ -25,18 +25,28 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
         isLoading, setIsLoading,
     } = useContext(UserContext)
 
+    // TODO coordinate typing between here and interfaces in user-context
+    interface ArrivalMessages {
+      createdAt: any, //TODO refine
+      message?: any, //TODO refine
+      sender: any //TODO refine
+      _id: any //TODO refine
+      voiceNote?: any //TODO refine
+    }
+
 
     const [usersArray, setUsersArray] = useState<User[]>([])
-    const [arrivalMessages, setArrivalMessages] = useState(null)
+
+    const [arrivalMessages, setArrivalMessages] = useState<ArrivalMessages>()
     const scrollRef = useRef<HTMLDivElement | null>(null)
     const token: {token: string } | null = JSON.parse(localStorage.getItem("token") || "null")
     const idArray = usersArray?.map((obj) => obj._id);
-    const AI_ASSISTANT_ID= "6487be19c6c6a7054bb52072"
+    const AI_ASSISTANT_ID= "6487be19c6c6a7054bb52072" //should be env
 
 
     const fetchMessages = async () => {
         try {
-            if (user && conversationId) {
+          if (user && conversationId) {
                 const {data} = await axios.get(`http://localhost:8000/api/v1/users/${user._id}/conversations/${conversationId}`, 
                 {
                     headers: {
@@ -44,7 +54,6 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
                     }
                   }
                 )
-                console.log(data);
                 
                 const {messages} = data.conversation
                 const {users} = data.conversation
@@ -62,7 +71,6 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
 
             }
         } catch (err) {
-            console.log(err);
             toast.error("Error fetching messages, please try again");
         }
     }
@@ -75,10 +83,9 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
 
     const sendAIMessage = (messageAI: any) => {
 
-
         socket.current.emit("sendMessageChatGPT", {
             message: messageAI, 
-            from: user?._id,
+            from: user!._id,
             to: selectId, 
             createdAt: Date.now()
         })
@@ -86,7 +93,7 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
         setMessages( prev => [...prev, {
             createdAt: Date.now(),
             message: messageAI,
-            sender: user?._id, 
+            sender: user!._id, 
             _id: uuidv4(),
         }])
     }
@@ -117,13 +124,12 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
             setMessages( prev => [...prev, {
                 createdAt: message.createdAt,
                 message: messageText, 
-                sender: user?._id, 
+                sender: user!._id, 
                 _id: message._id,
             }])
 
 
         } catch (err) {
-            console.log(err);
             toast.error("Error sending messages, please try again");
         }
     }
@@ -132,7 +138,6 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
     useEffect(() => {
         if (socket.current) {
             socket.current.on("getMessage", (data:any) => {
-                console.log(data)
                 if(data.message) {
                     setArrivalMessages({
                         createdAt: data.createdAt,
@@ -160,14 +165,19 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
                 }
             } )}
         
-    }, [socket.current, arrivalMessages])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [socket, arrivalMessages])
 
     
 
     useEffect(() => {
         arrivalMessages  
         && idArray?.includes(arrivalMessages.sender) 
+        // TS looking at typing in user-context
+        //"Property message is optional in type but required in type 'Messages'."
+        // TODO reconcile typing
         && setMessages((prev) =>[...prev, arrivalMessages])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [arrivalMessages])
 
   useEffect(() => {
@@ -201,9 +211,9 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
                     <div className='m-2 p-2'>
                     {messages ? messages.map((msg) => (
         
-                        <div 
+                        <div
                         className={('text-left ' +
-                        (msg.sender === user?._id || msg.sender ===  AI_ASSISTANT_ID && msg.message.startsWith('hey gpt') ? 'text-center ' : '') +
+                        ((msg.sender === user?._id) || (msg.sender ===  AI_ASSISTANT_ID && msg.message.startsWith('hey gpt') ? 'text-center ' : '')) +
                         (msg.sender !== user?._id ? 'text-left ' : 'text-right ')
                       )}
                         key={msg._id}
@@ -215,7 +225,7 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
                         )}>
                             {msg.message}
                         <div className='text-xxs text-gray-600 text-right items-right'>{getTime(msg.createdAt)}</div>
-                       {msg.voiceNote && (
+                      {msg.voiceNote && (
                         <audio className="w-60 h-15" controls>
                         <source src={msg.voiceNote?.url} type="audio/mpeg" />
                         </audio>)
@@ -224,6 +234,7 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
                         <div ref={scrollRef}></div>
                         </div>
                     )) : null}
+                    {/* SVG is candidate for sub-component */}
                     {isLoading ?
                     <div className='items-center text-center justify-between'>
                         <div aria-label="Loading..." role="status" className="flex items-center space-x-2"><svg className="h-6 w-6 animate-spin stroke-gray-500" viewBox="0 0 256 256"><line x1="128" y1="32" x2="128" y2="64" stroke-linecap="round" stroke-linejoin="round" stroke-width="24"></line><line x1="195.9" y1="60.1" x2="173.3" y2="82.7" stroke-linecap="round" stroke-linejoin="round" stroke-width="24"></line><line x1="224" y1="128" x2="192" y2="128" stroke-linecap="round" stroke-linejoin="round" stroke-width="24"></line><line x1="195.9" y1="195.9" x2="173.3" y2="173.3" stroke-linecap="round" stroke-linejoin="round" stroke-width="24"></line><line x1="128" y1="224" x2="128" y2="192" stroke-linecap="round" stroke-linejoin="round" stroke-width="24"></line><line x1="60.1" y1="195.9" x2="82.7" y2="173.3" stroke-linecap="round" stroke-linejoin="round" stroke-width="24"></line><line x1="32" y1="128" x2="64" y2="128" stroke-linecap="round" stroke-linejoin="round" stroke-width="24"></line><line x1="60.1" y1="60.1" x2="82.7" y2="82.7" stroke-linecap="round" stroke-linejoin="round" stroke-width="24"></line></svg><span className="text-xs font-medium text-gray-500">Loading...</span></div>
