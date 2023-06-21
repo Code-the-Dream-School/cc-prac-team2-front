@@ -1,8 +1,9 @@
-import React, { useState, useContext } from 'react';
+import { useState, useContext } from 'react';
 import { toast } from "react-toastify";
 import axios from "axios"
 import {UserContext} from "../context/user-context"
 import Wave from "../assests/Wave.gif"
+import { Socket } from 'socket.io-client';
 
 const VoiceMessage = ({ socket }: { socket: Socket }) => {
 
@@ -57,7 +58,8 @@ const VoiceMessage = ({ socket }: { socket: Socket }) => {
     const formData = new FormData();
 
     formData.append('audio', recordedAudio);
-    formData.append('from', user?._id,);
+    formData.append('from', user!._id,);
+    //TODO why is this type Blob?
     formData.append('to', selectId);
 
     try {
@@ -67,6 +69,7 @@ const VoiceMessage = ({ socket }: { socket: Socket }) => {
           Authorization: `Bearer ${token}`
         }})
     const {message} = data
+    //TODO further reseach
     setMessages( prev => [...prev, {
         createdAt: message.createdAt,
         voiceNote: {
@@ -76,6 +79,7 @@ const VoiceMessage = ({ socket }: { socket: Socket }) => {
         _id: message._id,
     }])
 
+    //TODO further research into socket.current
     socket.current.emit("sendMessage", {
         createdAt: message.createdAt,
         voiceNote: {
