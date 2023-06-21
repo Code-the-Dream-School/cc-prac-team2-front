@@ -107,6 +107,7 @@ const Navbar = () => {
             {isDropdownOpen && (
               <div className="ml-2 relative">
                 <div className="absolute right-0 mt-2 py-2 w-48 bg-white rounded-lg shadow-xl z-999999">
+                  {/* why a link element?  */}
                   <a
                     href="#"
                     className={`block px-4 py-2 text-${
