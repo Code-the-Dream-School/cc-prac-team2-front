@@ -6,6 +6,7 @@ import { UserContext } from "../context/user-context";
 import ChatWelcome from "../components/ChatWelcome";
 import { getTime } from "../util/getTime";
 import { v4 as uuidv4 } from "uuid";
+import { User } from "../context/user-context";
 
 
 interface Socket {
@@ -25,7 +26,7 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
     } = useContext(UserContext)
 
 
-    const [usersArray, setUsersArray] = useState([])
+    const [usersArray, setUsersArray] = useState<User[]>([])
     const [arrivalMessages, setArrivalMessages] = useState(null)
     const scrollRef = useRef<HTMLDivElement | null>(null)
     const token: {token: string } | null = JSON.parse(localStorage.getItem("token") || "null")
@@ -69,6 +70,7 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
 
   useEffect(() => {
     fetchMessages();
+    // eslint-disable-next-line
   }, [selectId]);
 
     const sendAIMessage = (messageAI: any) => {
@@ -83,7 +85,7 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
 
         setMessages( prev => [...prev, {
             createdAt: Date.now(),
-            message: messageAI, 
+            message: messageAI,
             sender: user?._id, 
             _id: uuidv4(),
         }])
@@ -92,7 +94,7 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
 
     const sendMessage = async (messageText:any) => {
         try {
-           const {data} = await axios.post('http://localhost:8000/api/v1/messages', {
+            const {data} = await axios.post('http://localhost:8000/api/v1/messages', {
                 from: user?._id,
                 to: selectId, 
                 message: messageText
@@ -257,5 +259,3 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
 }
 
 export default ChatContainer
-
-
