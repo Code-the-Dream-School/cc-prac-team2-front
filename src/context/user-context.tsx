@@ -91,7 +91,6 @@ export const UserContextProvider:React.FC<{children: ReactNode}> = ({children}) 
             Authorization: `Bearer ${userWithToken}`,
           },
         });
-        console.log(data);
         setUser(data.user)
       };
 
@@ -99,7 +98,6 @@ export const UserContextProvider:React.FC<{children: ReactNode}> = ({children}) 
         fetchUser()
       }, [])
 
-      console.log(user)
     
 
 

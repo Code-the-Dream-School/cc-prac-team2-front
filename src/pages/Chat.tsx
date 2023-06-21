@@ -86,7 +86,6 @@ const Chat = () => {
         Authorization: `Bearer ${token}`,
       },
     });
-console.log(data)
     setUsersList(data.users)
   };
 
@@ -105,7 +104,6 @@ console.log(data)
     setSelectId(u._id);
     setLanguage(u?.language)
   };
-  console.log(conversationId)
 
   const handleSelectUnContact = (unContact:User) => {
     setConversationId(null);

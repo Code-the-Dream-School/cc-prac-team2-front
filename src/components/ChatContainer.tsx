@@ -23,7 +23,7 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
         recipient, setRecipient,
         messages, setMessages,
         isLoading, setIsLoading,
-        language, setLanguage,
+        language, 
     } = useContext(UserContext)
 
 
@@ -46,11 +46,10 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
                     }
                   }
                 )
-
-                
+                console.log(data)
                 const {messages} = data.conversation
                 const {users} = data.conversation
-                console.log(users)
+
                 if (users[0].userName === user?.userName) {
                     setRecipient(users[1].userName)
                 } else {
@@ -73,7 +72,6 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
   useEffect(() => {
     if (socket.current) {
       socket.current.on("isTyping", () => {
-        console.log("isTyping")
         setIsTyping(true)
       }
       );
@@ -83,7 +81,13 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
 
   useEffect(() => {
     fetchMessages();
-  }, [selectId]);
+    if (socket.current) {
+      socket.current.on('getMessage', (data) => {
+        fetchMessages();
+      });
+    }
+    
+  }, [selectId, socket.current, conversationId]);
 
     const sendAIMessage = (messageAI: any) => {
         socket.current.emit("sendMessageChatGPT", {
@@ -119,14 +123,14 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
               }
             )
             const {message} = data
-            console.log(data)
+  
             setConversationId(data.conversation._id)
 
             socket.current.emit("sendMessage", {
                 createdAt: message.createdAt,
                 from: user?._id,
                 to: selectId, 
-                targetLanguage: "zh",
+                targetLanguage: language,
                 message: message.message
             })
 
@@ -148,7 +152,6 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
     useEffect(() => {
         if (socket.current) {
             socket.current.on("getMessage", (data:any) => {
-                console.log(data)
                 if(data.message) {
                     setArrivalMessages({
                         createdAt: data.createdAt,
@@ -156,6 +159,7 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
                         sender: data.from, 
                         _id: uuidv4(),
                     })
+                    fetchMessages();
                 } else if (data.voiceNote) {
                     setArrivalMessages({
                         createdAt: data.createdAt,
