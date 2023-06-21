@@ -40,7 +40,7 @@ const Profile = () => {
       }
   
       const response = await axios.patch(
-        `http://localhost:8000/api/v1/users/${user._id}/update-user`,
+        `${import.meta.env.VITE_USERS_URL}/${user._id}/update-user`,
         formData,
         {
           headers: {

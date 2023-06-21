@@ -23,16 +23,16 @@ const Navbar = () => {
     const fetchProfileImage = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:8000/api/v1/users/${user._id}`,
+          `${import.meta.env.VITE_USERS_URL}/${user._id}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
             },
           }
         );
-          if (response.data.user.profileImage){
-            setProfileImage(response.data.user.profileImage.url);
-          }
+        if (response.data.user.profileImage) {
+          setProfileImage(response.data.user.profileImage.url);
+        }
       } catch (error) {
         console.error(error);
       }

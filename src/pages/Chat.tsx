@@ -47,7 +47,7 @@ const Chat = () => {
 console.log(usersList)
 
   useEffect(() => {
-    socket.current = io("http://localhost:8000");
+    socket.current = io(`${import.meta.env.VITE_SOCKET}`);
   }, []);
 
   
@@ -78,7 +78,7 @@ console.log(usersList)
 
 
   const fetchUsers = async () => {
-    const { data } = await axios.get(`http://localhost:8000/api/v1/users`, {
+    const { data } = await axios.get(`${import.meta.env.VITE_USERS_URL}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },

@@ -91,7 +91,7 @@ const Register = () => {
     if (isFormValid) {
       try {
         const response = await axios.post(
-          "http://localhost:8000/api/v1/account/sign-up",
+          `${import.meta.env.VITE_REGISTER_URL}`,
           {
             userName,
             email,
