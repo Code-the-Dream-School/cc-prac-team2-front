@@ -20,6 +20,32 @@ const Register = () => {
   const { setUser, isDarkMode } = useContext(UserContext);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [languages, setLanguages] = useState([]);
+  const [selectedLanguage, setSelectedLanguage] = useState("");
+
+  const options = {
+    method: "GET",
+    url: `${import.meta.env.VITE_TRANSLATOR_URL}`,
+    headers: {
+      "X-RapidAPI-Key": `${import.meta.env.VITE_X_RapidAPI_Key}`,
+      "X-RapidAPI-Host": "text-translator2.p.rapidapi.com",
+    },
+  };
+
+  useEffect(() => {
+    const fetchLanguages = async () => {
+      try {
+        const response = await axios.request(options);
+        const { languages } = response.data.data; // Extract the "languages" array from the response data
+        setLanguages(languages);
+        console.log("Languages:", languages);
+      } catch (error) {
+        console.error("Error fetching languages:", error);
+      }
+    };
+
+    fetchLanguages();
+  }, []);
 
   useEffect(() => {
     const validateForm = () => {
@@ -75,6 +101,10 @@ const Register = () => {
     setEmail(e.target.value);
   };
 
+  const handleLanguageChange = (e: ChangeEvent<HTMLSelectElement>) => {
+    setSelectedLanguage(e.target.value);
+  };
+
   const handlePasswordChange = (e: ChangeEvent<HTMLInputElement>) => {
     setPassword(e.target.value);
   };
@@ -96,8 +126,11 @@ const Register = () => {
             userName,
             email,
             password,
+            languageCode: selectedLanguage, // Add selected language code to the request data
           }
         );
+
+        console.log("Response:", selectedLanguage);
 
         const token = response.data.token;
         localStorage.setItem("token", JSON.stringify(token));
@@ -132,73 +165,134 @@ const Register = () => {
   };
 
   return (
-    <div className={`flex justify-center items-center h-full ${isDarkMode ? "bg-gray-900" : ""}`}>
-    <div className="flex justify-center items-center">
-      <form className={`flex flex-col items-center rounded-2xl p-10 ${isDarkMode ? "bg-slate-900" : "bg-slate-100"}`} onSubmit={handleSubmit}>
-        <h2 className={`mb-8 text-5xl ${isDarkMode ? "text-white" : "text-black"}`} style={{ marginRight: "180px", fontFamily: "Montserrat, sans-serif" }}>
-          Sign up
-        </h2>
-        <div className="mb-6">
-          <input
-            type="text"
-            placeholder="User Name"
-            className={`w-96 px-4 py-2 border-b-2 outline-none ${usernameError ? "border-red-500" : "border-gray-300"} ${isDarkMode ? "bg-gray-800" : ""}`}
-            value={userName}
-            onChange={handleUsernameChange}
-            style={{ color: isDarkMode ? "#fff" : "#000" }}
-          />
-          {usernameError && <div className="text-red-500 text-sm mt-1">{usernameError}</div>}
-        </div>
-        <div className="mb-6">
-          <input
-            type="email"
-            placeholder="Email"
-            className={`w-96 px-4 py-2 border-b-2 outline-none ${emailError ? "border-red-500" : "border-gray-300"} ${isDarkMode ? "bg-gray-800" : ""}`}
-            value={email}
-            onChange={handleEmailChange}
-            style={{ color: isDarkMode ? "#fff" : "#000" }}
-          />
-          {emailError && <div className="text-red-500 text-sm mt-1">{emailError}</div>}
-        </div>
-        <div className="mb-6 relative">
-          <input
-            type={showPassword ? "text" : "password"}
-            placeholder="Password"
-            className={`w-96 px-4 py-2 border-b-2 outline-none ${passwordError ? "border-red-500" : "border-gray-300"} ${isDarkMode ? "bg-gray-800" : ""}`}
-            value={password}
-            onChange={handlePasswordChange}
-            style={{ color: isDarkMode ? "#fff" : "#000" }}
-          />
-          <button className="password-toggle-btn" onClick={togglePasswordVisibility}>
-            {showPassword ? <AiFillEyeInvisible /> : <AiFillEye />}
-          </button>
-          {passwordError && <div className="text-red-500 text-sm mt-1">{passwordError}</div>}
-        </div>
-        <div className="mb-6 relative">
-          <input
-            type={showConfirmPassword ? "text" : "password"}
-            placeholder="Confirm Password"
-            className={`w-96 px-4 py-2 border-b-2 outline-none ${confirmPasswordError ? "border-red-500" : "border-gray-300"} ${isDarkMode ? "bg-gray-800" : ""}`}
-            value={confirmPassword}
-            onChange={handleConfirmPasswordChange}
-            style={{ color: isDarkMode ? "#fff" : "#000" }}
-          />
-          <button className="password-toggle-btn" onClick={toggleConfirmPasswordVisibility}>
-            {showConfirmPassword ? <AiFillEyeInvisible /> : <AiFillEye />}
-          </button>
-          {confirmPasswordError && <div className="text-red-500 text-sm mt-1">{confirmPasswordError}</div>}
-        </div>
-        <button
-          className={`bg-orange-50 text-gray-800 px-8 py-3 text-2xl w-96 mt-4 mb-4 rounded-full shadow-md transition-colors ${isButtonDisabled ? "bg-gray-300 cursor-not-allowed" : "hover:bg-blue-500 hover:text-white"} ${isDarkMode ? "text-white" : "text-black"}`}
-          disabled={isButtonDisabled as boolean}
-          style={{ backgroundColor: isDarkMode ? "#333" : "" }}
+    <div
+      className={`flex justify-center items-center h-full ${
+        isDarkMode ? "bg-gray-900" : ""
+      }`}
+    >
+      <div className="flex justify-center items-center">
+        <form
+          className={`flex flex-col items-center rounded-2xl p-10 ${
+            isDarkMode ? "bg-slate-900" : "bg-slate-100"
+          }`}
+          onSubmit={handleSubmit}
         >
-          Sign Up
-        </button>
-      </form>
+          <h2
+            className={`mb-8 text-5xl ${
+              isDarkMode ? "text-white" : "text-black"
+            }`}
+            style={{
+              marginRight: "180px",
+              fontFamily: "Montserrat, sans-serif",
+            }}
+          >
+            Sign up
+          </h2>
+          <div className="mb-6">
+            <input
+              type="text"
+              placeholder="User Name"
+              className={`w-96 px-4 py-2 border-b-2 outline-none ${
+                usernameError ? "border-red-500" : "border-gray-300"
+              } ${isDarkMode ? "bg-gray-800" : ""}`}
+              value={userName}
+              onChange={handleUsernameChange}
+              style={{ color: isDarkMode ? "#fff" : "#000" }}
+            />
+            {usernameError && (
+              <div className="text-red-500 text-sm mt-1">{usernameError}</div>
+            )}
+          </div>
+          <div className="mb-6">
+            <input
+              type="email"
+              placeholder="Email"
+              className={`w-96 px-4 py-2 border-b-2 outline-none ${
+                emailError ? "border-red-500" : "border-gray-300"
+              } ${isDarkMode ? "bg-gray-800" : ""}`}
+              value={email}
+              onChange={handleEmailChange}
+              style={{ color: isDarkMode ? "#fff" : "#000" }}
+            />
+            {emailError && (
+              <div className="text-red-500 text-sm mt-1">{emailError}</div>
+            )}
+          </div>
+          <div className="mb-6 relative">
+            <input
+              type={showPassword ? "text" : "password"}
+              placeholder="Password"
+              className={`w-96 px-4 py-2 border-b-2 outline-none ${
+                passwordError ? "border-red-500" : "border-gray-300"
+              } ${isDarkMode ? "bg-gray-800" : ""}`}
+              value={password}
+              onChange={handlePasswordChange}
+              style={{ color: isDarkMode ? "#fff" : "#000" }}
+            />
+            <div
+              className="absolute top-3 right-3 cursor-pointer"
+              onClick={togglePasswordVisibility}
+            >
+              {showPassword ? <AiFillEyeInvisible /> : <AiFillEye />}
+            </div>
+            {passwordError && (
+              <div className="text-red-500 text-sm mt-1">{passwordError}</div>
+            )}
+          </div>
+          <div className="mb-6 relative">
+            <input
+              type={showConfirmPassword ? "text" : "password"}
+              placeholder="Confirm Password"
+              className={`w-96 px-4 py-2 border-b-2 outline-none ${
+                confirmPasswordError ? "border-red-500" : "border-gray-300"
+              } ${isDarkMode ? "bg-gray-800" : ""}`}
+              value={confirmPassword}
+              onChange={handleConfirmPasswordChange}
+              style={{ color: isDarkMode ? "#fff" : "#000" }}
+            />
+            <div
+              className="absolute top-3 right-3 cursor-pointer"
+              onClick={toggleConfirmPasswordVisibility}
+            >
+              {showConfirmPassword ? <AiFillEyeInvisible /> : <AiFillEye />}
+            </div>
+            {confirmPasswordError && (
+              <div className="text-red-500 text-sm mt-1">
+                {confirmPasswordError}
+              </div>
+            )}
+          </div>
+
+          <div className="mb-6">
+            <select
+              className={`w-96 px-4 py-2 mt-4 rounded-md ${
+                isDarkMode ? "bg-gray-800" : ""
+              }`}
+              value={selectedLanguage}
+              onChange={handleLanguageChange}
+              style={{ color: isDarkMode ? "#fff" : "#000" }}
+            >
+              <option value="">Select Language</option>
+              {languages.map(({ code, name }) => (
+                <option key={code} value={code}>
+                  {name}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <button
+            type="submit"
+            disabled={isButtonDisabled}
+            className={`w-40 px-4 py-2 rounded-lg ${
+              isDarkMode ? "bg-purple-600 text-white" : "bg-purple-400"
+            }`}
+          >
+            Sign up
+          </button>
+        </form>
+      </div>
     </div>
-  </div>
-  
   );
 };
 
