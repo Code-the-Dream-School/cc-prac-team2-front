@@ -7,7 +7,8 @@ export interface Messages {
     message: any, 
     audioURL?: string, // URL of the audio file
     sender: string, 
-    _id: string
+    _id: string,
+    voiceNote?: any //TODO refine
 }
 
 export interface User {
@@ -84,21 +85,20 @@ export const UserContextProvider:React.FC<{children: ReactNode}> = ({children}) 
             Authorization: `Bearer ${userWithToken}`,
             },
         });
-        console.log(data);
         setUser(data.user)
     };
 
     useEffect(()=>{
         fetchUser()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     },[])
-
-    console.log(user);
     
     
 
 
     return (
-        <UserContext.Provider 
+        <UserContext.Provider
+        //TODO look into user, setUser
         value={{user, setUser, 
             conversationId, setConversationId, 
             selectId, setSelectId, 
