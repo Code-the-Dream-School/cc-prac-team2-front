@@ -1,8 +1,9 @@
-import React, { useState, useContext } from "react";
+import { useState, useContext } from "react";
 import { toast } from "react-toastify";
 import axios from "axios";
 import { UserContext } from "../context/user-context";
-import Wave from "../assests/Wave.gif";
+import { FaMicrophone, FaStop, FaPlay, FaPaperPlane } from "react-icons/fa";
+import "./VoiceMessage.css";
 
 const VoiceMessage = ({ socket }: { socket: Socket }) => {
   const { user, selectId, setMessages } = useContext(UserContext);
@@ -111,29 +112,29 @@ const VoiceMessage = ({ socket }: { socket: Socket }) => {
 
   return (
     <>
-      <div className="m-auto p-2">
-        <div className="flex flex-row">
+      <div className="m-auto ">
+        <div className="flex flex-row gap-24">
           <button
             onClick={startRecording}
-            className="bg-slate-300 hover:bg-green-300 w-1/5 rounded-md px-2 mx-2"
+            className="bg-slate-300 hover:bg-green-300 rounded-md  h-14 px-4"
           >
-            Record
+            <FaMicrophone />
           </button>
           {recordedAudio ? (
             <>
               <button
                 onClick={playAudio}
-                className="bg-slate-300 hover:bg-green-300 w-1/5 rounded-md px-2 mx-2"
+                className="bg-slate-300 hover:bg-green-300 rounded-md h-14 px-4"
                 disabled={!isReadyToSend}
               >
-                Play
+                <FaPlay />
               </button>
               <button
                 onClick={sendAudio}
-                className="bg-slate-300 hover:bg-green-300 w-1/5 rounded-md px-2 mx-2"
+                className="bg-slate-300 hover:bg-green-300 rounded-md h-14 px-4"
                 disabled={!isReadyToSend}
               >
-                Send
+                <FaPaperPlane />
               </button>
             </>
           ) : null}
@@ -142,14 +143,25 @@ const VoiceMessage = ({ socket }: { socket: Socket }) => {
             <>
               <div className="w-1/5">
                 <div className="flex items-center justify-center">
-                  <img src={Wave} alt="Wave" width="25" height="80" />
+                  <div id="bars">
+                    <div className="bar"></div>
+                    <div className="bar"></div>
+                    <div className="bar"></div>
+                    <div className="bar"></div>
+                    <div className="bar"></div>
+                    <div className="bar"></div>
+                    <div className="bar"></div>
+                    <div className="bar"></div>
+                    <div className="bar"></div>
+                    <div className="bar"></div>
+                  </div>
                 </div>
               </div>
               <button
                 onClick={stopRecording}
-                className="bg-slate-300 hover:bg-red-300 w-1/5 rounded-md px-2 mx-2"
+                className="bg-slate-300 hover:bg-red-300 rounded-md h-14 px-4"
               >
-                Stop
+                <FaStop />
               </button>
             </>
           ) : null}

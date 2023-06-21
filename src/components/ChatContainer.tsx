@@ -184,8 +184,6 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
     scrollRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
   }, [messages]);
 
-  console.log(messages)
-
   return (
     <>
       <div

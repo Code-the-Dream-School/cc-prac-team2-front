@@ -52,14 +52,14 @@ const Register = () => {
       let isValid = true;
 
       if (userName.trim() === "") {
-        setUsernameError("Username is required");
+        setUsernameError("*");
         isValid = false;
       } else {
         setUsernameError("");
       }
 
       if (email.trim() === "") {
-        setEmailError("Email is required");
+        setEmailError("*");
         isValid = false;
       } else {
         if (!emailRegex.test(email)) {
@@ -71,14 +71,14 @@ const Register = () => {
       }
 
       if (password.trim() === "") {
-        setPasswordError("Password is required");
+        setPasswordError("*");
         isValid = false;
       } else {
         setPasswordError("");
       }
 
       if (confirmPassword.trim() === "") {
-        setConfirmPasswordError("Confirm Password is required");
+        setConfirmPasswordError("* all fields are required");
         isValid = false;
       } else if (password !== confirmPassword) {
         setConfirmPasswordError("Passwords do not match");
@@ -126,11 +126,9 @@ const Register = () => {
             userName,
             email,
             password,
-            languageCode: selectedLanguage, // Add selected language code to the request data
+            language: selectedLanguage, // Add selected language code to the request data
           }
         );
-
-        console.log("Response:", selectedLanguage);
 
         const token = response.data.token;
         localStorage.setItem("token", JSON.stringify(token));
@@ -262,17 +260,19 @@ const Register = () => {
               </div>
             )}
           </div>
-
-          <div className="mb-6">
+          <div className="mb-6 relative">
             <select
-              className={`w-96 px-4 py-2 mt-4 rounded-md ${
-                isDarkMode ? "bg-gray-800" : ""
-              }`}
+              className={`w-96 px-4 py-2 border-b-2 outline-none ${
+                isDarkMode ? "bg-gray-800" : "bg-gray-100"
+              } ${selectedLanguage === "" ? "text-gray-600" : ""} ${
+                isDarkMode ? "text-white" : "text-black"
+              } ${selectedLanguage === "" ? "placeholder-gray-400" : ""}`}
               value={selectedLanguage}
               onChange={handleLanguageChange}
-              style={{ color: isDarkMode ? "#fff" : "#000" }}
             >
-              <option value="">Select Language</option>
+              <option value="" disabled hidden>
+                Select Language
+              </option>
               {languages.map(({ code, name }) => (
                 <option key={code} value={code}>
                   {name}
@@ -280,15 +280,17 @@ const Register = () => {
               ))}
             </select>
           </div>
-
           <button
             type="submit"
-            disabled={isButtonDisabled}
-            className={`w-40 px-4 py-2 rounded-lg ${
-              isDarkMode ? "bg-purple-600 text-white" : "bg-purple-400"
-            }`}
+            className={`bg-orange-50 text-gray-800 px-8 py-3 text-2xl w-96 mt-4 mb-4 rounded-full shadow-md transition-colors ${
+              isButtonDisabled
+                ? "bg-gray-300 cursor-not-allowed"
+                : "hover:bg-blue-500 hover:text-white"
+            } ${isDarkMode ? "text-white" : "text-black"}`}
+            disabled={isButtonDisabled as boolean}
+            style={{ backgroundColor: isDarkMode ? "#333" : "" }}
           >
-            Sign up
+            Sign In
           </button>
         </form>
       </div>
