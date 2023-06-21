@@ -41,7 +41,7 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
     const scrollRef = useRef<HTMLDivElement | null>(null)
     const token: {token: string } | null = JSON.parse(localStorage.getItem("token") || "null")
     // is this supposed to be `userId`?
-    const idArray = usersArray?.map((obj) => obj)
+    const idArray = usersArray?.map((obj) => obj._id)
 
 
 
