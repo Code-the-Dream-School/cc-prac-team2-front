@@ -35,7 +35,9 @@ export interface UserContextProviderProps {
     messages: Messages[]; // Update the type of messages to an array of Messages or null
     setMessages: React.Dispatch<React.SetStateAction<Messages[]>>; // Update the type of setMessages
     isLoading: boolean, 
-    setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
+    setIsLoading: React.Dispatch<React.SetStateAction<boolean>>,
+    isTyping: boolean, 
+    setIsTyping: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export const UserContext= createContext<UserContextProviderProps> ({
@@ -53,6 +55,8 @@ export const UserContext= createContext<UserContextProviderProps> ({
     setMessages: () => {},
     isLoading: false, 
     setIsLoading: () => {},
+    isTyping: false, 
+    setIsTyping: () => {}
 })
 
 
