@@ -13,7 +13,10 @@ interface Messages {
 interface User {
     email: string,
     userId: string,
-    userName: string
+    userName: string, 
+    profileImage?: {
+        url: string
+    }
 }
 
 
@@ -55,7 +58,7 @@ export const UserContext= createContext<UserContextProviderProps> ({
 export const UserContextProvider:React.FC<{children: ReactNode}> = ({children}) => {
 
     let loggedInUser: User| null
-    let loggedInUserId
+    let loggedInUserId: string | undefined
 
 
     const userWithToken = JSON.parse(localStorage.getItem('token') || 'null')

@@ -2,7 +2,6 @@ import { useState, useContext, useEffect, useRef } from "react";
 import axios from "axios";
 import ChatContainer from "../components/ChatContainer";
 import { UserContext } from "../context/user-context";
-import COCKATOO from "./../assests/cockatoo.png";
 import { getContactName } from "../util/getContactName";
 import { io, Socket } from "socket.io-client";
 
@@ -17,6 +16,9 @@ interface User {
     _id: string;
     userName: string;
     conversation: string;
+    profileImage: {
+      url: string
+    }
   }
 
 interface UsersList {
@@ -32,6 +34,7 @@ const Chat = () => {
     selectId,
     setSelectId,
     isDarkMode,
+    setRecipient,
   } = useContext(UserContext);
 
   const socket = useRef<Socket<MyEventMap> | null>();
@@ -41,7 +44,7 @@ const Chat = () => {
   const token: { token: string } | null = JSON.parse(
     localStorage.getItem("token") || "null"
   );
-
+console.log(usersList)
 
   useEffect(() => {
     socket.current = io("http://localhost:8000");
@@ -84,19 +87,19 @@ const Chat = () => {
     setUsersList(data.users)
   };
 
-
   useEffect(() => {
     fetchUsers();
   }, []);
 
   const handleSelectContact = (u: User) => {
-    setConversationId(u.conversation);
+    setConversationId(u.conversation._id);
     setSelectId(u._id);
   };
 
   const handleSelectUnContact = (unContact:User) => {
     setConversationId(null);
     setSelectId(unContact._id);
+    setRecipient(unContact.userName)
   };
 
   return (
@@ -110,14 +113,14 @@ const Chat = () => {
               isDarkMode ? "text-white" : "text-black"
             }`}
           >
-            Contact
+            Friends
           </div>
           {usersList ? usersList.contactedUsers.map((u) => {
             return (
                 <div key={u._id}
                 className={
                     "flex bg-slate-300 rounded-lg m-3 p-2 cursor-pointer " +
-                    (conversationId === u.conversation
+                    (conversationId === u.conversation._id
                     ? "bg-slate-500"
                     : "")
                 }

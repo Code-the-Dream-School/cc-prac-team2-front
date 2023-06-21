@@ -62,9 +62,9 @@ const handleListen = () => {
         <div className="m-auto p-2">
         <div className='flex flex-row'>
         <button 
-            className="bg-slate-300 hover:bg-gray-500 w-1/2 rounded-md"
+            className={`bg-slate-300 hover:bg-green-300 w-1/2 px-2 mx-2 rounded-md ${isListening ? "hover:bg-red-300" : ""}`}
             onClick={handleClickListen}>
-            Start/Stop
+              {isListening ? "Stop" : "Transcribe"}
         </button>
         {isClick ? (
                 isListening ? 
@@ -72,7 +72,7 @@ const handleListen = () => {
                       <>
                     <div className="w-1/2">
                       <div className='flex items-center justify-center'>
-                      <img  src={Wave} alt="Wave" width="30" height="80"/>
+                      <img  src={Wave} alt="Wave" width="25" height="80"/>
                       </div>
                     </div> 
                       </>
