@@ -23,6 +23,7 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
         recipient, setRecipient,
         messages, setMessages,
         isLoading, setIsLoading,
+        isTyping, setIsTyping,
     } = useContext(UserContext)
 
     // TODO coordinate typing between here and interfaces in user-context
@@ -36,12 +37,11 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
 
 
     const [usersArray, setUsersArray] = useState<User[]>([])
-
-    const [usersArray, setUsersArray] = useState([])
     const [arrivalMessages, setArrivalMessages] = useState<ArrivalMessages>()
     const scrollRef = useRef<HTMLDivElement | null>(null)
     const token: {token: string } | null = JSON.parse(localStorage.getItem("token") || "null")
-    const idArray = usersArray?.map((obj) => obj._id)
+    // is this supposed to be `userId`?
+    const idArray = usersArray?.map((obj) => obj)
 
 
 
@@ -85,6 +85,7 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
       );
       socket.current.on("stopTyping", () => setIsTyping(false));
     }
+    //TODO invalid dep
   }, [socket.current]);
 
   useEffect(() => {
@@ -241,7 +242,7 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
                       
                     )}
                         >
-                       {msg.message && msg.message.includes("\n") ? (
+                      {msg.message && msg.message.includes("\n") ? (
                         msg.message.split("\n").map((line, index, lines) => {
                           const prevLine = index > 0 ? lines[index - 1] : null;
                           const isFirstLine = index === 0 || line !== prevLine;
