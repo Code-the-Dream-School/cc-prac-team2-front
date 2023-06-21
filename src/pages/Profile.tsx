@@ -34,7 +34,8 @@ const Profile = () => {
 
     try {
       const formData = new FormData();
-      formData.append("userName", name || user.userName);
+      formData.append("userName", name || user!.userName);
+      //TODO why assigned null?
       formData.append("image", image);
 
       const response = await axios.patch(
@@ -53,7 +54,9 @@ const Profile = () => {
 
       // Update the user context with the updated profile image
       const updatedUser = { ...user };
+      //TODO add profileImage to User
       updatedUser.profileImage = response.data.profileImage;
+      //TODO
       setUser(updatedUser);
     } catch (error) {
       // Handle error
