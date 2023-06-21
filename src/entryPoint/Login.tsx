@@ -3,7 +3,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import emailRegex from "../util/constants.tsx";
 import jwt_decode from "jwt-decode";
-import { UserContext } from "../context/user-context";
+import { User, UserContext } from "../context/user-context";
 import { toast } from "react-toastify";
 import { AiFillEyeInvisible, AiFillEye } from "react-icons/ai";
 
@@ -72,7 +72,7 @@ const LogIn = () => {
         if (response.status === 200) {
           const token = response.data.token;
           localStorage.setItem("token", JSON.stringify(token));
-          const loggedIn = jwt_decode(token);
+          const loggedIn: User = jwt_decode(token);
           setUser(loggedIn);
 
           toast.success("User signed in");
