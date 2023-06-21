@@ -1,4 +1,4 @@
-import React, { useEffect, useState} from 'react';
+import { useEffect, useState} from 'react';
 import Wave from "../assests/Wave.gif"
 declare var window: any;
 
@@ -21,6 +21,7 @@ const [isClick, setIsClick] = useState(false)
 
 useEffect(() => {
   handleListen()
+// eslint-disable-next-line react-hooks/exhaustive-deps
 }, [isListening])
 
 const handleClickListen = () => {
