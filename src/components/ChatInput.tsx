@@ -1,5 +1,4 @@
-
-import {useState,ChangeEvent, useEffect, useContext} from 'react'
+import {useState,ChangeEvent, useContext} from 'react'
 import EmojiPicker from 'emoji-picker-react'
 import {BsEmojiSmile} from 'react-icons/bs'
 import { MdOutlineClose } from 'react-icons/md'
@@ -16,9 +15,7 @@ const ChatInput = ({onHandleSendMessage, socket, onHandleSendAIMessage}: ChatInp
 
     const [showEmoji, setShowEmoji] = useState<boolean>(false)
     const [messageText, setMessageText] = useState<string>("")
-    const {
-      isLoading, setIsLoading,
-  } = useContext(UserContext)
+    const {setIsLoading} = useContext(UserContext)
 
     const handleShowEmoji = () => {
         setShowEmoji(!showEmoji)
@@ -28,7 +25,6 @@ const ChatInput = ({onHandleSendMessage, socket, onHandleSendAIMessage}: ChatInp
     setMessageText(`${messageText} ${event.emoji}`)
 
     const handleSendMessage = (e:ChangeEvent<HTMLFormElement>) => {
- 
       e.preventDefault()
       if (messageText.substring(0,7) === "hey gpt") {
         onHandleSendAIMessage(messageText)
@@ -89,7 +85,6 @@ const ChatInput = ({onHandleSendMessage, socket, onHandleSendAIMessage}: ChatInp
 
           <div className="h-1/3">
             <div className='flex flex-row'>
-   
             <div className="w-1/2 text-center justify-between">
                   <SpeechToText  setMessageText={setMessageText}/>
             </div>
