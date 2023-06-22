@@ -69,6 +69,8 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
         }
     }
 
+
+
   useEffect(() => {
     if (socket.current) {
       socket.current.on("isTyping", () => {
@@ -200,12 +202,12 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
     <>
       <div
         className={`flex flex-grow flex-col shadow  ${
-          isDarkMode ? "bg-gray-900" : "bg-slate-200"
+          isDarkMode ? "bg-slate-800" : "bg-slate-200"
         }`}
       >
         <div
           className={`w-full h-14 text-black pt-4 cursor-pointer rounded-tl-lg shadow text-center font-medium border-b-2 border-slate-300 ${
-            isDarkMode ? "bg-slate-200" : "bg-slate-200"
+            isDarkMode ? "bg-gray-800 text-white border-gray-900" : "bg-slate-200"
           }`}
         >
 

@@ -67,7 +67,7 @@ const Navbar = () => {
   return (
     <nav
       className={`py-2 px-3 flex justify-between items-center drop-shadow-md ${
-        isDarkMode ? "bg-gray-900" : "bg-white"
+        isDarkMode ? "bg-slate-800" : "bg-white"
       }`}
     >
       <div className={`text-${isDarkMode ? "white" : "black"} text-3xl`}>

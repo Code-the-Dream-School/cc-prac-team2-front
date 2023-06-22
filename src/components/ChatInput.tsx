@@ -105,7 +105,7 @@ const ChatInput = ({
               <input
               type="text"
               placeholder='Type your message or type @birdie to call chatGPT'
-              className={`mx-8 flex-grow bg-slate-800 rounded-xl p-2 text-white hover:border-white focus:border-white shadow-lg ${
+              className={`mx-8 flex-grow bg-slate-800 rounded-xl p-2 text-white hover:border-white focus:outline-none shadow-lg ${
                 messageText.startsWith(AIcall) ? 'text-yellow-300' : ''
               }`}
               value={messageText}
