@@ -109,7 +109,7 @@ const Chat = () => {
     <>
       <div className={`flex flex-grow ${isDarkMode ? "bg-dark" : "bg-light"}`}>
         <div
-          className={`w-72 p-2 ${isDarkMode ? "bg-slate-600" : "bg-slate-200"}`}
+          className={`w-72 max-h-screen p-2 ${isDarkMode ? "bg-slate-600" : "bg-slate-200"}`}
         >
           <div
             className={`text-xl p-3 text-center  underline underline-offset-4 ${
@@ -118,7 +118,7 @@ const Chat = () => {
           >
             Friends
           </div>
-          <div className="overflow-y-auto h-80">
+          <div className="overflow-y-auto max-h-72">
             {usersList
               ? usersList.contactedUsers.map((u) => {
                   return (
@@ -183,7 +183,7 @@ const Chat = () => {
           >
             People
           </div>
-          <div className="overflow-y-auto h-80">
+          <div className="overflow-y-auto max-h-72">
             {usersList
               ? usersList.uncontactedUsers.map((unContact) => {
                   if (unContact._id === user?._id) {
