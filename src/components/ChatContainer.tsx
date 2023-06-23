@@ -38,7 +38,7 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
     const fetchMessages = async () => {
         try {
             if (user && conversationId) {
-                const {data} = await axios.get(`http://localhost:8000/api/v1/users/${user._id}/conversations/${conversationId}`, 
+                const {data} = await axios.get(`${import.meta.env.VITE_USERS_URL}/${user._id}/conversations/${conversationId}`, 
                 {
                     headers: {
                       Authorization: `Bearer ${token}`
@@ -103,7 +103,7 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
 
         socket.current.emit("stopTyping", selectId)
         try {
-           const {data} = await axios.post('http://localhost:8000/api/v1/messages', {
+           const {data} = await axios.post(`${import.meta.env.VITE_MESSAGES_URL}`, {
                 from: user?._id,
                 to: selectId, 
                 message: messageText
@@ -183,8 +183,6 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
   useEffect(() => {
     scrollRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
   }, [messages]);
-
-  console.log(messages)
 
   return (
     <>

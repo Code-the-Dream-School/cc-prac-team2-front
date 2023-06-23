@@ -4,6 +4,7 @@ import { UserContext } from "../context/user-context";
 import { toast } from "react-toastify";
 import { HiOutlineUserCircle } from "react-icons/hi";
 import { BsFillSunFill, BsFillMoonFill } from "react-icons/bs";
+import COCKATOO from "./.././assests/cockatoo.png";
 import axios from "axios";
 
 const Navbar = () => {
@@ -23,16 +24,16 @@ const Navbar = () => {
     const fetchProfileImage = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:8000/api/v1/users/${user._id}`,
+          `${import.meta.env.VITE_USERS_URL}/${user._id}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
             },
           }
         );
-          if (response.data.user.profileImage){
-            setProfileImage(response.data.user.profileImage.url);
-          }
+        if (response.data.user.profileImage) {
+          setProfileImage(response.data.user.profileImage.url);
+        }
       } catch (error) {
         console.error(error);
       }
@@ -70,7 +71,17 @@ const Navbar = () => {
         isDarkMode ? "bg-gray-900" : "bg-white"
       }`}
     >
-      <div className={`text-${isDarkMode ? "white" : "black"} text-3xl`}>
+      <div
+        className={`flex flex-row text-${
+          isDarkMode ? "white" : "black"
+        } text-3xl`}
+      >
+        {/* add gif */}
+        <img
+          className="w-12 h-12"
+          src="https://img1.picmix.com/output/stamp/normal/6/4/6/7/1647646_1b76b.gif"
+          alt="logo"
+        />
         TALCKATOO
       </div>
       <div className="flex items-center">
@@ -84,12 +95,32 @@ const Navbar = () => {
               {user && user.userName ? <p>Welcome, {user.userName}</p> : ""}
             </h5>
             {profileImage ? (
-              <img
-                src={profileImage}
-                alt="Profile"
-                className="w-8 h-8 rounded-full cursor-pointer"
+              <div
                 onClick={handleDropdownClick}
-              />
+                className="w-8 h-8 rounded-full shadow-xl flex items-center justify-center"
+                style={{
+                  backgroundImage: `url(${profileImage || COCKATOO})`,
+                  backgroundSize: "cover",
+                  backgroundPosition: "center",
+                }}
+              >
+                {!profileImage && (
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    className="w-6 h-6 text-gray-300"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                    />
+                  </svg>
+                )}
+              </div>
             ) : (
               <button
                 className={`text-${
