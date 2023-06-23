@@ -1,87 +1,104 @@
-import React, { useEffect, useState} from 'react';
-import Wave from "../assests/Wave.gif"
+import { useEffect, useState } from "react";
+import Wave from "./../assests/transcriber-svgrepo-com.svg";
+import "./SpeechtoText.css";
 declare var window: any;
 
+const SpeechRecognition =
+  window.SpeechRecognition || window.webkitSpeechRecognition;
+const mic = new SpeechRecognition();
 
-const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
-const mic = new SpeechRecognition()
-
-mic.continuous = true
-mic.interimResults = true
-mic.lang = 'en-US'
+mic.continuous = true;
+mic.interimResults = true;
+mic.lang = "en-US";
 
 interface SpeechTextProps {
-    setMessageText: (newMessageText: string) => void
+  setMessageText: (newMessageText: string) => void;
 }
 
-export default function SpeechToText({setMessageText}:SpeechTextProps ) {
-const [isListening, setIsListening] = useState(false)
-const [isClick, setIsClick] = useState(false)
+export default function SpeechToText({ setMessageText }: SpeechTextProps) {
+  const [isListening, setIsListening] = useState(false);
+  const [isClick, setIsClick] = useState(false);
 
+  useEffect(() => {
+    handleListen();
+  }, [isListening]);
 
-useEffect(() => {
-  handleListen()
-}, [isListening])
+  const handleClickListen = () => {
+    setIsListening((prevState) => !prevState);
+    setIsClick((prevState) => !prevState);
+    setMessageText(""); // Reset message text when starting a new transcription
+  };
 
-const handleClickListen = () => {
-  setIsListening(prevState => !prevState)
-  setIsClick(true)
-}
-
-const handleListen = () => {
-
-  if (isListening) {
-    mic.start()
-    mic.onend = () => {
-      mic.start()
+  const handleListen = () => {
+    if (isListening) {
+      mic.start();
+      mic.onend = () => {
+        mic.start();
+      };
+    } else {
+      mic.stop();
+      mic.onend = () => {};
     }
-  } else {
-    mic.stop()
-    mic.onend = () => {
-    }
-  }
-  mic.onstart = () => {
-    console.log('Mics on')
-  }
+    mic.onstart = () => {
+      console.log("Mics on");
+    };
 
-  mic.onresult = (event: any) => {
-    const transcript = Array.from(event.results as Array<{ [key: string]: any}>)
-      .map(result => result[0])
-      .map(result => result.transcript)
-      .join('')
-      setMessageText(transcript)
-    mic.onerror = (event: any) => {
-      console.log(event.error)
-    }
-  }
-}
+    mic.onresult = (event: any) => {
+      const transcript = Array.from(
+        event.results as Array<{ [key: string]: any }>
+      )
+        .map((result) => result[0])
+        .map((result) => result.transcript)
+        .join("");
+      setMessageText(transcript);
+      mic.onerror = (event: any) => {
+        console.log(event.error);
+      };
+    };
+  };
 
-
+  const Transcribe = (
+    <img
+      src={Wave}
+      alt="Transcribe"
+      width="50"
+      height="50"
+      className="m-auto p-2"
+    />
+  );
   return (
     <>
-        <div className="m-auto p-2">
-        <div className='flex flex-row'>
-        <button 
-            className={`bg-slate-300 hover:bg-green-300 w-1/2 px-2 mx-2 rounded-md ${isListening ? "hover:bg-red-300" : ""}`}
-            onClick={handleClickListen}>
-              {isListening ? "Stop" : "Transcribe"}
-        </button>
-        {isClick ? (
-                isListening ? 
-                    (
-                      <>
-                    <div className="w-1/2">
-                      <div className='flex items-center justify-center'>
-                      <img  src={Wave} alt="Wave" width="25" height="80"/>
-                      </div>
-                    </div> 
-                      </>
-                      )
-                    : null 
-                    )  
-        : null }
+      <button
+        className={`bg-slate-300 hover:bg-grey-500 hover:bg-blue-400 rounded-md ml-3 ${
+          isListening ? "hover:bg-red-300" : ""
+        }`}
+        onClick={handleClickListen}
+      >
+        {isClick && isListening ? (
+          <div className="">
+            <div className="flex items-center justify-center">
+              <div className="base">
+                <svg
+                  width="10"
+                  height="10"
+                  viewBox="0 0 20 20"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    clip-rule="evenodd"
+                    d="M12.5096 9.19531C12.5096 10.5736 11.3879 11.6953 10.0096 11.6953C8.63125 11.6953 7.50959 10.5736 7.50959 9.19531V4.19531C7.50959 2.81698 8.63125 1.69531 10.0096 1.69531C11.3879 1.69531 12.5096 2.81698 12.5096 4.19531V9.19531ZM14.9998 8.36273C15.4607 8.36273 15.8332 8.73606 15.8332 9.19606C15.8332 12.1294 13.6557 14.5561 10.8332 14.9627V16.6661C10.8332 17.1269 10.4607 17.4994 9.99984 17.4994C9.539 17.4994 9.1665 17.1269 9.1665 16.6661V14.9627C6.344 14.5561 4.1665 12.1294 4.1665 9.19606C4.1665 8.73606 4.539 8.36273 4.99984 8.36273C5.46067 8.36273 5.83317 8.73606 5.83317 9.19606C5.83317 11.4936 7.70234 13.3627 9.99984 13.3627C12.2973 13.3627 14.1665 11.4936 14.1665 9.19606C14.1665 8.73606 14.539 8.36273 14.9998 8.36273Z"
+                    fill="white"
+                  />
+                </svg>
+              </div>
+            </div>
           </div>
-        </div>
-
+        ) : (
+          Transcribe
+        )}
+      </button>
     </>
-)}
+  );
+}

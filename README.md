@@ -26,3 +26,5 @@ Note: In the below example, the group's front-end repository was named `bb-pract
 
 #### Running the front-end server in the browser
 ![browser running](images/front-end-running-browser.png)
+
+

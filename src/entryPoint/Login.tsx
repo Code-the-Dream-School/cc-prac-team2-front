@@ -61,19 +61,16 @@ const LogIn = () => {
 
     if (isFormValid) {
       try {
-        const response = await axios.post(
-          "http://localhost:8000/api/v1/account/log-in",
-          {
-            email: email,
-            password: password,
-          }
-        );
+        const response = await axios.post(`${import.meta.env.VITE_LOGIN_URL}`, {
+          email: email,
+          password: password,
+        });
 
         if (response.status === 200) {
           const token = response.data.token;
           localStorage.setItem("token", JSON.stringify(token));
           const loggedIn = jwt_decode(token);
-          setUser(loggedIn);
+          setUser(response.data.user)
 
           toast.success("User signed in");
 
