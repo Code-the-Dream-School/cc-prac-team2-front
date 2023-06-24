@@ -31,6 +31,7 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
     const [arrivalMessages, setArrivalMessages] = useState(null)
     const [typing, setTyping] = useState(false)
     const [isTyping, setIsTyping] = useState(false)
+    const [selectedTyping, setSelectedTyping] = useState()
     const scrollRef = useRef<HTMLDivElement | null>(null)
     const token: {token: string } | null = JSON.parse(localStorage.getItem("token") || "null")
     const idArray = usersArray?.map((obj) => obj._id)
@@ -71,13 +72,17 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
 
   useEffect(() => {
     if (socket.current) {
-      socket.current.on("isTyping", () => {
+      socket.current.on("isTyping", (data) => {
+        console.log({"data":data})
+        setSelectedTyping(data)
         setIsTyping(true)
       }
       );
       socket.current.on("stopTyping", () => setIsTyping(false));
     }
   }, [socket.current]);
+
+
 
   useEffect(() => {
     fetchMessages();
@@ -182,7 +187,7 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
         
     }, [socket.current, arrivalMessages])
 
-    
+
 
     useEffect(() => {
         arrivalMessages  
@@ -280,7 +285,7 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
             </div>
           </div>
         </div>
-        {isTyping ? <JumpingDotsAnimation /> : null}
+        {selectedTyping === user?._id && isTyping ? <JumpingDotsAnimation /> : null}
                 <div
           className={`w-full h-30 py-2 ${
             isDarkMode ? "bg-gray-800" : "bg-slate-200"

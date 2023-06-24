@@ -26,7 +26,9 @@ const ChatInput = ({
   const [showEmoji, setShowEmoji] = useState<boolean>(false);
   const AIcall = import.meta.env.VITE_AI_ASSISTANT_CALL;
   const [messageText, setMessageText] = useState<string>("");
-  const { isLoading, setIsLoading, selectId, isDarkMode } = useContext(UserContext);
+  const { setIsLoading, selectId, isDarkMode } = useContext(UserContext);
+
+
 
   const handleShowEmoji = () => {
     setShowEmoji(!showEmoji);
@@ -130,7 +132,6 @@ const ChatInput = ({
         <div className="w-full h-1/2">
           <div className="flex flex-row items-center justify-center gap-10">
             <SpeechToText setMessageText={setMessageText} />
-
             <VoiceMessage socket={socket} />
           </div>
         </div>
