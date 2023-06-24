@@ -1,7 +1,8 @@
 import React, { createContext, useState, ReactNode, useEffect, } from "react";
 import axios from "axios"
 import jwt_decode from "jwt-decode";
-import { AiOutlineConsoleSql } from "react-icons/ai";
+import { toast } from "react-toastify";
+
 
 interface Messages {
     createdAt?: string | null,
@@ -89,12 +90,18 @@ export const UserContextProvider:React.FC<{children: ReactNode}> = ({children}) 
 
 
     const fetchUser = async () => {
-        const { data } = await axios.get(`${import.meta.env.VITE_USERS_URL}/${loggedInUserId}`, {
-          headers: {
-            Authorization: `Bearer ${userWithToken}`,
-          },
-        });
-        setUser(data.user)
+        try {
+            if (loggedInUserId) {
+                const { data } = await axios.get(`${import.meta.env.VITE_USERS_URL}/${loggedInUserId}`, {
+                    headers: {
+                      Authorization: `Bearer ${userWithToken}`,
+                    },
+                  });
+                  setUser(data.user)
+            }
+        } catch (error) {
+            toast.error("Error getting user information");
+        }
       };
 
       useEffect(()=>{
