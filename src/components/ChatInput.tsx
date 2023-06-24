@@ -26,7 +26,7 @@ const ChatInput = ({
   const [showEmoji, setShowEmoji] = useState<boolean>(false);
   const AIcall = import.meta.env.VITE_AI_ASSISTANT_CALL;
   const [messageText, setMessageText] = useState<string>("");
-  const { setIsLoading, selectId, isDarkMode } = useContext(UserContext);
+  const { user, setIsLoading, selectId, isDarkMode } = useContext(UserContext);
 
 
 
@@ -41,7 +41,11 @@ const ChatInput = ({
     setMessageText(e.target.value);
     if (!typing) {
       setTyping(true);
-      socket.current.emit("isTyping", selectId);
+      socket.current.emit("isTyping", 
+      {
+        from: user?._id,
+        to: selectId, 
+      });
     }
     // after user stops typing for 3 seconds we will stop typing
     let lastTypingTime = new Date().getTime();
@@ -50,7 +54,10 @@ const ChatInput = ({
       let currentTime = new Date().getTime();
       let timeDiff = currentTime - lastTypingTime;
       if (timeDiff > timeLength && typing) {
-        socket.current.emit("stopTyping", selectId);
+        socket.current.emit("stopTyping", {
+          from: user?._id,
+          to: selectId, 
+        });
         setTyping(false);
       }
     }, timeLength);

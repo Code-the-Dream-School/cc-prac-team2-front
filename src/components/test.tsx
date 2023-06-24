@@ -14,14 +14,13 @@ type MyEventMap = {
 };
 
 interface User {
-    _id: string;
-    userName: string;
-    conversation: string;
-    profileImage: {
-      url: string
-    };
-    language: string;
-  }
+  _id: string;
+  userName: string;
+  conversation: string;
+  profileImage: {
+    url: string;
+  };
+}
 
 interface UsersList {
   contactedUsers: User[];
@@ -37,8 +36,6 @@ const Chat = () => {
     setSelectId,
     isDarkMode,
     setRecipient,
-    messages,
-    language, setLanguage,
   } = useContext(UserContext);
 
   const socket = useRef<Socket<MyEventMap> | null>();
@@ -49,8 +46,6 @@ const Chat = () => {
   const token: { token: string } | null = JSON.parse(
     localStorage.getItem("token") || "null"
   );
-
-  
 
   useEffect(() => {
     socket.current = io(`${import.meta.env.VITE_SOCKET}`);
@@ -92,22 +87,17 @@ const Chat = () => {
         Authorization: `Bearer ${token}`,
       },
     });
-    setUsersList(data.users)
+    console.log(data);
+    setUsersList(data.users);
   };
 
   useEffect(() => {
     fetchUsers();
-    if (socket.current) {
-      socket.current.on('getMessage', () => {
-        fetchUsers();
-      });
-    }
-  }, [socket.current, messages]);
+  }, []);
 
   const handleSelectContact = (u: User) => {
     setConversationId(u.conversation._id);
     setSelectId(u._id);
-    setLanguage(u?.language)
   };
 
   const handleSelectUnContact = (unContact: User) => {
@@ -116,12 +106,11 @@ const Chat = () => {
     setRecipient(unContact.userName);
   };
 
-
   return (
     <>
       <div className={`flex h-[100vh] overflow-hidden lex-grow ${isDarkMode ? "bg-dark" : "bg-light"}`}>
         <div
-          className={`md:w-72  max-h-screen p-2 ${isDarkMode ? "bg-gray-800" : "bg-slate-200"}`}
+          className={`w-72 max-h-screen p-2 ${isDarkMode ? "bg-gray-800" : "bg-slate-200"}`}
         >
           <div className="flex items-center gap-2">
             <button
@@ -158,7 +147,7 @@ const Chat = () => {
                     <div
                       key={u._id}
                       className={
-                        "flex bg-slate-300 rounded-lg m-3 p-2 cursor-pointer last:mb-[3rem] " +
+                        "flex bg-slate-300 rounded-lg m-3 p-2 cursor-pointer last:mb-[3rem]" +
                         (conversationId === u.conversation._id
                           ? "bg-slate-500"
                           : "")
@@ -169,7 +158,7 @@ const Chat = () => {
                         <div className="h-full w-1/3 items-center justify-between">
                           <div className="relative">
                             <div
-                              className="w-10 h-10 rounded-full shadow-xl flex items-center justify-center"
+                              className="w-12 h-12 rounded-full shadow-xl flex items-center justify-center"
                               style={{
                                 backgroundImage: `url(${
                                   u.profileImage?.url || COCKATOO
@@ -198,8 +187,8 @@ const Chat = () => {
                             {getContactName(u.userName, onlineFriends)}
                           </div>
                         </div>
-                        <div className="flex w-2/3 items-center justify-center">
-                          <div className="text-center">
+                        <div className="h-full w-2/3 items-center justify-center">
+                          <div className="m-auto text-center items-center justify-center">
                             {u.userName}
                           </div>
                         </div>
@@ -231,7 +220,7 @@ const Chat = () => {
                     <div
                       key={unContact._id}
                       className={
-                        "flex bg-slate-300 rounded-lg m-3 p-2 cursor-pointer last:mb-[3rem] " +
+                        "flex bg-slate-300 rounded-lg m-3 p-2 cursor-pointer last:mb-[3rem]" +
                         (selectId === unContact._id ? "bg-slate-500" : "")
                       }
                       onClick={() => handleSelectUnContact(unContact)}
@@ -240,7 +229,7 @@ const Chat = () => {
                         <div className="h-full w-1/3 items-center justify-between">
                           <div className="relative">
                             <div
-                              className="w-10 h-10 rounded-full shadow-sm flex items-center justify-center"
+                              className="w-12 h-12 rounded-full border-2 shadow-sm flex items-center justify-center"
                               style={{
                                 backgroundImage: `url(${
                                   unContact.profileImage?.url || COCKATOO
@@ -269,8 +258,8 @@ const Chat = () => {
                             {getContactName(unContact.userName, onlineFriends)}
                           </div>
                         </div>
-                        <div className="flex w-2/3 items-center justify-center">
-                          <div className="text-center">
+                        <div className="h-full w-2/3 items-center justify-center">
+                          <div className="m-auto text-center items-center justify-center">
                             {unContact.userName}
                           </div>
                         </div>

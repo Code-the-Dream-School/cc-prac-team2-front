@@ -18,10 +18,10 @@ export const getContactName = (userName:any, onlineFriends:any) => {
         <>
         {userNameExists ? 
         (<button className="absolute bottom-0 right-0 rounded-full bg-green-400 h-3.5 w-3.5">
-        <BsCheck/>
+            <BsCheck/>
         </button>): 
-        (<button className="absolute bottom-0 right-0 rounded-full bg-white h-3.5 w-3.5">
-        <MdNightsStay/>
+        (<button className="absolute bottom-0 right-0 rounded-full bg-gray-600 h-3.5 w-3.5">
+            <BsCheck/>
         </button>)}
         </>
         )

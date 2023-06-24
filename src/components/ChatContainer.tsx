@@ -47,6 +47,7 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
                     }
                   }
                 )
+                console.log(data)
                 const {messages} = data.conversation
                 const {users} = data.conversation
 
@@ -72,7 +73,8 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
 
   useEffect(() => {
     if (socket.current) {
-      socket.current.on("isTyping", (data) => {
+      socket.current.on("isTyping", (data:any) => {
+        console.log(data);
         setSelectedTyping(data)
         setIsTyping(true)
       }
@@ -80,6 +82,8 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
       socket.current.on("stopTyping", () => setIsTyping(false));
     }
   }, [socket.current]);
+
+  console.log(selectedTyping)
 
 
 
@@ -192,7 +196,6 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
         }
     }
 
-    console.log({"conversationId": conversationId});
     
 
 
@@ -206,7 +209,6 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
                         sender: data.from, 
                         _id: uuidv4(),
                     })
-                    fetchMessages();
                 } else if (data.voiceNote) {
                     setArrivalMessages({
                         createdAt: data.createdAt,
@@ -240,9 +242,6 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
   useEffect(() => {
     scrollRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
   }, [messages]);
-
-  console.log({"selectId": selectId});
-  console.log({"conversationId": conversationId});
   
 
   return (
@@ -331,7 +330,9 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
             </div>
           </div>
         </div>
-        {selectedTyping === user?._id && isTyping ? <JumpingDotsAnimation /> : null}
+        {selectedTyping?.to === user?._id 
+        && selectedTyping?.from === selectId 
+        && isTyping ? <JumpingDotsAnimation /> : null}
                 <div
           className={`w-full h-30 py-2 ${
             isDarkMode ? "bg-gray-800" : "bg-slate-200"
