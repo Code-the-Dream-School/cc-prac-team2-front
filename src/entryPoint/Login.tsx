@@ -77,7 +77,6 @@ const LogIn = () => {
           navigate("/chat");
         }
       } catch (error) {
-        console.log("Error signing in:", error);
         toast.error("Email or password is incorrect");
       }
     }

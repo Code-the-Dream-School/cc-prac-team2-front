@@ -96,7 +96,6 @@ const Chat = () => {
     fetchUsers();
     if (socket.current) {
       socket.current.on('getMessage', (data) => {
-        console.log(data)
         fetchUsers();
       });
     }
@@ -114,11 +113,13 @@ const Chat = () => {
     setRecipient(unContact.userName);
   };
 
+  console.log(messages)
+
   return (
     <>
       <div className={`flex flex-grow ${isDarkMode ? "bg-dark" : "bg-light"}`}>
         <div
-          className={`w-72 p-2 ${isDarkMode ? "bg-slate-600" : "bg-slate-200"}`}
+          className={`w-64 p-2 ${isDarkMode ? "bg-slate-600" : "bg-slate-200"}`}
         >
           <div
             className={`text-xl p-3 text-center  underline underline-offset-4 ${
@@ -142,8 +143,8 @@ const Chat = () => {
                       onClick={() => handleSelectContact(u)}
                     >
                       <div className="flex flex-row gap-4">
-                        <div className="h-full w-1/3 items-center justify-between">
-                          <div className="relative">
+                        <div className="h-full w-1/3 items-center justify-center">
+                          <div className="relative items-center justify-center">
                             <div
                               className="w-12 h-12 rounded-full shadow-xl flex items-center justify-center"
                               style={{
@@ -174,8 +175,8 @@ const Chat = () => {
                             {getContactName(u.userName, onlineFriends)}
                           </div>
                         </div>
-                        <div className="h-full w-2/3 items-center justify-center">
-                          <div className="m-auto text-center items-center justify-center">
+                        <div className="w-2/3 flex items-center justify-center">
+                          <div className="text-center">
                             {u.userName}
                           </div>
                         </div>
@@ -240,8 +241,8 @@ const Chat = () => {
                             {getContactName(unContact.userName, onlineFriends)}
                           </div>
                         </div>
-                        <div className="h-full w-2/3 items-center justify-center">
-                          <div className="m-auto text-center items-center justify-center">
+                        <div className="w-2/3 flex items-center justify-center">
+                          <div className="text-center">
                             {unContact.userName}
                           </div>
                         </div>

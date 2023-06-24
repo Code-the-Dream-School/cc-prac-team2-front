@@ -97,7 +97,6 @@ const VoiceMessage = ({ socket }: { socket: Socket }) => {
         });
         setRecordedAudio(null);
       } catch (err) {
-        console.log(err);
         toast.error("Error sending messages, please try again");
       }
     }

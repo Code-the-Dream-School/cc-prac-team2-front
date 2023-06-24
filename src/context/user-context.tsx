@@ -102,7 +102,6 @@ export const UserContextProvider:React.FC<{children: ReactNode}> = ({children}) 
       }, [])
 
 
-console.log(user);
 
     return (
         <UserContext.Provider 

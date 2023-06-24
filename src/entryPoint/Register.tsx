@@ -38,7 +38,6 @@ const Register = () => {
         const response = await axios.request(options);
         const { languages } = response.data.data; // Extract the "languages" array from the response data
         setLanguages(languages);
-        console.log("Languages:", languages);
       } catch (error) {
         console.error("Error fetching languages:", error);
       }
@@ -139,7 +138,6 @@ const Register = () => {
         toast.success("User signed up");
         navigate("/chat");
       } catch (error) {
-        console.log("Error signing up:", error);
         toast.error("Error signing up");
       }
     }

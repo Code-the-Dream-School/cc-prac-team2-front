@@ -6,7 +6,7 @@ import { UserContext } from "../context/user-context";
 import ChatWelcome from "../components/ChatWelcome";
 import { getTime } from "../util/getTime";
 import { v4 as uuidv4 } from "uuid";
-
+import JumpingDotsAnimation from "../UI/animation"
 
 interface Socket {
   current: any;
@@ -46,7 +46,6 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
                     }
                   }
                 )
-                console.log(data)
                 const {messages} = data.conversation
                 const {users} = data.conversation
 
@@ -64,7 +63,6 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
 
             }
         } catch (err) {
-            console.log(err);
             toast.error("Error fetching messages, please try again");
         }
     }
@@ -145,7 +143,6 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
 
 
         } catch (err) {
-            console.log(err);
             toast.error("Error sending messages, please try again");
         }
     }
@@ -282,7 +279,7 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
             </div>
           </div>
         </div>
-        {isTyping ? <div>Loading...</div> : null}
+        {isTyping ? <JumpingDotsAnimation /> : null}
                 <div
           className={`w-full h-30 py-2 ${
             isDarkMode ? "bg-gray-800" : "bg-gray-200"

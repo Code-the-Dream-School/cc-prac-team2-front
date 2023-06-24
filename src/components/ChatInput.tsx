@@ -14,6 +14,7 @@ interface ChatInputProps {
   setIsTyping: (isTyping: boolean) => void;
   onHandleSendMessage: (message: string) => void;
   onHandleSendAIMessage: (messageAI: string) => void;
+
 }
 const ChatInput = ({
   socket,
@@ -21,13 +22,11 @@ const ChatInput = ({
   onHandleSendAIMessage,
   typing,
   setTyping,
-  isTyping,
-  setIsTyping,
 }: ChatInputProps): JSX.Element => {
   const [showEmoji, setShowEmoji] = useState<boolean>(false);
   const AIcall = import.meta.env.VITE_AI_ASSISTANT_CALL;
   const [messageText, setMessageText] = useState<string>("");
-  const { isLoading, setIsLoading, selectId } = useContext(UserContext);
+  const { isLoading, setIsLoading, selectId, isDarkMode } = useContext(UserContext);
 
   const handleShowEmoji = () => {
     setShowEmoji(!showEmoji);
@@ -74,7 +73,7 @@ const ChatInput = ({
           <div className="m-auto pl-6" onClick={handleShowEmoji}>
             {!showEmoji ? (
               <span className="cursor-pointer">
-                <BsEmojiSmile style={{ width: "30px", heigth: "30px" }} />
+                <BsEmojiSmile style={{ width: "30px", heigth: "30px", color: isDarkMode ? "white" : "black"}} />
               </span>
             ) : (
               <div className="absolute left-100 top-28 h-12 w-12">
@@ -92,7 +91,11 @@ const ChatInput = ({
           <input
             type="text"
             placeholder="Type your message or type @birdie to call chatGPT"
-            className={`mx-8 mb-2 p-2 flex-grow bg-slate-200 rounded-xl text-black hover:border-white focus:outline-none shadow-lg ${
+
+            className={`mx-8 mb-2 p-2 flex-grow rounded-xl hover:border-white focus:outline-none shadow-lg 
+            ${
+              isDarkMode ? "bg-slate-800  text-slate-100" :  "bg-slate-200  text-black" 
+            } ${
               messageText.startsWith(AIcall) ? "font-medium" : ""
             }`}
             value={messageText}
@@ -101,7 +104,11 @@ const ChatInput = ({
           />
           <button
             type="submit"
-            className="bg-slate-200  text-slate-500 mr-6 my-2 w-10 h-10 rounded-lg flex items-center justify-center ease-in-out duration-300"
+            className={`mr-6 my-2 w-10 h-10 rounded-lg flex items-center justify-center ease-in-out duration-300
+            ${
+              isDarkMode ? "bg-slate-800  text-slate-100" :  "bg-slate-200  text-black" 
+            }
+            `}
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"

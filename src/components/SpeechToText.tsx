@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import Wave from "./../assests/transcriber-svgrepo-com.svg";
 import "./SpeechtoText.css";
+import { toast } from "react-toastify";
 declare var window: any;
 
 const SpeechRecognition =
@@ -40,7 +41,6 @@ export default function SpeechToText({ setMessageText }: SpeechTextProps) {
       mic.onend = () => {};
     }
     mic.onstart = () => {
-      console.log("Mics on");
     };
 
     mic.onresult = (event: any) => {
@@ -52,7 +52,7 @@ export default function SpeechToText({ setMessageText }: SpeechTextProps) {
         .join("");
       setMessageText(transcript);
       mic.onerror = (event: any) => {
-        console.log(event.error);
+        toast.error("Error, please try again");
       };
     };
   };
