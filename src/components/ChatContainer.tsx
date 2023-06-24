@@ -81,13 +81,14 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
 
   useEffect(() => {
     fetchMessages();
-    if (socket.current) {
-      socket.current.on('getMessage', (data) => {
-        fetchMessages();
-      });
-    }
+    // if (socket.current) {
+    //   socket.current.on('getMessage', (data) => {
+    //     fetchMessages();
+    //   });
+    // }
     
-  }, [selectId, socket.current, conversationId]);
+  }, [selectId]);
+
 
     const sendAIMessage = (messageAI: any) => {
         socket.current.emit("sendMessageChatGPT", {

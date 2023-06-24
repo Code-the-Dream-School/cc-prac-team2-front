@@ -95,7 +95,7 @@ const Chat = () => {
   useEffect(() => {
     fetchUsers();
     if (socket.current) {
-      socket.current.on('getMessage', (data) => {
+      socket.current.on('getMessage', () => {
         fetchUsers();
       });
     }
