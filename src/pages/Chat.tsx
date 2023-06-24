@@ -119,7 +119,7 @@ const Chat = () => {
     <>
       <div className={`flex flex-grow ${isDarkMode ? "bg-dark" : "bg-light"}`}>
         <div
-          className={`w-64 p-2 ${isDarkMode ? "bg-slate-600" : "bg-slate-200"}`}
+          className={`md:w-64 w-56 p-2 ${isDarkMode ? "bg-gray-800" : "bg-slate-200"}`}
         >
           <div
             className={`text-xl p-3 text-center  underline underline-offset-4 ${
@@ -146,7 +146,7 @@ const Chat = () => {
                         <div className="h-full w-1/3 items-center justify-center">
                           <div className="relative items-center justify-center">
                             <div
-                              className="w-12 h-12 rounded-full shadow-xl flex items-center justify-center"
+                              className="md:w-12 md:h-12 w-10 h-10 rounded-full shadow-xl flex items-center justify-center"
                               style={{
                                 backgroundImage: `url(${
                                   u.profileImage?.url || COCKATOO
@@ -212,7 +212,7 @@ const Chat = () => {
                         <div className="h-full w-1/3 items-center justify-between">
                           <div className="relative">
                             <div
-                              className="w-12 h-12 rounded-full shadow-xl flex items-center justify-center"
+                              className="md:w-12 md:h-12 w-10 h-10 rounded-full shadow-xl flex items-center justify-center"
                               style={{
                                 backgroundImage: `url(${
                                   unContact.profileImage?.url || COCKATOO

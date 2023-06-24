@@ -228,13 +228,13 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
                         key={msg._id}
                         >
                         <div 
-                      className={('max-w-md inline-block bg-slate-500 rounded-lg m-2 p-2 ' +
-                      (msg.sender === user?._id ? 'bg-white text-left ' : '') +
-                      (msg.sender == import.meta.env.VITE_AI_ASSISTANT_ID ?  'bg-yellow-100 text-center' : '') 
+                      className={('max-w-md inline-block  rounded-lg m-2 p-2 ' +
+                      (msg.sender === user?._id ? 'bg-[#f8fafc] text-left ' : '') +
+                      (msg.sender == import.meta.env.VITE_AI_ASSISTANT_ID ?  'bg-yellow-100 text-center' : 'bg-[#94a3b8]') 
                       
                     )}
                         >
-                       {msg.message && msg.message.includes("\n") ? (
+                       {msg.sender !== import.meta.env.VITE_AI_ASSISTANT_ID && msg.message && msg.message.includes("\n") ? (
                         msg.message.split("\n").map((line, index, lines) => {
                           const prevLine = index > 0 ? lines[index - 1] : null;
                           const isFirstLine = index === 0 || line !== prevLine;
@@ -282,7 +282,7 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
         {isTyping ? <JumpingDotsAnimation /> : null}
                 <div
           className={`w-full h-30 py-2 ${
-            isDarkMode ? "bg-gray-800" : "bg-gray-200"
+            isDarkMode ? "bg-gray-800" : "bg-slate-200"
           }`}
         >
        
