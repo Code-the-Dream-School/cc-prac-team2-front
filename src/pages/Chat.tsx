@@ -113,7 +113,6 @@ const Chat = () => {
     setRecipient(unContact.userName);
   };
 
-  console.log(messages)
 
   return (
     <>

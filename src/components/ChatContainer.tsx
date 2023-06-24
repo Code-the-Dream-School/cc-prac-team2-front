@@ -73,7 +73,6 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
   useEffect(() => {
     if (socket.current) {
       socket.current.on("isTyping", (data) => {
-        console.log({"data":data})
         setSelectedTyping(data)
         setIsTyping(true)
       }
