@@ -3,6 +3,7 @@ import { toast } from "react-toastify";
 import axios from "axios";
 import { UserContext } from "../context/user-context";
 import { FaMicrophone, FaStop, FaPlay, FaPaperPlane } from "react-icons/fa";
+import { MdDelete } from "react-icons/md";
 import "./VoiceMessage.css";
 
 const VoiceMessage = ({ socket }: { socket: Socket }) => {
@@ -110,13 +111,17 @@ const VoiceMessage = ({ socket }: { socket: Socket }) => {
     }
   };
 
+  const removeAudio = () => {
+    setRecordedAudio(null)
+  }
+
   return (
     <>
-      <div className="m-auto ">
-        <div className="flex flex-row gap-24">
+      <div className="">
+        <div className="flex flex-row gap-10">
           <button
             onClick={startRecording}
-            className="bg-slate-300 hover:bg-green-300 rounded-md  h-14 px-4"
+            className="bg-slate-300 hover:bg-slate-400 rounded-lg px-2.5 h-9 w-9 items-center justify-center"
           >
             <FaMicrophone />
           </button>
@@ -124,14 +129,21 @@ const VoiceMessage = ({ socket }: { socket: Socket }) => {
             <>
               <button
                 onClick={playAudio}
-                className="bg-slate-300 hover:bg-green-300 rounded-md h-14 px-4"
+                className="bg-slate-300 hover:bg-slate-400 rounded-md h-9 px-2.5"
                 disabled={!isReadyToSend}
               >
                 <FaPlay />
               </button>
               <button
+                onClick={removeAudio}
+                className="bg-slate-300 hover:bg-red-300 rounded-md h-9 px-2.5"
+                disabled={!isReadyToSend}
+              >
+                <MdDelete />
+              </button>
+              <button
                 onClick={sendAudio}
-                className="bg-slate-300 hover:bg-green-300 rounded-md h-14 px-4"
+                className="bg-slate-300 hover:bg-green-300 rounded-full h-9 px-2.5"
                 disabled={!isReadyToSend}
               >
                 <FaPaperPlane />
@@ -159,7 +171,7 @@ const VoiceMessage = ({ socket }: { socket: Socket }) => {
               </div>
               <button
                 onClick={stopRecording}
-                className="bg-slate-300 hover:bg-red-300 rounded-md h-14 px-4"
+                className="bg-slate-300 hover:bg-red-300 rounded-md h-9 px-2.5"
               >
                 <FaStop />
               </button>

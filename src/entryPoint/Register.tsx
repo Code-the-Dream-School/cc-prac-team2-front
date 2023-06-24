@@ -17,11 +17,11 @@ const Register = () => {
   const [passwordError, setPasswordError] = useState("");
   const [confirmPasswordError, setConfirmPasswordError] = useState("");
   const [isFormValid, setIsFormValid] = useState(false);
-  const { setUser, isDarkMode, language, setLanguage, } = useContext(UserContext);
+  const { setUser, isDarkMode,  } = useContext(UserContext);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [languages, setLanguages] = useState([]);
-
+  const [selectedLanguage, setSelectedLanguage] = useState("");
 
   const options = {
     method: "GET",
@@ -102,7 +102,7 @@ const Register = () => {
   };
 
   const handleLanguageChange = (e: ChangeEvent<HTMLSelectElement>) => {
-    setLanguage(e.target.value);
+    setSelectedLanguage(e.target.value);
   };
 
   const handlePasswordChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -126,7 +126,7 @@ const Register = () => {
             userName,
             email,
             password,
-            language: language, // Add selected language code to the request data
+            language: selectedLanguage, // Add selected language code to the request data
           }
         );
 
@@ -264,10 +264,10 @@ const Register = () => {
             <select
               className={`w-96 px-4 py-2 border-b-2 outline-none ${
                 isDarkMode ? "bg-gray-800" : "bg-gray-100"
-              } ${language === "" ? "text-gray-600" : ""} ${
+              } ${selectedLanguage === "" ? "text-gray-600" : ""} ${
                 isDarkMode ? "text-white" : "text-black"
-              } ${language === "" ? "placeholder-gray-400" : ""}`}
-              value={language}
+              } ${selectedLanguage === "" ? "placeholder-gray-400" : ""}`}
+              value={selectedLanguage}
               onChange={handleLanguageChange}
             >
               <option value="" disabled hidden>

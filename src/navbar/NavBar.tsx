@@ -74,11 +74,11 @@ const Navbar = () => {
       <div
         className={`flex flex-row text-${
           isDarkMode ? "white" : "black"
-        } text-3xl`}
+        } text-2xl items-center justify-center`}
       >
         {/* add gif */}
         <img
-          className="w-12 h-12"
+          className="w-10 h-10"
           src="https://img1.picmix.com/output/stamp/normal/6/4/6/7/1647646_1b76b.gif"
           alt="logo"
         />

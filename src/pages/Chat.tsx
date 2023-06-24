@@ -118,7 +118,7 @@ const Chat = () => {
     <>
       <div className={`flex flex-grow ${isDarkMode ? "bg-dark" : "bg-light"}`}>
         <div
-          className={`w-72 max-h-screen p-2 ${isDarkMode ? "bg-slate-600" : "bg-slate-200"}`}
+          className={`w-72 p-2 ${isDarkMode ? "bg-slate-600" : "bg-slate-200"}`}
         >
           <div
             className={`text-xl p-3 text-center  underline underline-offset-4 ${
@@ -127,7 +127,7 @@ const Chat = () => {
           >
             Friends
           </div>
-          <div className="overflow-y-auto max-h-72">
+          <div className="overflow-y-auto max-h-64">
             {usersList
               ? usersList.contactedUsers.map((u) => {
                   return (
@@ -192,7 +192,7 @@ const Chat = () => {
           >
             People
           </div>
-          <div className="overflow-y-auto max-h-72">
+          <div className="overflow-y-auto max-h-64">
             {usersList
               ? usersList.uncontactedUsers.map((unContact) => {
                   if (unContact._id === user?._id) {
@@ -211,7 +211,7 @@ const Chat = () => {
                         <div className="h-full w-1/3 items-center justify-between">
                           <div className="relative">
                             <div
-                              className="w-12 h-12 rounded-full border-2 shadow-sm flex items-center justify-center"
+                              className="w-12 h-12 rounded-full shadow-xl flex items-center justify-center"
                               style={{
                                 backgroundImage: `url(${
                                   unContact.profileImage?.url || COCKATOO

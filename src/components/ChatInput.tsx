@@ -69,13 +69,7 @@ const ChatInput = ({
   return (
     <>
       <div className="flex flex-col">
-        <div className="h-14 mb-2">
-          <div className="flex flex-row gap-10 h-full">
-            <SpeechToText setMessageText={setMessageText} />
-
-            <VoiceMessage socket={socket} />
-          </div>
-        </div>
+       <div className="w-full h-1/2">
         <form onSubmit={handleSendMessage} className="flex flex-row">
           <div className="m-auto pl-6" onClick={handleShowEmoji}>
             {!showEmoji ? (
@@ -98,15 +92,16 @@ const ChatInput = ({
           <input
             type="text"
             placeholder="Type your message or type @birdie to call chatGPT"
-            className={`mx-8 flex-grow bg-slate-800 rounded-xl p-2 text-white hover:border-white focus:border-white shadow-lg ${
-              messageText.startsWith(AIcall) ? "text-yellow-300" : ""
+            className={`mx-8 mb-2 p-2 flex-grow bg-slate-200 rounded-xl text-black hover:border-white focus:outline-none shadow-lg ${
+              messageText.startsWith(AIcall) ? "font-medium" : ""
             }`}
             value={messageText}
             onChange={handleTyping}
+
           />
           <button
             type="submit"
-            className="bg-slate-800  text-slate-400 mr-6 my-2 w-10 h-10 rounded-lg flex items-center justify-center ease-in-out duration-300 hover:bg-slate-500"
+            className="bg-slate-200  text-slate-500 mr-6 my-2 w-10 h-10 rounded-lg flex items-center justify-center ease-in-out duration-300"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -124,6 +119,14 @@ const ChatInput = ({
             </svg>
           </button>
         </form>
+        </div>
+        <div className="w-full h-1/2">
+          <div className="flex flex-row items-center justify-center gap-10">
+            <SpeechToText setMessageText={setMessageText} />
+
+            <VoiceMessage socket={socket} />
+          </div>
+        </div>
       </div>
     </>
   );

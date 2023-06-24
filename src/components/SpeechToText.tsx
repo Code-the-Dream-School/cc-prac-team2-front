@@ -63,13 +63,13 @@ export default function SpeechToText({ setMessageText }: SpeechTextProps) {
       alt="Transcribe"
       width="50"
       height="50"
-      className="m-auto p-2"
+      className="p-2"
     />
   );
   return (
     <>
       <button
-        className={`bg-slate-300 hover:bg-grey-500 hover:bg-blue-400 rounded-md ml-3 ${
+        className={`bg-slate-300 hover:bg-slate-400 rounded-full m-2 h-9 w-9 ${
           isListening ? "hover:bg-red-300" : ""
         }`}
         onClick={handleClickListen}
@@ -79,9 +79,9 @@ export default function SpeechToText({ setMessageText }: SpeechTextProps) {
             <div className="flex items-center justify-center">
               <div className="base">
                 <svg
-                  width="10"
-                  height="10"
-                  viewBox="0 0 20 20"
+                  width="8"
+                  height="8"
+                  viewBox="0 0 18 18"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
                 >

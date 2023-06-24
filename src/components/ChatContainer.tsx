@@ -233,7 +233,7 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
                         <div 
                       className={('max-w-md inline-block bg-slate-500 rounded-lg m-2 p-2 ' +
                       (msg.sender === user?._id ? 'bg-white text-left ' : '') +
-                      (msg.sender == import.meta.env.VITE_AI_ASSISTANT_ID ?  'bg-yellow-200 text-center' : '') 
+                      (msg.sender == import.meta.env.VITE_AI_ASSISTANT_ID ?  'bg-yellow-100 text-center' : '') 
                       
                     )}
                         >
@@ -284,7 +284,7 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
         </div>
         {isTyping ? <div>Loading...</div> : null}
                 <div
-          className={`w-full h-32 pt-2 ${
+          className={`w-full h-30 py-2 ${
             isDarkMode ? "bg-gray-800" : "bg-gray-200"
           }`}
         >

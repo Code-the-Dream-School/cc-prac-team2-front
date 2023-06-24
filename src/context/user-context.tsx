@@ -1,6 +1,7 @@
 import React, { createContext, useState, ReactNode, useEffect, } from "react";
 import axios from "axios"
 import jwt_decode from "jwt-decode";
+import { AiOutlineConsoleSql } from "react-icons/ai";
 
 interface Messages {
     createdAt?: string | null,
@@ -74,6 +75,8 @@ export const UserContextProvider:React.FC<{children: ReactNode}> = ({children}) 
     } else {
         loggedInUser  = null
     }
+
+
     const [user, setUser] = useState<User | null>(null)
     const [recipient, setRecipient] = useState<string | null>(null)
     const [language, setLanguage] = useState<string | null>(null)
@@ -98,8 +101,8 @@ export const UserContextProvider:React.FC<{children: ReactNode}> = ({children}) 
         fetchUser()
       }, [])
 
-    
 
+console.log(user);
 
     return (
         <UserContext.Provider 
