@@ -148,7 +148,7 @@ const Navbar = () => {
                     Profile
                   </a>
                   <a
-                    href="#"
+                    href=""
                     className={`block px-4 py-2 text-${
                       isDarkMode ? "gray-800" : "gray-700"
                     } hover:bg-gray-300`}
