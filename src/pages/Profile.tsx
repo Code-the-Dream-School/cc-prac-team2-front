@@ -50,10 +50,10 @@ const Profile = () => {
         }
       );
 
-      // Handle successful response
+
       toast.success("Profile updated successfully!");
 
-      // Update the user context with the updated profile image
+
       const updatedUser = { ...user };
       updatedUser.profileImage = response.data.profileImage;
       setUser(updatedUser);
@@ -74,7 +74,7 @@ const Profile = () => {
     >
       <div className="flex justify-center items-center">
         <form
-          className="flex flex-col items-center rounded-2xl p-10 relative" // Added 'relative' class
+          className="flex flex-col items-center rounded-2xl p-10 relative" 
           style={{
             backgroundColor: isDarkMode ? "#111827" : "#F1F5F9",
             color: isDarkMode ? "#F1F5F9" : "#111827",
@@ -82,7 +82,7 @@ const Profile = () => {
           onSubmit={handleSubmit}
         >
           <button
-            className="absolute left-4 top-4 bg-transparent border-none" // Positioned the arrow icon
+            className="absolute left-4 top-4 bg-transparent border-none" 
             onClick={navigateChat}
           >
             <FaArrowLeft size={30} />

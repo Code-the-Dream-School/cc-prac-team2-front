@@ -28,10 +28,6 @@ const VoiceMessage = ({ socket }: { socket: Socket }) => {
       const recorder = new MediaRecorder(stream);
       setMediaRecorder(recorder);
 
-      // Handle dataavailable event
-      // recorder.addEventListener('dataavailable', handleDataAvailable);
-
-      // Start recording
       recorder.start();
       setIsRecording(true);
     } catch (error) {
@@ -52,10 +48,6 @@ const VoiceMessage = ({ socket }: { socket: Socket }) => {
   };
 
   const sendAudio = async () => {
-    // Access the recorded audio data (e.g., event.data)
-    // Blob {size: 22788, type: 'audio/webm;codecs=opus'}
-    // size: 22788
-    // type: "audio/webm;codecs=opus"
 
     if (recordedAudio) {
       const formData = new FormData();

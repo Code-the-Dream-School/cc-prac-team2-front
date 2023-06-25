@@ -35,8 +35,8 @@ interface UserContextProviderProps {
     setConversationId: React.Dispatch<React.SetStateAction<string | null>>
     selectId: string | null, 
     setSelectId: React.Dispatch<React.SetStateAction<string | null>>
-    messages: Messages[] | null; // Update the type of messages to an array of Messages or null
-    setMessages: React.Dispatch<React.SetStateAction<Messages[] | null>>; // Update the type of setMessages
+    messages: Messages[] | null; 
+    setMessages: React.Dispatch<React.SetStateAction<Messages[] | null>>;
     isLoading: boolean, 
     setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
     language: string | null , 

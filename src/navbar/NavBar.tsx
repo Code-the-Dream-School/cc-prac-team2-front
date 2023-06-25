@@ -62,7 +62,7 @@ const Navbar = () => {
   };
 
   const toggleTheme = () => {
-    setIsDarkMode(!isDarkMode); // Toggle theme
+    setIsDarkMode(!isDarkMode); 
   };
 
   return (

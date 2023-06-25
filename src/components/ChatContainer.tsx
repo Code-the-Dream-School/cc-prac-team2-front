@@ -104,8 +104,7 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
         }])
     }
 
-    console.log(conversationId)
-    console.log(selectId)
+  
 
 
     const sendMessage = async (messageText:any) => {
