@@ -48,7 +48,6 @@ const VoiceMessage = ({ socket }: { socket: Socket }) => {
   };
 
   const sendAudio = async () => {
-
     if (recordedAudio) {
       const formData = new FormData();
 
@@ -103,8 +102,8 @@ const VoiceMessage = ({ socket }: { socket: Socket }) => {
   };
 
   const removeAudio = () => {
-    setRecordedAudio(null)
-  }
+    setRecordedAudio(null);
+  };
 
   return (
     <>
@@ -112,7 +111,7 @@ const VoiceMessage = ({ socket }: { socket: Socket }) => {
         <div className="flex flex-row gap-10">
           <button
             onClick={startRecording}
-            className="bg-slate-300 hover:bg-slate-400 rounded-lg px-2.5 h-9 w-9 items-center justify-center"
+            className="bg-slate-300 hover:bg-slate-400  rounded-full px-2.5 h-9 w-9 items-center justify-center"
           >
             <FaMicrophone />
           </button>
@@ -120,14 +119,14 @@ const VoiceMessage = ({ socket }: { socket: Socket }) => {
             <>
               <button
                 onClick={playAudio}
-                className="bg-slate-300 hover:bg-slate-400 rounded-md h-9 px-2.5"
+                className="bg-slate-300 hover:bg-slate-400 rounded-full h-9 px-2.5"
                 disabled={!isReadyToSend}
               >
                 <FaPlay />
               </button>
               <button
                 onClick={removeAudio}
-                className="bg-slate-300 hover:bg-red-300 rounded-md h-9 px-2.5"
+                className="bg-slate-300 hover:bg-red-300 rounded-full h-9 px-2.5"
                 disabled={!isReadyToSend}
               >
                 <MdDelete />

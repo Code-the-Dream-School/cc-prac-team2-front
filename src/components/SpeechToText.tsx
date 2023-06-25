@@ -63,7 +63,7 @@ export default function SpeechToText({ setMessageText }: SpeechTextProps) {
       alt="Transcribe"
       width="50"
       height="50"
-      className="p-2"
+      className="p-1"
     />
   );
   return (

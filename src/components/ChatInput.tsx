@@ -78,23 +78,35 @@ const ChatInput = ({
       <div className="flex flex-col">
        <div className="w-full h-1/2">
         <form onSubmit={handleSendMessage} className="flex flex-row">
-          <div className="m-auto pl-6" onClick={handleShowEmoji}>
-            {!showEmoji ? (
-              <span className="cursor-pointer">
-                <BsEmojiSmile style={{ width: "30px", heigth: "30px", color: isDarkMode ? "white" : "black"}} />
-              </span>
-            ) : (
-              <div className="absolute left-100 top-28 h-12 w-12">
+        <div
+              className="m-auto pl-6 relative"
+              onClick={handleShowEmoji}
+            >
+              {showEmoji && (
+              <div className="absolute top-0 transform -translate-y-full bg-white rounded shadow-lg p-2">
                 <span
                   className="flex items-center justify-end cursor-pointer"
                   onClick={handleShowEmoji}
                 >
                   <MdOutlineClose />
                 </span>
-                <EmojiPicker onEmojiClick={handleEmojiClick} />
+                <div className="h-full w-full">
+                  <EmojiPicker onEmojiClick={handleEmojiClick} />
+                </div>
               </div>
-            )}
-          </div>
+              )
+                }
+
+              <span className="cursor-pointer">
+                <BsEmojiSmile
+                  style={{
+                    width: "30px",
+                    height: "30px",
+                    color: isDarkMode ? "white" : "black",
+                  }}
+                />
+              </span>
+            </div>
 
           <input
             type="text"
@@ -102,7 +114,7 @@ const ChatInput = ({
 
             className={`mx-8 mb-2 p-2 flex-grow rounded-xl hover:border-white focus:outline-none shadow-lg 
             ${
-              isDarkMode ? "bg-slate-800  text-slate-100" :  "bg-slate-200  text-black" 
+              isDarkMode ? "bg-[#161c24]  text-slate-100" :  "bg-slate-200  text-black" 
             } ${
               messageText.startsWith(AIcall) ? "text-yellow-200" : ""
             }`}

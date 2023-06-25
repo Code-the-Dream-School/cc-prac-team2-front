@@ -337,6 +337,7 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
             </div>
           </div>
         </div>
+        <hr className=" border-slate-300 mb-3" />
         {selectedTyping?.to === user?._id 
         && selectedTyping?.from === selectId 
         && isTyping ? <JumpingDotsAnimation /> : null}
