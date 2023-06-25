@@ -116,6 +116,12 @@ const Chat = () => {
     setRecipient(unContact.userName);
   };
 
+  const handleSelectPeople = () => {
+    setConversationId(null)
+    setSelectId(null);
+    setView("people")
+  }
+
 
   return (
     <>
@@ -136,7 +142,7 @@ const Chat = () => {
               className={`p-2 rounded-lg ${
                 view === "people" ? "bg-slate-500" : "bg-slate-300"
               }`}
-              onClick={() => setView("people")}
+              onClick={handleSelectPeople}
             >
               People
             </button>

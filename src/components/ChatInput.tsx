@@ -104,7 +104,7 @@ const ChatInput = ({
             ${
               isDarkMode ? "bg-slate-800  text-slate-100" :  "bg-slate-200  text-black" 
             } ${
-              messageText.startsWith(AIcall) ? "text-yellow-400" : ""
+              messageText.startsWith(AIcall) ? "text-yellow-200" : ""
             }`}
             value={messageText}
             onChange={handleTyping}

@@ -39,7 +39,7 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
 
     const fetchMessages = async () => {
         try {
-            if (user && conversationId) {
+            if (user && !!conversationId) {
                 const {data} = await axios.get(`${import.meta.env.VITE_USERS_URL}/${user._id}/conversations/${conversationId}`, 
                 {
                     headers: {
@@ -47,7 +47,6 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
                     }
                   }
                 )
-                console.log(data)
                 const {messages} = data.conversation
                 const {users} = data.conversation
 
@@ -85,13 +84,7 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
 
 
   useEffect(() => {
-    fetchMessages();
-    // if (socket.current) {
-    //   socket.current.on('getMessage', (data) => {
-    //     fetchMessages();
-    //   });
-    // }
-    
+    fetchMessages();    
   }, [selectId, conversationId]);
 
 
@@ -111,12 +104,17 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
         }])
     }
 
+    console.log(conversationId)
+    console.log(selectId)
+
 
     const sendMessage = async (messageText:any) => {
 
         socket.current.emit("stopTyping", selectId)
         if (selectId && conversationId) {
+       
           try {
+
             const {data} = await axios.post(`${import.meta.env.VITE_MESSAGES_URL}`, {
                  from: user?._id,
                  to: selectId, 
@@ -130,6 +128,7 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
                }
              )
              const {message} = data
+        
 
              socket.current.emit("sendMessage", {
                  createdAt: message.createdAt,
@@ -151,6 +150,7 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
              toast.error("Error sending messages, please try again");
          }
         } else if (selectId && conversationId === null) {
+          setMessages([])
           try {
             const {data} = await axios.post(`${import.meta.env.VITE_MESSAGES_URL}`, {
                  from: user?._id,
@@ -165,8 +165,9 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
                }
              )
              const {message} = data
-             console.log(data)
-             setConversationId(data.conversation._id)
+             if(data.conversation._id){
+               setConversationId(data.conversation._id)
+             }
 
             
              socket.current.emit("sendMessage", {
@@ -177,15 +178,10 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
                  message: message.message
              })
  
-            //  setMessages( prev => [...prev, {
-            //      createdAt: message.createdAt,
-            //      message: message.message, 
-            //      sender: user?._id, 
-            //      _id: message._id,
-            //  }])
- 
- 
-         } catch (err) {
+         } 
+         
+         
+         catch (err) {
              toast.error("Error sending messages, please try again");
          }
         }
@@ -261,7 +257,7 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
         >
                 <div className="relative h-full">
                 <div className="overflow-y-auto absolute top-0 left-0 right-0 bottom-0"> 
-                {!!selectId && conversationId ? (
+                {!!selectId && !!conversationId ? (
                 
                     <div className='m-2 p-2'>
                     {messages ? messages.map((msg) => (
