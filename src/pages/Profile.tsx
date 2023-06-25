@@ -60,7 +60,6 @@ const Profile = () => {
 
       navigateChat();
     } catch (error) {
-      // Handle error
       toast.error("Failed to update profile.");
       console.error(error);
     }
@@ -100,7 +99,7 @@ const Profile = () => {
             <div className="relative w-48 h-48 rounded-full overflow-hidden mb-4">
               {image ? (
                 <img
-                  src={URL.createObjectURL(image)} // Display the selected image
+                  src={URL.createObjectURL(image)} 
                   alt="User"
                   className="w-full h-full object-cover"
                 />

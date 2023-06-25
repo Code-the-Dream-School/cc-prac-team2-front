@@ -7,7 +7,7 @@ import ChatWelcome from "../components/ChatWelcome";
 import { getTime } from "../util/getTime";
 import { v4 as uuidv4 } from "uuid";
 import JumpingDotsAnimation from "../UI/animation"
-
+import { HiOutlineLanguage } from "react-icons/hi2";
 interface Socket {
   current: any;
 }
@@ -25,6 +25,8 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
         isLoading, setIsLoading,
         language, 
     } = useContext(UserContext)
+
+    if (language) console.log(language)
 
 
     const [usersArray, setUsersArray] = useState([])
@@ -246,8 +248,23 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
             isDarkMode ? "bg-gray-800 text-white border-gray-900" : "bg-slate-200"
           }`}
         >
-
-          <p>{recipient}</p>
+          <div className="flex flex-row mx-2 px-2 gap-2">
+              <p>{recipient}</p>
+              {language ? 
+                    (
+                    <>
+                    <HiOutlineLanguage />
+                    <span>  {language} </span>
+                    </>
+                    )
+                    :  (
+                      <>
+                      <HiOutlineLanguage />
+                      <span> en </span>
+                      </>
+                      )
+              }
+          </div>
         </div>
         <div
           className={`w-full flex-grow flex flex-col ${

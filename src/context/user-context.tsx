@@ -80,7 +80,7 @@ export const UserContextProvider:React.FC<{children: ReactNode}> = ({children}) 
 
     const [user, setUser] = useState<User | null>(null)
     const [recipient, setRecipient] = useState<string | null>(null)
-    const [language, setLanguage] = useState<string | null>(null)
+    const [language, setLanguage] = useState<string | null>("en")
     const [isDarkMode, setIsDarkMode] = useState(true);
     const [conversationId, setConversationId] = useState<string|null>(null)
     const [selectId, setSelectId] = useState<string|null>(null)

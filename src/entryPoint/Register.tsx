@@ -46,6 +46,13 @@ const Register = () => {
     fetchLanguages();
   }, []);
 
+  // console.log(languages)
+  // console.log(selectedLanguage)
+  // const codeLa = languages.map((la) => {
+  //   return la[selectedLanguage]
+  // })
+  // console.log(codeLa)
+
   useEffect(() => {
     const validateForm = () => {
       let isValid = true;
