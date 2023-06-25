@@ -29,7 +29,6 @@ const ChatInput = ({
   const { user, setIsLoading, selectId, isDarkMode } = useContext(UserContext);
 
 
-
   const handleShowEmoji = () => {
     setShowEmoji(!showEmoji);
   };
@@ -105,12 +104,12 @@ const ChatInput = ({
             ${
               isDarkMode ? "bg-slate-800  text-slate-100" :  "bg-slate-200  text-black" 
             } ${
-              messageText.startsWith(AIcall) ? "font-medium" : ""
+              messageText.startsWith(AIcall) ? "text-yellow-400" : ""
             }`}
             value={messageText}
             onChange={handleTyping}
-
           />
+        
           <button
             type="submit"
             className={`mr-6 my-2 w-10 h-10 rounded-lg flex items-center justify-center ease-in-out duration-300

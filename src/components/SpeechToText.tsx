@@ -27,7 +27,7 @@ export default function SpeechToText({ setMessageText }: SpeechTextProps) {
   const handleClickListen = () => {
     setIsListening((prevState) => !prevState);
     setIsClick((prevState) => !prevState);
-    setMessageText(""); // Reset message text when starting a new transcription
+
   };
 
   const handleListen = () => {
@@ -79,9 +79,9 @@ export default function SpeechToText({ setMessageText }: SpeechTextProps) {
             <div className="flex items-center justify-center">
               <div className="base">
                 <svg
-                  width="8"
-                  height="8"
-                  viewBox="0 0 18 18"
+                  width="14"
+                  height="14"
+                  viewBox="0 0 16 16"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
                 >

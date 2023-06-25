@@ -74,7 +74,6 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
   useEffect(() => {
     if (socket.current) {
       socket.current.on("isTyping", (data:any) => {
-        console.log(data);
         setSelectedTyping(data)
         setIsTyping(true)
       }
@@ -82,8 +81,6 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
       socket.current.on("stopTyping", () => setIsTyping(false));
     }
   }, [socket.current]);
-
-  console.log(selectedTyping)
 
 
 
@@ -134,8 +131,6 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
              )
              const {message} = data
 
-           
- 
              socket.current.emit("sendMessage", {
                  createdAt: message.createdAt,
                  from: user?._id,

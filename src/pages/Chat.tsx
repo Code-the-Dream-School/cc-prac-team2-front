@@ -141,13 +141,6 @@ const Chat = () => {
               People
             </button>
           </div>
-          {/* <div
-            className={`text-xl p-3 text-center  underline underline-offset-4 ${
-              isDarkMode ? "text-white" : "text-black"
-            }`}
-          >
-            Friends
-          </div> */}
           {
             view === 'friends' && (
           
