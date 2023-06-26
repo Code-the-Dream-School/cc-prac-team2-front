@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "../context/user-context";
 import { FaArrowLeft, FaPlus } from "react-icons/fa";
@@ -6,11 +6,12 @@ import { toast } from "react-toastify";
 import axios from "axios";
 
 const Profile = () => {
-  const { user, setUser, isDarkMode } = useContext(UserContext);
+  const { user, setUser, isDarkMode, languages } = useContext(UserContext);
   const [name, setName] = useState("");
-  const [image, setImage] = useState(null); // Store image as a file object
+  const [image, setImage] = useState(null);
+  const [updateLanguage, setUpdateLanguage] = useState("");
 
-  console.log(user)
+
 
   const token: { token: string } | null = JSON.parse(
     localStorage.getItem("token") || "null"
@@ -39,10 +40,11 @@ const Profile = () => {
       if (user && image) {
         formData.append("userName", name || user.userName);
         formData.append("image", image);
+        formData.append("language", updateLanguage);
       }
   
       const response = await axios.patch(
-        `${import.meta.env.VITE_USERS_URL}/${user._id}/update-user`,
+        `${import.meta.env.VITE_USERS_URL}/${user?._id}/update-user`,
         formData,
         {
           headers: {
@@ -98,7 +100,7 @@ const Profile = () => {
             Profile
           </h2>
           <div className="mb-6">
-            <div className="relative w-48 h-48 rounded-full overflow-hidden mb-4">
+            <div className="relative w-48 h-48 rounded-full overflow-hidden mb-8">
               {image ? (
                 <img
                   src={URL.createObjectURL(image)} 
@@ -117,17 +119,38 @@ const Profile = () => {
                 onChange={handleImageUpload}
               />
             </div>
+            <div className="m-2">Current Username: {user?.userName}</div>
             <input
               type="text"
-              placeholder="Name"
-              className={`w-96 px-5 py-2 mt-4 mb-4 border-b-2 outline-none ${
+              placeholder="Update username"
+              className={`w-96 px-5 py-2 mb-4 border-b-2 outline-none ${
                 isDarkMode ? "bg-gray-800" : ""
               }`}
               style={{ color: isDarkMode ? "#fff" : "#000" }}
               value={name}
               onChange={handleNameUpdate}
             />
-            <div>Language: {user?.language}</div>
+            <div className="m-2">Current Language: {user?.language}</div>
+            <div className="mb-6 relative">
+            <select
+              className={`w-96 px-4 py-2 border-b-2 outline-none ${
+                isDarkMode ? "bg-gray-800" : "bg-gray-100"
+              } ${updateLanguage === "" ? "text-gray-600" : ""} ${
+                isDarkMode ? "text-white" : "text-black"
+              } ${updateLanguage === "" ? "placeholder-gray-400" : ""}`}
+              value={updateLanguage}
+              onChange={(e) => setUpdateLanguage(e.target.value)}
+            >
+              <option value="" disabled hidden>
+                Update language
+              </option>
+              {languages?.map(({ code, name }) => (
+                <option key={code} value={code}>
+                  {name}
+                </option>
+              ))}
+            </select>
+          </div>
           </div>
 
           <button className="bg-orange-50 text-gray-800 px-8 py-3 text-2xl w-96 mt-4 mb-4 rounded-full shadow-md transition-colors hover:bg-green-500 hover:text-white">

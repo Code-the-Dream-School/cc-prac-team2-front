@@ -59,6 +59,7 @@ const Navbar = () => {
 
   const handleProfileClick = () => {
     navigate("/profile");
+    setIsDropdownOpen(!isDropdownOpen);
   };
 
   const toggleTheme = () => {
