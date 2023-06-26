@@ -286,7 +286,7 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
                         <div 
                       className={('max-w-md inline-block  rounded-lg m-2 p-2 ' +
                       (msg.sender === user?._id ? 'bg-[#f8fafc] text-left ' : '') +
-                      (msg.sender == import.meta.env.VITE_AI_ASSISTANT_ID ?  'bg-yellow-100 text-center' : 'bg-[#94a3b8]') 
+                      (msg.sender == import.meta.env.VITE_AI_ASSISTANT_ID ?  'bg-amber-100 text-center' : 'bg-[#94a3b8]') 
                       
                     )}
                         >

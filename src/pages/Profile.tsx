@@ -28,7 +28,7 @@ const Profile = () => {
     const file = e.target.files[0];
     setImage(file);
   };
-
+  console.log(image)
   const handleSubmit = async (e: any) => {
     e.preventDefault();
 
@@ -37,7 +37,7 @@ const Profile = () => {
       if (user && image) {
         formData.append("userName", name || user.userName);
         formData.append("image", image);
-        formData.append("language", updateLanguage);
+        formData.append("language", updateLanguage || user.language);
       }
   
       const response = await axios.patch(
@@ -50,15 +50,9 @@ const Profile = () => {
           },
         }
       );
-
-
       toast.success("Profile updated successfully!");
-
-
-      const updatedUser = { ...user };
-      updatedUser.profileImage = response.data.profileImage;
-      setUser(updatedUser);
-
+      const updatedUser = response.data.user
+      setUser({...user, ...updatedUser });
       navigateChat();
     } catch (error) {
       toast.error("Failed to update profile.");
