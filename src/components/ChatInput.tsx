@@ -46,7 +46,6 @@ const ChatInput = ({
         to: selectId, 
       });
     }
-    // after user stops typing for 3 seconds we will stop typing
     let lastTypingTime = new Date().getTime();
     let timeLength = 3000; // 3 second
     setTimeout(() => {

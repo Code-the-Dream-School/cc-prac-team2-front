@@ -70,8 +70,6 @@ export const UserContext= createContext<UserContextProviderProps> ({
 
 export const UserContextProvider:React.FC<{children: ReactNode}> = ({children}) => {
 
-    const DEFAULT_LANGUAGE = "en"
-
 
     let loggedInUser: User| null
     let loggedInUserId: string | undefined
@@ -88,15 +86,13 @@ export const UserContextProvider:React.FC<{children: ReactNode}> = ({children}) 
 
     const [user, setUser] = useState<User | null>(null)
     const [recipient, setRecipient] = useState<string | null>(null)
-    const [language, setLanguage] = useState<string | null>(DEFAULT_LANGUAGE)
+    const [language, setLanguage] = useState<string | null>(null)
     const [isDarkMode, setIsDarkMode] = useState(true);
     const [conversationId, setConversationId] = useState<string|null>(null)
     const [selectId, setSelectId] = useState<string|null>(null)
     const [messages, setMessages] = useState<Messages[] | null>([])
     const [isLoading, setIsLoading] = useState(false)
     const [languages, setLanguages] = useState<string[] | null>([]);
-
-
 
 
       useEffect(() => {
@@ -113,7 +109,6 @@ export const UserContextProvider:React.FC<{children: ReactNode}> = ({children}) 
             } catch (error) {
                 toast.error("Error getting user information");
             }
-            
           };
           
         fetchUser()
@@ -133,7 +128,7 @@ export const UserContextProvider:React.FC<{children: ReactNode}> = ({children}) 
         const fetchLanguages = async () => {
           try {
             const response = await axios.request(options);
-            const { languages } = response.data.data; // Extract the "languages" array from the response data
+            const { languages } = response.data.data; 
             setLanguages(languages);
           } catch (error) {
             console.error("Error fetching languages:", error);
@@ -142,7 +137,6 @@ export const UserContextProvider:React.FC<{children: ReactNode}> = ({children}) 
     
         fetchLanguages();
       }, []);
-
 
 
     return (

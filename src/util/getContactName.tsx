@@ -1,5 +1,4 @@
 import { BsCheck } from "react-icons/bs";
-import { MdNightsStay } from "react-icons/md";
 export const getContactName = (userName:any, onlineFriends:any) => {
 
     const checkUserName = (userName, onlFr) => {
@@ -8,10 +7,7 @@ export const getContactName = (userName:any, onlineFriends:any) => {
         ))
     }
 
-
-    
     const userNameExists = checkUserName(userName,onlineFriends);
-
  
     if(userName) {
         return (

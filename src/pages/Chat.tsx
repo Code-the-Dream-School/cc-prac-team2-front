@@ -114,6 +114,7 @@ const Chat = () => {
     setConversationId(null);
     setSelectId(unContact._id);
     setRecipient(unContact.userName);
+    setLanguage(unContact.language)
   };
 
   const handleSelectPeople = () => {
@@ -210,16 +211,9 @@ const Chat = () => {
           </div>
             )
           }
-          {/* <div
-            className={`text-xl p-3 text-center  underline underline-offset-4 ${
-              isDarkMode ? "text-white" : "text-black"
-            }`}
-          >
-            People
-          </div> */}
+  
           {
             view === 'people' && (
-          
           <div className="overflow-y-auto h-full ">
             {usersList
               ? usersList.uncontactedUsers.map((unContact) => {

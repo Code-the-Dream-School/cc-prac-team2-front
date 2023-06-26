@@ -10,9 +10,6 @@ const Profile = () => {
   const [name, setName] = useState("");
   const [image, setImage] = useState(null);
   const [updateLanguage, setUpdateLanguage] = useState("");
-
-
-
   const token: { token: string } | null = JSON.parse(
     localStorage.getItem("token") || "null"
   );

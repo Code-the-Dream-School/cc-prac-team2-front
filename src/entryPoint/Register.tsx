@@ -16,12 +16,10 @@ const Register = () => {
   const [passwordError, setPasswordError] = useState("");
   const [confirmPasswordError, setConfirmPasswordError] = useState("");
   const [isFormValid, setIsFormValid] = useState(false);
-  const { setUser, isDarkMode, languages, setLanguages} = useContext(UserContext);
+  const { setUser, isDarkMode, languages} = useContext(UserContext);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState("");
-
-
 
 
 
@@ -248,7 +246,7 @@ const Register = () => {
               <option value="" disabled hidden>
                 Select Language
               </option>
-              {languages.map(({ code, name }) => (
+              {languages?.map(({ code, name }) => (
                 <option key={code} value={code}>
                   {name}
                 </option>

@@ -17,7 +17,7 @@ const Navbar = () => {
   const { user, setUser, isDarkMode, setIsDarkMode,} = useContext(UserContext);
 
   useEffect(() => {
-    setIsDropdownOpen(false); // Reset dropdown state
+    setIsDropdownOpen(false); 
   }, [user]);
 
   useEffect(() => {
@@ -96,7 +96,6 @@ const Navbar = () => {
               <p>
                 {user.welcome ? user.welcome : "Welcome"}, {user.userName}
               </p> 
-                  
                   : ""}
             </h5>
             {profileImage ? (

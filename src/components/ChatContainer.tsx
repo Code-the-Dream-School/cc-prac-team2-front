@@ -38,6 +38,7 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
     const idArray = usersArray?.map((obj) => obj._id)
 
 
+
     const fetchMessages = async () => {
         try {
             if (user && !!conversationId) {
@@ -48,6 +49,7 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
                     }
                   }
                 )
+                console.log(data)
                 const {messages} = data.conversation
                 const {users} = data.conversation
 
@@ -81,7 +83,6 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
       socket.current.on("stopTyping", () => setIsTyping(false));
     }
   }, [socket.current]);
-
 
 
   useEffect(() => {
@@ -127,6 +128,7 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
                  }
                }
              )
+
              const {message} = data
         
 
@@ -177,10 +179,7 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
                  targetLanguage: language,
                  message: message.message
              })
- 
          } 
-         
-         
          catch (err) {
              toast.error("Error sending messages, please try again");
          }
