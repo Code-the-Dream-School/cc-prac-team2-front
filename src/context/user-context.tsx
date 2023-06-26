@@ -7,7 +7,7 @@ import { toast } from "react-toastify";
 interface Messages {
     createdAt?: string | null,
     message: string, 
-    audioURL: string, // URL of the audio file
+    audioURL: string,
     sender: string | null, 
     _id: string, 
 
@@ -21,6 +21,7 @@ interface User {
         url: string
     }, 
     language: string,
+    welcome: string,
 }
 
 
@@ -65,6 +66,9 @@ export const UserContext= createContext<UserContextProviderProps> ({
 
 export const UserContextProvider:React.FC<{children: ReactNode}> = ({children}) => {
 
+    const DEFAULT_LANGUAGE = "en"
+
+
     let loggedInUser: User| null
     let loggedInUserId: string | undefined
 
@@ -80,7 +84,7 @@ export const UserContextProvider:React.FC<{children: ReactNode}> = ({children}) 
 
     const [user, setUser] = useState<User | null>(null)
     const [recipient, setRecipient] = useState<string | null>(null)
-    const [language, setLanguage] = useState<string | null>("en")
+    const [language, setLanguage] = useState<string | null>(DEFAULT_LANGUAGE)
     const [isDarkMode, setIsDarkMode] = useState(true);
     const [conversationId, setConversationId] = useState<string|null>(null)
     const [selectId, setSelectId] = useState<string|null>(null)
@@ -120,6 +124,7 @@ export const UserContextProvider:React.FC<{children: ReactNode}> = ({children}) 
             messages, setMessages,
             isLoading, setIsLoading,
             language, setLanguage,
+
         }}
             >
             {children}

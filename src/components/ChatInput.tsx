@@ -64,6 +64,9 @@ const ChatInput = ({
 
   const handleSendMessage = (e: ChangeEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (messageText.trim() === "") {
+      return; 
+    }
     if (messageText.substring(0, 7) === AIcall) {
       onHandleSendAIMessage(messageText);
       setIsLoading(true);
@@ -108,7 +111,7 @@ const ChatInput = ({
               </span>
             </div>
 
-          <input
+            <input
             type="text"
             placeholder="Type your message or type @birdie to call chatGPT"
 

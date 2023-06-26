@@ -69,7 +69,6 @@ const LogIn = () => {
         if (response.status === 200) {
           const token = response.data.token;
           localStorage.setItem("token", JSON.stringify(token));
-          const loggedIn = jwt_decode(token);
           setUser(response.data.user);
 
           toast.success("User signed in");

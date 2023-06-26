@@ -14,7 +14,7 @@ const Navbar = () => {
     localStorage.getItem("token") || "null"
   );
 
-  const { user, setUser, isDarkMode, setIsDarkMode } = useContext(UserContext);
+  const { user, setUser, isDarkMode, setIsDarkMode,} = useContext(UserContext);
 
   useEffect(() => {
     setIsDropdownOpen(false); // Reset dropdown state
@@ -76,7 +76,6 @@ const Navbar = () => {
           isDarkMode ? "white" : "black"
         } text-2xl items-center justify-center`}
       >
-        {/* add gif */}
         <img
           className="w-10 h-10"
           src="https://img1.picmix.com/output/stamp/normal/6/4/6/7/1647646_1b76b.gif"
@@ -92,7 +91,12 @@ const Navbar = () => {
                 isDarkMode ? "white" : "black"
               } hover:text-gray-300  mr-2 focus:outline-none sm:block`}
             >
-              {user && user.userName ? <p>Welcome, {user.userName}</p> : ""}
+              {user && user.userName ? 
+              <p>
+                {user.welcome ? user.welcome : "Welcome"}, {user.userName}
+              </p> 
+                  
+                  : ""}
             </h5>
             {profileImage ? (
               <div

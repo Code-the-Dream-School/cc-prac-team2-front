@@ -26,7 +26,6 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
         language, 
     } = useContext(UserContext)
 
-    if (language) console.log(language)
 
 
     const [usersArray, setUsersArray] = useState([])
@@ -234,7 +233,7 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
   useEffect(() => {
     scrollRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
   }, [messages]);
-  
+
 
   return (
     <>

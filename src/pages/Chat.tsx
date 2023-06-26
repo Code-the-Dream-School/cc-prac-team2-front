@@ -92,7 +92,6 @@ const Chat = () => {
         Authorization: `Bearer ${token}`,
       },
     });
-    console.log(data)
     setUsersList(data.users)
   };
 

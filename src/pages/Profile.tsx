@@ -10,6 +10,8 @@ const Profile = () => {
   const [name, setName] = useState("");
   const [image, setImage] = useState(null); // Store image as a file object
 
+  console.log(user)
+
   const token: { token: string } | null = JSON.parse(
     localStorage.getItem("token") || "null"
   );
@@ -125,7 +127,9 @@ const Profile = () => {
               value={name}
               onChange={handleNameUpdate}
             />
+            <div>Language: {user?.language}</div>
           </div>
+
           <button className="bg-orange-50 text-gray-800 px-8 py-3 text-2xl w-96 mt-4 mb-4 rounded-full shadow-md transition-colors hover:bg-green-500 hover:text-white">
             Save
           </button>

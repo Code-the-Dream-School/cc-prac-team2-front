@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 import { UserContext } from "../context/user-context";
 import emailRegex from "../util/constants.tsx";
 import { toast } from "react-toastify";
-import jwt_decode from "jwt-decode";
 import { AiFillEyeInvisible, AiFillEye } from "react-icons/ai";
 
 const Register = () => {
@@ -17,7 +16,7 @@ const Register = () => {
   const [passwordError, setPasswordError] = useState("");
   const [confirmPasswordError, setConfirmPasswordError] = useState("");
   const [isFormValid, setIsFormValid] = useState(false);
-  const { setUser, isDarkMode,  } = useContext(UserContext);
+  const { setUser, isDarkMode,  setWelcome } = useContext(UserContext);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [languages, setLanguages] = useState([]);
@@ -46,12 +45,6 @@ const Register = () => {
     fetchLanguages();
   }, []);
 
-  // console.log(languages)
-  // console.log(selectedLanguage)
-  // const codeLa = languages.map((la) => {
-  //   return la[selectedLanguage]
-  // })
-  // console.log(codeLa)
 
   useEffect(() => {
     const validateForm = () => {
@@ -138,8 +131,6 @@ const Register = () => {
 
         const token = response.data.token;
         localStorage.setItem("token", JSON.stringify(token));
-        const register = jwt_decode(token);
-
         setUser(response.data.user)
 
         toast.success("User signed up");
