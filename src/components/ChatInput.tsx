@@ -27,7 +27,7 @@ const ChatInput = ({
   const [showEmoji, setShowEmoji] = useState<boolean>(false);
   const AIcall = import.meta.env.VITE_AI_ASSISTANT_CALL;
   const [messageText, setMessageText] = useState<string>("");
-  const { user, setIsLoading, selectId, isDarkMode } = useContext(UserContext);
+  const { user, selectId, isDarkMode } = useContext(UserContext);
 
 
   const handleShowEmoji = () => {
@@ -69,7 +69,6 @@ const ChatInput = ({
     }
     if (messageText.substring(0, 7) === AIcall) {
       onHandleSendAIMessage(messageText);
-      setIsLoading(true);
       toast.loading("Please wait",{
         position: toast.POSITION.TOP_CENTER,
         progressClassName: 'success-progress-bar',
@@ -118,8 +117,7 @@ const ChatInput = ({
 
             <input
             type="text"
-            placeholder="Type your message or type @birdie to call chatGPT"
-
+            placeholder="Type your message or type @birdie to call AI Assistant"
             className={`mx-8 mb-2 p-2 flex-grow rounded-xl hover:border-white focus:outline-none shadow-lg 
             ${
               isDarkMode ? "bg-[#161c24]  text-slate-100" :  "bg-slate-200  text-black" 
