@@ -5,6 +5,7 @@ import { MdOutlineClose } from "react-icons/md";
 import VoiceMessage from "./VoiceMessage";
 import SpeechToText from "./SpeechToText";
 import { UserContext } from "../context/user-context";
+import { toast } from "react-toastify";
 
 interface ChatInputProps {
   socket: any;
@@ -69,6 +70,11 @@ const ChatInput = ({
     if (messageText.substring(0, 7) === AIcall) {
       onHandleSendAIMessage(messageText);
       setIsLoading(true);
+      toast.loading("Please wait",{
+        position: toast.POSITION.TOP_CENTER,
+        progressClassName: 'success-progress-bar',
+        toastId: 2
+      });
     } else {
       onHandleSendMessage(messageText);
     }

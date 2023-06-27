@@ -4,15 +4,19 @@ import { UserContext } from "../context/user-context";
 import { FaArrowLeft, FaPlus } from "react-icons/fa";
 import { toast } from "react-toastify";
 import axios from "axios";
+import languagesArray from "../util/languages";
 
 const Profile = () => {
-  const { user, setUser, isDarkMode, languages } = useContext(UserContext);
+  const { user, setUser, isDarkMode} = useContext(UserContext);
   const [name, setName] = useState("");
   const [image, setImage] = useState(null);
   const [updateLanguage, setUpdateLanguage] = useState("");
   const token: { token: string } | null = JSON.parse(
     localStorage.getItem("token") || "null"
   );
+
+
+
 
   const navigate = useNavigate();
 
@@ -28,15 +32,18 @@ const Profile = () => {
     const file = e.target.files[0];
     setImage(file);
   };
-  console.log(image)
+
+
   const handleSubmit = async (e: any) => {
     e.preventDefault();
 
     try {
       const formData = new FormData();
-      if (user && image) {
+      if (user) {
         formData.append("userName", name || user.userName);
-        formData.append("image", image);
+        if (image) {
+          formData.append("image", image);
+        }
         formData.append("language", updateLanguage || user.language);
       }
   
@@ -135,9 +142,9 @@ const Profile = () => {
               <option value="" disabled hidden>
                 Update language
               </option>
-              {languages?.map(({ code, name }) => (
+              {languagesArray?.map(({ code, language}) => (
                 <option key={code} value={code}>
-                  {name}
+                  {language}
                 </option>
               ))}
             </select>

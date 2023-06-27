@@ -8,6 +8,10 @@ import { getTime } from "../util/getTime";
 import { v4 as uuidv4 } from "uuid";
 import JumpingDotsAnimation from "../UI/animation"
 import { HiOutlineLanguage } from "react-icons/hi2";
+import languagesArray from "../util/languages";
+
+
+
 interface Socket {
   current: any;
 }
@@ -38,6 +42,10 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
     const idArray = usersArray?.map((obj) => obj._id)
 
 
+    const fullLanguage = languagesArray.map((l) => {
+      if (l.code === language) return l.language
+    })
+    
 
     const fetchMessages = async () => {
         try {
@@ -210,6 +218,7 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
                     })
                 } else if (data.messageReply) {
                     setIsLoading(false)
+                    toast.update(2, { render: "done", type: "success", hideProgressBar: true, autoClose:1000, isLoading: false });
                     setArrivalMessages({
                         createdAt: data.messageReply.createdAt,
                         message: data.messageReply.message, 
@@ -252,13 +261,13 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
                     (
                     <>
                     <HiOutlineLanguage />
-                    <span>  {language} </span>
+                    <span>  {language} / {fullLanguage} </span>
                     </>
                     )
                     :  (
                       <>
                       <HiOutlineLanguage />
-                      <span> en </span>
+                      <span> en / English </span>
                       </>
                       )
               }

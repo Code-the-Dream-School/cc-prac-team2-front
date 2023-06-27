@@ -42,8 +42,6 @@ interface UserContextProviderProps {
     setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
     language: string | null , 
     setLanguage: React.Dispatch<React.SetStateAction<string | null>>;
-    languages: string[] | null, 
-    setLanguages: React.Dispatch<React.SetStateAction<string[] | null>>;
 }
 
 export const UserContext= createContext<UserContextProviderProps> ({
@@ -63,8 +61,6 @@ export const UserContext= createContext<UserContextProviderProps> ({
     setIsLoading: () => {},
     language: null , 
     setLanguage: () => {},
-    languages: null, 
-    setLanguages: () => {},
 })
 
 
@@ -92,7 +88,7 @@ export const UserContextProvider:React.FC<{children: ReactNode}> = ({children}) 
     const [selectId, setSelectId] = useState<string|null>(null)
     const [messages, setMessages] = useState<Messages[] | null>([])
     const [isLoading, setIsLoading] = useState(false)
-    const [languages, setLanguages] = useState<string[] | null>([]);
+
 
 
       useEffect(() => {
@@ -114,31 +110,6 @@ export const UserContextProvider:React.FC<{children: ReactNode}> = ({children}) 
         fetchUser()
       }, [])
 
-
-      const options = {
-        method: "GET",
-        url: `${import.meta.env.VITE_TRANSLATOR_URL}`,
-        headers: {
-          "X-RapidAPI-Key": `${import.meta.env.VITE_X_RapidAPI_Key}`,
-          "X-RapidAPI-Host": "text-translator2.p.rapidapi.com",
-        },
-      };
-    
-      useEffect(() => {
-        const fetchLanguages = async () => {
-          try {
-            const response = await axios.request(options);
-            const { languages } = response.data.data; 
-            setLanguages(languages);
-          } catch (error) {
-            console.error("Error fetching languages:", error);
-          }
-        };
-    
-        fetchLanguages();
-      }, []);
-
-
     return (
         <UserContext.Provider 
         value={{user, setUser, 
@@ -149,7 +120,7 @@ export const UserContextProvider:React.FC<{children: ReactNode}> = ({children}) 
             messages, setMessages,
             isLoading, setIsLoading,
             language, setLanguage,
-            languages, setLanguages,
+
         }}
             >
             {children}

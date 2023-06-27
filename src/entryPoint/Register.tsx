@@ -5,6 +5,7 @@ import { UserContext } from "../context/user-context";
 import emailRegex from "../util/constants.tsx";
 import { toast } from "react-toastify";
 import { AiFillEyeInvisible, AiFillEye } from "react-icons/ai";
+import languagesArray from "../util/languages";
 
 const Register = () => {
   const [userName, setUserName] = useState("");
@@ -16,7 +17,7 @@ const Register = () => {
   const [passwordError, setPasswordError] = useState("");
   const [confirmPasswordError, setConfirmPasswordError] = useState("");
   const [isFormValid, setIsFormValid] = useState(false);
-  const { setUser, isDarkMode, languages} = useContext(UserContext);
+  const { setUser, isDarkMode} = useContext(UserContext);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState("");
@@ -246,9 +247,9 @@ const Register = () => {
               <option value="" disabled hidden>
                 Select Language
               </option>
-              {languages?.map(({ code, name }) => (
+              {languagesArray?.map(({ code, language }) => (
                 <option key={code} value={code}>
-                  {name}
+                  {language}
                 </option>
               ))}
             </select>
