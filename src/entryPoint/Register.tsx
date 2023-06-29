@@ -4,8 +4,8 @@ import { useNavigate } from "react-router-dom";
 import { UserContext } from "../context/user-context";
 import emailRegex from "../util/constants.tsx";
 import { toast } from "react-toastify";
-import jwt_decode from "jwt-decode";
 import { AiFillEyeInvisible, AiFillEye } from "react-icons/ai";
+import languagesArray from "../util/languages";
 
 const Register = () => {
   const [userName, setUserName] = useState("");
@@ -17,35 +17,12 @@ const Register = () => {
   const [passwordError, setPasswordError] = useState("");
   const [confirmPasswordError, setConfirmPasswordError] = useState("");
   const [isFormValid, setIsFormValid] = useState(false);
-  const { setUser, isDarkMode } = useContext(UserContext);
+  const { setUser, isDarkMode} = useContext(UserContext);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [languages, setLanguages] = useState([]);
   const [selectedLanguage, setSelectedLanguage] = useState("");
 
-  const options = {
-    method: "GET",
-    url: `${import.meta.env.VITE_TRANSLATOR_URL}`,
-    headers: {
-      "X-RapidAPI-Key": `${import.meta.env.VITE_X_RapidAPI_Key}`,
-      "X-RapidAPI-Host": "text-translator2.p.rapidapi.com",
-    },
-  };
 
-  useEffect(() => {
-    const fetchLanguages = async () => {
-      try {
-        const response = await axios.request(options);
-        const { languages } = response.data.data; // Extract the "languages" array from the response data
-        setLanguages(languages);
-        console.log("Languages:", languages);
-      } catch (error) {
-        console.error("Error fetching languages:", error);
-      }
-    };
-
-    fetchLanguages();
-  }, []);
 
   useEffect(() => {
     const validateForm = () => {
@@ -132,14 +109,11 @@ const Register = () => {
 
         const token = response.data.token;
         localStorage.setItem("token", JSON.stringify(token));
-        const register = jwt_decode(token);
-
-        setUser(register);
+        setUser(response.data.user)
 
         toast.success("User signed up");
         navigate("/chat");
       } catch (error) {
-        console.log("Error signing up:", error);
         toast.error("Error signing up");
       }
     }
@@ -273,9 +247,9 @@ const Register = () => {
               <option value="" disabled hidden>
                 Select Language
               </option>
-              {languages.map(({ code, name }) => (
+              {languagesArray?.map(({ code, language }) => (
                 <option key={code} value={code}>
-                  {name}
+                  {language}
                 </option>
               ))}
             </select>

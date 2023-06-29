@@ -69,15 +69,13 @@ const LogIn = () => {
         if (response.status === 200) {
           const token = response.data.token;
           localStorage.setItem("token", JSON.stringify(token));
-          const loggedIn = jwt_decode(token);
-          setUser(loggedIn);
+          setUser(response.data.user);
 
           toast.success("User signed in");
 
           navigate("/chat");
         }
       } catch (error) {
-        console.log("Error signing in:", error);
         toast.error("Email or password is incorrect");
       }
     }
@@ -132,23 +130,24 @@ const LogIn = () => {
             <input
               type={showPassword ? "text" : "password"}
               placeholder="Password"
-              className={`w-96 px-5 py-2 mt-4 mb-4 border-b-2 outline-none ${
+              className={`w-96 px-4 py-2 border-b-2 outline-none ${
                 passwordError ? "border-red-500" : "border-gray-300"
               } ${isDarkMode ? "bg-gray-800" : ""}`}
               value={password}
               onChange={handlePasswordChange}
               style={{ color: isDarkMode ? "#fff" : "#000" }}
             />
-            <button
-              className="password-toggle-btn"
+            <div
+              className="absolute top-3 right-3 cursor-pointer"
               onClick={togglePasswordVisibility}
             >
               {showPassword ? <AiFillEyeInvisible /> : <AiFillEye />}
-            </button>
+            </div>
             {passwordError && (
               <div className="text-red-500 text-sm mt-1">{passwordError}</div>
             )}
           </div>
+
           <button
             className={`bg-orange-50 text-gray-800 px-8 py-3 text-2xl w-96 mt-4 mb-4 rounded-full shadow-md transition-colors ${
               isButtonDisabled

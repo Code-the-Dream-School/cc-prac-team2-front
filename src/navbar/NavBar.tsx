@@ -14,10 +14,10 @@ const Navbar = () => {
     localStorage.getItem("token") || "null"
   );
 
-  const { user, setUser, isDarkMode, setIsDarkMode } = useContext(UserContext);
+  const { user, setUser, isDarkMode, setIsDarkMode,} = useContext(UserContext);
 
   useEffect(() => {
-    setIsDropdownOpen(false); // Reset dropdown state
+    setIsDropdownOpen(false); 
   }, [user]);
 
   useEffect(() => {
@@ -59,40 +59,44 @@ const Navbar = () => {
 
   const handleProfileClick = () => {
     navigate("/profile");
+    setIsDropdownOpen(!isDropdownOpen);
   };
 
   const toggleTheme = () => {
-    setIsDarkMode(!isDarkMode); // Toggle theme
+    setIsDarkMode(!isDarkMode); 
   };
 
   return (
     <nav
       className={`py-2 px-3 flex justify-between items-center drop-shadow-md ${
-        isDarkMode ? "bg-gray-900" : "bg-white"
+        isDarkMode ? "bg-[#161c24]" : "bg-slate-100"
       }`}
     >
       <div
         className={`flex flex-row text-${
           isDarkMode ? "white" : "black"
-        } text-3xl`}
+        } text-2xl items-center justify-center`}
       >
-        {/* add gif */}
         <img
-          className="w-12 h-12"
+          className="w-10 h-10"
           src="https://img1.picmix.com/output/stamp/normal/6/4/6/7/1647646_1b76b.gif"
           alt="logo"
         />
         TALCKATOO
       </div>
-      <div className="flex items-center">
+      <div className="flex items-center mr-2">
         {user && (
           <>
             <h5
               className={`text-${
                 isDarkMode ? "white" : "black"
-              } hover:text-gray-300  mr-2 focus:outline-none hidden sm:block`}
+              } hover:text-gray-300  mr-2 focus:outline-none sm:block`}
             >
-              {user && user.userName ? <p>Welcome, {user.userName}</p> : ""}
+              {user && user.userName ? 
+              <p>
+                {user.welcome ? user.welcome : "Welcome"}, {user.userName}
+              </p> 
+                  : ""}
             </h5>
             {profileImage ? (
               <div
@@ -137,7 +141,7 @@ const Navbar = () => {
             )}
             {isDropdownOpen && (
               <div className="ml-2 relative">
-                <div className="absolute right-0 mt-2 py-2 w-48 bg-white rounded-lg shadow-xl z-999999">
+                <div className="absolute right-0 mt-5 w-48 bg-white rounded-lg shadow-xl z-999999">
                   <a
                     href="#"
                     className={`block px-4 py-2 text-${
@@ -148,7 +152,7 @@ const Navbar = () => {
                     Profile
                   </a>
                   <a
-                    href="#"
+                    href=""
                     className={`block px-4 py-2 text-${
                       isDarkMode ? "gray-800" : "gray-700"
                     } hover:bg-gray-300`}

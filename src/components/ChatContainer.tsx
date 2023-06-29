@@ -6,6 +6,10 @@ import { UserContext } from "../context/user-context";
 import ChatWelcome from "../components/ChatWelcome";
 import { getTime } from "../util/getTime";
 import { v4 as uuidv4 } from "uuid";
+import JumpingDotsAnimation from "../UI/animation"
+import { HiOutlineLanguage } from "react-icons/hi2";
+import languagesArray from "../util/languages";
+
 
 
 interface Socket {
@@ -17,27 +21,34 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
     const {
         user, 
         conversationId, 
+        setConversationId,
         selectId, 
         isDarkMode,
         recipient, setRecipient,
         messages, setMessages,
-        isLoading, setIsLoading,
+        language, 
     } = useContext(UserContext)
+
 
 
     const [usersArray, setUsersArray] = useState([])
     const [arrivalMessages, setArrivalMessages] = useState(null)
     const [typing, setTyping] = useState(false)
     const [isTyping, setIsTyping] = useState(false)
+    const [selectedTyping, setSelectedTyping] = useState()
     const scrollRef = useRef<HTMLDivElement | null>(null)
     const token: {token: string } | null = JSON.parse(localStorage.getItem("token") || "null")
     const idArray = usersArray?.map((obj) => obj._id)
 
 
+    const fullLanguage = languagesArray.map((l) => {
+      if (l.code === language) return l.language
+    })
+    
 
     const fetchMessages = async () => {
         try {
-            if (user && conversationId) {
+            if (user && !!conversationId) {
                 const {data} = await axios.get(`${import.meta.env.VITE_USERS_URL}/${user._id}/conversations/${conversationId}`, 
                 {
                     headers: {
@@ -45,9 +56,10 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
                     }
                   }
                 )
-                
+                console.log(data)
                 const {messages} = data.conversation
                 const {users} = data.conversation
+
                 if (users[0].userName === user?.userName) {
                     setRecipient(users[1].userName)
                 } else {
@@ -62,15 +74,16 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
 
             }
         } catch (err) {
-            console.log(err);
             toast.error("Error fetching messages, please try again");
         }
     }
 
+
+
   useEffect(() => {
     if (socket.current) {
-      socket.current.on("isTyping", () => {
-        console.log("isTyping")
+      socket.current.on("isTyping", (data:any) => {
+        setSelectedTyping(data)
         setIsTyping(true)
       }
       );
@@ -78,9 +91,11 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
     }
   }, [socket.current]);
 
+
   useEffect(() => {
-    fetchMessages();
-  }, [selectId]);
+    fetchMessages();    
+  }, [selectId, conversationId]);
+
 
     const sendAIMessage = (messageAI: any) => {
         socket.current.emit("sendMessageChatGPT", {
@@ -98,51 +113,92 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
         }])
     }
 
+  
+
 
     const sendMessage = async (messageText:any) => {
 
         socket.current.emit("stopTyping", selectId)
-        try {
-           const {data} = await axios.post(`${import.meta.env.VITE_MESSAGES_URL}`, {
-                from: user?._id,
-                to: selectId, 
-                message: messageText
-            },
-            {
-                headers: {
-                  Authorization: `Bearer ${token}`
-                }
-              }
-            )
-            const {message} = data
-            console.log(message)
+        if (selectId && conversationId) {
+       
+          try {
 
-            socket.current.emit("sendMessage", {
-                createdAt: message.createdAt,
-                from: user?._id,
-                to: selectId, 
-                message: message.message
-            })
+            const {data} = await axios.post(`${import.meta.env.VITE_MESSAGES_URL}`, {
+                 from: user?._id,
+                 to: selectId, 
+                 targetLanguage: language,
+                 message: messageText
+             },
+             {
+                 headers: {
+                   Authorization: `Bearer ${token}`
+                 }
+               }
+             )
 
-            setMessages( prev => [...prev, {
-                createdAt: message.createdAt,
-                message: message.message, 
-                sender: user?._id, 
-                _id: message._id,
-            }])
+             const {message} = data
+        
 
+             socket.current.emit("sendMessage", {
+                 createdAt: message.createdAt,
+                 from: user?._id,
+                 to: selectId, 
+                 targetLanguage: language,
+                 message: message.message
+             })
+ 
+             setMessages( prev => [...prev, {
+                 createdAt: message.createdAt,
+                 message: message.message, 
+                 sender: user?._id, 
+                 _id: message._id,
+             }])
+ 
+ 
+         } catch (err) {
+             toast.error("Error sending messages, please try again");
+         }
+        } else if (selectId && conversationId === null) {
+          setMessages([])
+          try {
+            const {data} = await axios.post(`${import.meta.env.VITE_MESSAGES_URL}`, {
+                 from: user?._id,
+                 to: selectId, 
+                 targetLanguage: language,
+                 message: messageText
+             },
+             {
+                 headers: {
+                   Authorization: `Bearer ${token}`
+                 }
+               }
+             )
+             const {message} = data
+             if(data.conversation._id){
+               setConversationId(data.conversation._id)
+             }
 
-        } catch (err) {
-            console.log(err);
-            toast.error("Error sending messages, please try again");
+            
+             socket.current.emit("sendMessage", {
+                 createdAt: message.createdAt,
+                 from: user?._id,
+                 to: selectId, 
+                 targetLanguage: language,
+                 message: message.message
+             })
+         } 
+         catch (err) {
+             toast.error("Error sending messages, please try again");
+         }
         }
     }
+
+    
 
 
     useEffect(() => {
         if (socket.current) {
             socket.current.on("getMessage", (data:any) => {
-                console.log(data)
                 if(data.message) {
                     setArrivalMessages({
                         createdAt: data.createdAt,
@@ -160,7 +216,7 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
                         _id: uuidv4(),
                     })
                 } else if (data.messageReply) {
-                    setIsLoading(false)
+                    toast.update(2, { render: "done", type: "success", hideProgressBar: true, autoClose:1000, isLoading: false });
                     setArrivalMessages({
                         createdAt: data.messageReply.createdAt,
                         message: data.messageReply.message, 
@@ -172,7 +228,7 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
         
     }, [socket.current, arrivalMessages])
 
-    
+
 
     useEffect(() => {
         arrivalMessages  
@@ -184,20 +240,36 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
     scrollRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
   }, [messages]);
 
+
   return (
     <>
       <div
         className={`flex flex-grow flex-col shadow  ${
-          isDarkMode ? "bg-gray-900" : "bg-slate-200"
+          isDarkMode ? "bg-slate-800" : "bg-slate-200"
         }`}
       >
         <div
           className={`w-full h-14 text-black pt-4 cursor-pointer rounded-tl-lg shadow text-center font-medium border-b-2 border-slate-300 ${
-            isDarkMode ? "bg-slate-200" : "bg-slate-200"
+            isDarkMode ? "bg-gray-800 text-white border-gray-900" : "bg-slate-200"
           }`}
         >
-
-          <p>{recipient}</p>
+          <div className="flex flex-row mx-2 px-2 gap-2">
+              <p>{recipient}</p>
+              {language ? 
+                    (
+                    <>
+                    <HiOutlineLanguage />
+                    <span>  {language} / {fullLanguage} </span>
+                    </>
+                    )
+                    :  (
+                      <>
+                      <HiOutlineLanguage />
+                      <span> en / English </span>
+                      </>
+                      )
+              }
+          </div>
         </div>
         <div
           className={`w-full flex-grow flex flex-col ${
@@ -206,7 +278,7 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
         >
                 <div className="relative h-full">
                 <div className="overflow-y-auto absolute top-0 left-0 right-0 bottom-0"> 
-                {!!selectId && conversationId ? (
+                {!!selectId && !!conversationId ? (
                 
                     <div className='m-2 p-2'>
                     {messages ? messages.map((msg) => (
@@ -219,13 +291,13 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
                         key={msg._id}
                         >
                         <div 
-                      className={('max-w-md inline-block bg-slate-500 rounded-lg m-2 p-2 ' +
-                      (msg.sender === user?._id ? 'bg-white text-left ' : '') +
-                      (msg.sender == import.meta.env.VITE_AI_ASSISTANT_ID ?  'bg-yellow-200 text-center' : '') 
+                      className={('max-w-md inline-block  rounded-lg m-2 p-2 ' +
+                      (msg.sender === user?._id ? 'bg-[#f8fafc] text-left ' : '') +
+                      (msg.sender == import.meta.env.VITE_AI_ASSISTANT_ID ?  'bg-amber-100 text-center' : 'bg-[#94a3b8]') 
                       
                     )}
                         >
-                       {msg.message && msg.message.includes("\n") ? (
+                       {msg.sender !== import.meta.env.VITE_AI_ASSISTANT_ID && msg.message && msg.message.includes("\n") ? (
                         msg.message.split("\n").map((line, index, lines) => {
                           const prevLine = index > 0 ? lines[index - 1] : null;
                           const isFirstLine = index === 0 || line !== prevLine;
@@ -262,18 +334,16 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
               ) : (
                 <ChatWelcome />
               )}
-                {isLoading ?
-                <div className='flex items-center text-center justify-center'>
-                    <div aria-label="Loading..." role="status" className="flex items-center space-x-2"><svg className="h-10 w-10 animate-spin stroke-gray-500" viewBox="0 0 256 256"><line x1="128" y1="32" x2="128" y2="64" stroke-linecap="round" stroke-linejoin="round" stroke-width="24"></line><line x1="195.9" y1="60.1" x2="173.3" y2="82.7" stroke-linecap="round" stroke-linejoin="round" stroke-width="24"></line><line x1="224" y1="128" x2="192" y2="128" stroke-linecap="round" stroke-linejoin="round" stroke-width="24"></line><line x1="195.9" y1="195.9" x2="173.3" y2="173.3" stroke-linecap="round" stroke-linejoin="round" stroke-width="24"></line><line x1="128" y1="224" x2="128" y2="192" stroke-linecap="round" stroke-linejoin="round" stroke-width="24"></line><line x1="60.1" y1="195.9" x2="82.7" y2="173.3" stroke-linecap="round" stroke-linejoin="round" stroke-width="24"></line><line x1="32" y1="128" x2="64" y2="128" stroke-linecap="round" stroke-linejoin="round" stroke-width="24"></line><line x1="60.1" y1="60.1" x2="82.7" y2="82.7" stroke-linecap="round" stroke-linejoin="round" stroke-width="24"></line></svg><span className="text-xs font-medium text-gray-500">Loading...</span></div>
-                </div>
-                : null}
             </div>
           </div>
         </div>
-        {isTyping ? <div>Loading...</div> : null}
+        <hr className=" border-slate-300 mb-3" />
+        {selectedTyping?.to === user?._id 
+        && selectedTyping?.from === selectId 
+        && isTyping ? <JumpingDotsAnimation /> : null}
                 <div
-          className={`w-full h-32 pt-2 ${
-            isDarkMode ? "bg-gray-800" : "bg-gray-200"
+          className={`w-full h-30 py-2 ${
+            isDarkMode ? "bg-gray-800" : "bg-slate-200"
           }`}
         >
        
@@ -288,9 +358,7 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
                 isTyping={isTyping}
                 setIsTyping={setIsTyping}
                 />
-          
                 </>
-                
             ) : null}
                 </div>
             </div>

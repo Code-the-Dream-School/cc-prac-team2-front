@@ -1,13 +1,16 @@
 import React, { createContext, useState, ReactNode, useEffect, } from "react";
 import axios from "axios"
 import jwt_decode from "jwt-decode";
+import { toast } from "react-toastify";
+
 
 interface Messages {
     createdAt?: string | null,
     message: string, 
-    audioURL: string, // URL of the audio file
+    audioURL: string,
     sender: string | null, 
-    _id: string
+    _id: string, 
+
 }
 
 interface User {
@@ -16,7 +19,9 @@ interface User {
     userName: string, 
     profileImage?: {
         url: string
-    }
+    }, 
+    language: string,
+    welcome: string,
 }
 
 
@@ -31,10 +36,12 @@ interface UserContextProviderProps {
     setConversationId: React.Dispatch<React.SetStateAction<string | null>>
     selectId: string | null, 
     setSelectId: React.Dispatch<React.SetStateAction<string | null>>
-    messages: Messages[] | null; // Update the type of messages to an array of Messages or null
-    setMessages: React.Dispatch<React.SetStateAction<Messages[] | null>>; // Update the type of setMessages
+    messages: Messages[] | null; 
+    setMessages: React.Dispatch<React.SetStateAction<Messages[] | null>>;
     isLoading: boolean, 
     setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
+    language: string | null , 
+    setLanguage: React.Dispatch<React.SetStateAction<string | null>>;
 }
 
 export const UserContext= createContext<UserContextProviderProps> ({
@@ -52,10 +59,13 @@ export const UserContext= createContext<UserContextProviderProps> ({
     setMessages: () => {},
     isLoading: false, 
     setIsLoading: () => {},
+    language: null , 
+    setLanguage: () => {},
 })
 
 
 export const UserContextProvider:React.FC<{children: ReactNode}> = ({children}) => {
+
 
     let loggedInUser: User| null
     let loggedInUserId: string | undefined
@@ -68,34 +78,37 @@ export const UserContextProvider:React.FC<{children: ReactNode}> = ({children}) 
     } else {
         loggedInUser  = null
     }
+
+
     const [user, setUser] = useState<User | null>(null)
     const [recipient, setRecipient] = useState<string | null>(null)
-    const [isDarkMode, setIsDarkMode] = useState(false);
+    const [language, setLanguage] = useState<string | null>(null)
+    const [isDarkMode, setIsDarkMode] = useState(true);
     const [conversationId, setConversationId] = useState<string|null>(null)
     const [selectId, setSelectId] = useState<string|null>(null)
     const [messages, setMessages] = useState<Messages[] | null>([])
     const [isLoading, setIsLoading] = useState(false)
 
-    console.log(loggedInUser);
 
-    const fetchUser = async () => {
-        const { data } = await axios.get(`${import.meta.env.VITE_USERS_URL}/${loggedInUserId}`, {
-          headers: {
-            Authorization: `Bearer ${userWithToken}`,
-          },
-        });
-        console.log(data);
-        setUser(data.user)
-      };
 
-      useEffect(()=>{
+      useEffect(() => {
+        const fetchUser = async () => {
+            try {
+                if (loggedInUserId) {
+                    const { data } = await axios.get(`${import.meta.env.VITE_USERS_URL}/${loggedInUserId}`, {
+                        headers: {
+                          Authorization: `Bearer ${userWithToken}`,
+                        },
+                      });
+                      setUser(data.user)
+                }
+            } catch (error) {
+                toast.error("Error getting user information");
+            }
+          };
+          
         fetchUser()
       }, [])
-
-      console.log(user);
-      
-    
-
 
     return (
         <UserContext.Provider 
@@ -106,6 +119,8 @@ export const UserContextProvider:React.FC<{children: ReactNode}> = ({children}) 
             recipient, setRecipient,
             messages, setMessages,
             isLoading, setIsLoading,
+            language, setLanguage,
+
         }}
             >
             {children}
