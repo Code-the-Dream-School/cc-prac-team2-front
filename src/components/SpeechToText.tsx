@@ -12,6 +12,7 @@ mic.continuous = true;
 mic.interimResults = true;
 mic.lang = "en-US";
 
+
 interface SpeechTextProps {
   setMessageText: (newMessageText: string) => void;
 }

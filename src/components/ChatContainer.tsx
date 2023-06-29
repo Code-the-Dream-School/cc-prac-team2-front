@@ -9,7 +9,7 @@ import { v4 as uuidv4 } from "uuid";
 import JumpingDotsAnimation from "../UI/animation"
 import { HiOutlineLanguage } from "react-icons/hi2";
 import languagesArray from "../util/languages";
-
+import TextToSpeech from "../components/TextToSpeech";
 
 
 interface Socket {
@@ -318,8 +318,14 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
                         <>{msg.message}</>
                       )}
 
-                                
-                        <div className='text-xxs text-gray-600 text-right items-right'>{getTime(msg.createdAt)}</div>
+                        <div className="flex flex-row gap-2">  
+                        <div className='w-1/3 text-xxs text-gray-600 items-end'>
+                          {getTime(msg.createdAt)}
+                        </div>
+                       
+                        <TextToSpeech convertedText={msg.message} />
+                       
+                        </div>
                        {msg.voiceNote && (
                         <audio className="w-60 h-15" controls>
                         <source src={msg.voiceNote?.url} type="audio/mpeg" />
@@ -361,6 +367,8 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
                 </>
             ) : null}
                 </div>
+
+           
             </div>
         </>
     )
