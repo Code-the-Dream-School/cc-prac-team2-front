@@ -80,6 +80,10 @@ const ChatInput = ({
     setMessageText("");
   };
 
+  const onHandleTranslateText = (translateText: string) => {
+    // setMessageText(translateText)
+  }
+
   return (
     <>
       <div className="flex flex-col">
@@ -156,7 +160,7 @@ const ChatInput = ({
         <div className="w-full h-1/2">
           <div className="flex flex-row items-center justify-center gap-10">
             <SpeechToText setMessageText={setMessageText} />
-            <VoiceMessage socket={socket} />
+            <VoiceMessage socket={socket} onHandleTranslateText={onHandleTranslateText} />
           </div>
         </div>
       </div>

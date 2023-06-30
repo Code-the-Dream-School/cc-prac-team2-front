@@ -94,7 +94,7 @@ const TextToSpeech:React.FC<TextToSpeechProps> = ({ convertedText }) => {
     {show ? 
 <>
     <div className="w-2/3 flex flex-row gap-2 ">
-    <div className='text-xxs text-gray-600 text-right ml-52'>
+    <div className='text-xxs text-gray-600 text-right ml-'>
     <button
         onClick={handlePlay}>{isPaused ? "Resume" : "Play"}
         </button>
