@@ -1,4 +1,4 @@
-import { useState, ChangeEvent, useEffect, useContext } from "react";
+import { useState, ChangeEvent, useEffect, useContext, VoidFunctionComponent } from "react";
 import EmojiPicker from "emoji-picker-react";
 import { BsEmojiSmile } from "react-icons/bs";
 import { MdOutlineClose } from "react-icons/md";
@@ -15,7 +15,7 @@ interface ChatInputProps {
   setIsTyping: (isTyping: boolean) => void;
   onHandleSendMessage: (message: string) => void;
   onHandleSendAIMessage: (messageAI: string) => void;
-
+  onHandleTranslateText: (voiceMessage: string) => void
 }
 const ChatInput = ({
   socket,
@@ -23,6 +23,7 @@ const ChatInput = ({
   onHandleSendAIMessage,
   typing,
   setTyping,
+  onHandleTranslateText,
 }: ChatInputProps): JSX.Element => {
   const [showEmoji, setShowEmoji] = useState<boolean>(false);
   const AIcall = import.meta.env.VITE_AI_ASSISTANT_CALL;
@@ -80,9 +81,7 @@ const ChatInput = ({
     setMessageText("");
   };
 
-  const onHandleTranslateText = (translateText: string) => {
-    // setMessageText(translateText)
-  }
+
 
   return (
     <>

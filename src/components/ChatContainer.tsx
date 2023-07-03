@@ -9,6 +9,7 @@ import { v4 as uuidv4 } from "uuid";
 import JumpingDotsAnimation from "../UI/animation"
 import { HiOutlineLanguage } from "react-icons/hi2";
 import languagesArray from "../util/languages";
+import textToVoiceLanguages from "../util/textToVoiceLanguages";
 import TextToSpeech from "../components/TextToSpeech";
 
 
@@ -30,7 +31,6 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
     } = useContext(UserContext)
 
 
-
     const [usersArray, setUsersArray] = useState([])
     const [arrivalMessages, setArrivalMessages] = useState(null)
     const [typing, setTyping] = useState(false)
@@ -44,7 +44,9 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
     const fullLanguage = languagesArray.map((l) => {
       if (l.code === language) return l.language
     })
-    
+
+    const voiceCode = textToVoiceLanguages.find((la) => la.code === language)?.voiceCode
+    console.log(voiceCode)
 
     const fetchMessages = async () => {
         try {
@@ -56,7 +58,6 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
                     }
                   }
                 )
-                console.log(data)
                 const {messages} = data.conversation
                 const {users} = data.conversation
 
@@ -241,6 +242,49 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
   }, [messages]);
 
 
+  const onHandleTranslateText = async (translateText: string) => {
+    console.log(translateText)
+    // socket.current.emit("stopTyping", selectId)
+    if (selectId && conversationId && translateText) {
+   
+      try {
+
+        const {data} = await axios.post(`${import.meta.env.VITE_MESSAGES_URL}`, {
+             from: user?._id,
+             to: selectId, 
+             targetLanguage: language,
+             message: translateText.text,
+             voiceTargetLanguage: voiceCode,
+             voiceToVoice: true
+         },
+         {
+             headers: {
+               Authorization: `Bearer ${token}`
+             }
+           }
+         )
+         console.log(data);
+         const {message} = data
+         setMessages((prev) => [
+          ...prev,
+          {
+            createdAt: message.createdAt,
+            voiceNote: {
+              url: message.voiceNote.url,
+            },
+            sender: user?._id,
+            _id: message._id,
+          },
+        ]);
+        
+   
+    
+     } catch (err) {
+         toast.error("Error sending messages, please try again");
+     }
+  }}
+
+
   return (
     <>
       <div
@@ -363,6 +407,7 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
                 setTyping={setTyping}
                 isTyping={isTyping}
                 setIsTyping={setIsTyping}
+                onHandleTranslateText={onHandleTranslateText}
                 />
                 </>
             ) : null}

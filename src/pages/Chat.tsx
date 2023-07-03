@@ -5,6 +5,7 @@ import { UserContext } from "../context/user-context";
 import { getContactName } from "../util/getContactName";
 import { io, Socket } from "socket.io-client";
 import COCKATOO from "./.././assests/cockatoo.png";
+import FetchLatestMessages from "../util/FetchLatestMessages"
 
 type MyEventMap = {
   connect: () => void;
@@ -159,14 +160,18 @@ const Chat = () => {
                     <div
                       key={u._id}
                       className={
-                        "flex bg-slate-300 rounded-lg m-3 p-2 cursor-pointer last:mb-[3rem] " +
+                        "flex bg-slate-300 rounded-lg m-3 p-2 cursor-pointer " +
                         (conversationId === u.conversation._id
                           ? "bg-slate-500"
                           : "")
                       }
                       onClick={() => handleSelectContact(u)}
                     >
-                      <div className="flex flex-row gap-4">
+
+                    
+<div className="flex flex-col gap-2">
+  <div className="h-1/2">
+  <div className="flex flex-row">
                         <div className="h-full w-1/3 items-center justify-between">
                           <div className="relative">
                             <div
@@ -199,11 +204,16 @@ const Chat = () => {
                             {getContactName(u.userName, onlineFriends)}
                           </div>
                         </div>
-                        <div className="flex w-2/3 items-center justify-center">
-                          <div className="text-center">
+                        <div className="flex w-2/3 pl-2 pt-2">
+                          <div className="">
                             {u.userName}
                           </div>
                         </div>
+                      </div>
+            </div>
+            <div className="h-1/2">
+            <FetchLatestMessages u={u}/>
+          </div> 
                       </div>
                     </div>
                   );

@@ -20,7 +20,6 @@ const TextToSpeech:React.FC<TextToSpeechProps> = ({ convertedText }) => {
     if (convertedText) {
         const synth = window.speechSynthesis;
         const u = new SpeechSynthesisUtterance(convertedText);
-        console.log(typeof(u))
         setUtterance(u);
         setShow(true)
     
