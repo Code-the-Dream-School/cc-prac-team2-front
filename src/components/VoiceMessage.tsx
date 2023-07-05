@@ -155,36 +155,36 @@ const VoiceMessage = ({ socket, onHandleTranslateText }: VoiceMessageProps) => {
     setRecordedAudio(null);
   };
 
-  const handleTranslateAudio = async () => {
+  // const handleTranslateAudio = async () => {
 
-    const formData = new FormData()
+  //   const formData = new FormData()
 
-    if(recordedAudio) {
-      formData.append("file", recordedAudio)
-      formData.append("model", "whisper-1")
-      formData.append("language", "en")
-      if(recordedAudio.size > 25 * 1024 * 1024) {
-        toast.error("Please upload an audio file less than 25MB")
-        return
-    }
-    }
+  //   if(recordedAudio) {
+  //     formData.append("file", recordedAudio)
+  //     formData.append("model", "whisper-1")
+  //     formData.append("language", "en")
+  //     if(recordedAudio.size > 25 * 1024 * 1024) {
+  //       toast.error("Please upload an audio file less than 25MB")
+  //       return
+  //   }
+  //   }
 
-    try {
-      const response = await fetch(WHISPER_TRANSCRIPTION_URL, {
-        headers: {
-          Authorization: `Bearer ${import.meta.env.VITE_OPENAI_API_KEY}`,
-      },
-          method: "POST",
-          body: formData
-      })
-      const data = await response.json()
-      onHandleTranslateText(data)
-      console.log(data)
+  //   try {
+  //     const response = await fetch(WHISPER_TRANSCRIPTION_URL, {
+  //       headers: {
+  //         Authorization: `Bearer ${import.meta.env.VITE_OPENAI_API_KEY}`,
+  //     },
+  //         method: "POST",
+  //         body: formData
+  //     })
+  //     const data = await response.json()
+  //     onHandleTranslateText(data)
+
      
-  } catch (err) {
-      console.log(err);
-  } 
-  }
+  // } catch (err) {
+  //     console.log(err);
+  // } 
+  // }
 
 
 

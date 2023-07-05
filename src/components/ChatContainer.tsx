@@ -46,7 +46,7 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
     })
 
     const voiceCode = textToVoiceLanguages.find((la) => la.code === language)?.voiceCode
-    console.log(voiceCode)
+
 
     const fetchMessages = async () => {
         try {
@@ -244,9 +244,8 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
 
   const onHandleTranslateText = async (translateText: string) => {
     console.log(translateText)
-    // socket.current.emit("stopTyping", selectId)
+    socket.current.emit("stopTyping", selectId)
     if (selectId && conversationId && translateText) {
-   
       try {
 
         const {data} = await axios.post(`${import.meta.env.VITE_MESSAGES_URL}`, {
@@ -276,6 +275,15 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
             _id: message._id,
           },
         ]);
+
+        socket.current.emit("sendMessage", {
+          createdAt: message.createdAt,
+          voiceNote: {
+            url: message.voiceNote.url,
+          },
+          from: user?._id,
+          to: selectId,
+        });
         
    
     
