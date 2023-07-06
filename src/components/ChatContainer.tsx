@@ -301,8 +301,8 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
         }`}
       >
         <div
-          className={`w-full h-14 text-black pt-4 cursor-pointer rounded-tl-lg shadow text-center font-medium border-b-2 border-slate-300 ${
-            isDarkMode ? "bg-gray-800 text-white border-gray-900" : "bg-slate-200"
+          className={`w-full h-14 text-black pt-4 cursor-pointer rounded-tl-lg shadow text-center font-medium border-b-2 ${
+            isDarkMode ? "bg-gray-800 text-white border-slate-700" : "bg-slate-200 border-slate-300"
           }`}
         >
           <div className="flex flex-row mx-2 px-2 gap-2">
@@ -395,7 +395,7 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
             </div>
           </div>
         </div>
-        <hr className=" border-slate-300 mb-3" />
+        <hr className={`mb-3 ${isDarkMode ? "border-slate-700" : "border-slate-300"}`} />
         {selectedTyping?.to === user?._id 
         && selectedTyping?.from === selectId 
         && isTyping ? <JumpingDotsAnimation /> : null}

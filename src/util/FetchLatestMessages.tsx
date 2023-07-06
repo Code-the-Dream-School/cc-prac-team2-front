@@ -63,7 +63,7 @@ const FetchLatestMessages:React.FC<FetchLatestMessagesProps> = ({u}) => {
       
 
   return (
-    <div>{latestMessage}</div>
+    <div className="text-slate-300 text-sm">{latestMessage}</div>
   )
 }
 

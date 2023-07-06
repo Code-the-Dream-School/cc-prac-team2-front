@@ -70,6 +70,7 @@ export default function SpeechToText({ setMessageText }: SpeechTextProps) {
   return (
     <>
       <button
+      title="Speech to Text"
         className={`bg-slate-300 hover:bg-slate-400 rounded-full m-2 h-9 w-9 ${
           isListening ? "hover:bg-red-300" : ""
         }`}
