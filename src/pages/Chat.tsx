@@ -160,12 +160,14 @@ const Chat = () => {
                     <div
                       key={u._id}
                       className={
-                        "flex rounded-lg m-2 p-1 cursor-pointer  " +
-                        (conversationId === u.conversation._id
-                          ? "bg-slate-500"
-                          : "") + (
-                            isDarkMode ? "bg-[#161c24] text-white hover:bg-slate-600 " : "bg-slate-300 text-black hover:bg-slate-400"
-                          )
+                        "flex rounded-lg m-2 p-1 cursor-pointer " +
+                        ((conversationId === u.conversation._id && isDarkMode)
+                          ? "bg-slate-500 text-white hover:bg-slate-600"
+                          : (conversationId === u.conversation._id && !isDarkMode)
+                          ? "bg-slate-500 text-black hover:bg-slate-400"
+                          : isDarkMode
+                          ? "bg-[#161c24] text-white hover:bg-slate-600"
+                          : "bg-slate-300 text-black hover:bg-slate-400")
                       }
                       onClick={() => handleSelectContact(u)}
                     >
@@ -240,10 +242,14 @@ const Chat = () => {
                     <div
                       key={unContact._id}
                       className={
-                        "flex rounded-lg m-2 p-2 cursor-pointer last:mb-[3rem] " +
-                        (selectId === unContact._id ? "bg-slate-500 border-b-2 border-white " : "") + (
-                          isDarkMode ? "bg-[#161c24] text-white hover:bg-slate-600 " : "bg-slate-300 text-black hover:bg-slate-400"
-                        )
+                        "flex rounded-lg m-2 p-1 cursor-pointer " +
+                        ((selectId === unContact._id && isDarkMode)
+                          ? "bg-slate-500 text-white hover:bg-slate-600"
+                          : (selectId === unContact._id && !isDarkMode)
+                          ? "bg-slate-500 text-black hover:bg-slate-400"
+                          : isDarkMode
+                          ? "bg-[#161c24] text-white hover:bg-slate-600"
+                          : "bg-slate-300 text-black hover:bg-slate-400")
                       }
                       onClick={() => handleSelectUnContact(unContact)}
                     >
