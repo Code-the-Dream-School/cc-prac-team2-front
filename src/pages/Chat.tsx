@@ -6,7 +6,7 @@ import { getContactName } from "../util/getContactName";
 import { io, Socket } from "socket.io-client";
 import COCKATOO from "./.././assests/cockatoo.png";
 import FetchLatestMessages from "../util/FetchLatestMessages"
-
+import DOMAIN from "../util/url";
 type MyEventMap = {
   connect: () => void;
   disconnect: () => void;
@@ -54,7 +54,7 @@ const Chat = () => {
   
 
   useEffect(() => {
-    socket.current = io(`${import.meta.env.VITE_SOCKET}`);
+    socket.current = io(`${DOMAIN.BACKEND_DEPLOY_URL}`);
   }, []);
 
   useEffect(() => {
@@ -175,7 +175,7 @@ const Chat = () => {
                     
 
   <div className="flex flex-row">
-                        <div className="w-1/4 flex items-center justify-center">
+                        <div className="w-1/4 flex items-center justify-center mx-2">
                           <div className="relative">
                             <div
                               className="w-10 h-10 rounded-full shadow-xl flex items-center justify-center"

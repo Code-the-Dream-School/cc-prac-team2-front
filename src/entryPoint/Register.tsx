@@ -2,10 +2,11 @@ import { useState, useEffect, useContext, ChangeEvent } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "../context/user-context";
-import emailRegex from "../util/constants.tsx";
+import emailRegex from "../util/constants.ts";
 import { toast } from "react-toastify";
 import { AiFillEyeInvisible, AiFillEye } from "react-icons/ai";
 import languagesArray from "../util/languages";
+import DOMAIN from "../util/url";
 
 const Register = () => {
   const [userName, setUserName] = useState("");
@@ -98,7 +99,7 @@ const Register = () => {
     if (isFormValid) {
       try {
         const response = await axios.post(
-          `${import.meta.env.VITE_REGISTER_URL}`,
+          `${DOMAIN.BACKEND_DEPLOY_URL}/api/v1/account/sign-up`,
           {
             userName,
             email,

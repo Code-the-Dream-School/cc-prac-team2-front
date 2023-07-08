@@ -6,7 +6,7 @@ import { HiOutlineUserCircle } from "react-icons/hi";
 import { BsFillSunFill, BsFillMoonFill } from "react-icons/bs";
 import COCKATOO from "./.././assests/cockatoo.png";
 import axios from "axios";
-
+import DOMAIN from "../util/url";
 const Navbar = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [profileImage, setProfileImage] = useState("");
@@ -24,7 +24,7 @@ const Navbar = () => {
     const fetchProfileImage = async () => {
       try {
         const response = await axios.get(
-          `${import.meta.env.VITE_USERS_URL}/${user._id}`,
+          `${DOMAIN.BACKEND_DEPLOY_URL}/api/v1/users/${user._id}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,

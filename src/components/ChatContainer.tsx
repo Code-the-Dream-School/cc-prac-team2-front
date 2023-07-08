@@ -11,7 +11,7 @@ import { HiOutlineLanguage } from "react-icons/hi2";
 import languagesArray from "../util/languages";
 import textToVoiceLanguages from "../util/textToVoiceLanguages";
 import TextToSpeech from "../components/TextToSpeech";
-
+import DOMAIN from "../util/url";
 
 interface Socket {
   current: any;
@@ -51,7 +51,7 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
     const fetchMessages = async () => {
         try {
             if (user && !!conversationId) {
-                const {data} = await axios.get(`${import.meta.env.VITE_USERS_URL}/${user._id}/conversations/${conversationId}`, 
+                const {data} = await axios.get(`${DOMAIN.BACKEND_DEPLOY_URL}/api/v1/users/${user._id}/conversations/${conversationId}`, 
                 {
                     headers: {
                       Authorization: `Bearer ${token}`
@@ -124,7 +124,7 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
        
           try {
 
-            const {data} = await axios.post(`${import.meta.env.VITE_MESSAGES_URL}`, {
+            const {data} = await axios.post(`${DOMAIN.BACKEND_DEPLOY_URL}/api/v1/messages`, {
                  from: user?._id,
                  to: selectId, 
                  targetLanguage: language,
@@ -162,7 +162,7 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
         } else if (selectId && conversationId === null) {
           setMessages([])
           try {
-            const {data} = await axios.post(`${import.meta.env.VITE_MESSAGES_URL}`, {
+            const {data} = await axios.post(`${DOMAIN.BACKEND_DEPLOY_URL}${import.meta.env.VITE_MESSAGES_URL}`, {
                  from: user?._id,
                  to: selectId, 
                  targetLanguage: language,
@@ -248,7 +248,7 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
     if (selectId && conversationId && translateText) {
       try {
 
-        const {data} = await axios.post(`${import.meta.env.VITE_MESSAGES_URL}`, {
+        const {data} = await axios.post(`${DOMAIN.BACKEND_DEPLOY_URL}/api/v1/messages`, {
              from: user?._id,
              to: selectId, 
              targetLanguage: language,
