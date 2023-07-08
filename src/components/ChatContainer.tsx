@@ -162,7 +162,7 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
         } else if (selectId && conversationId === null) {
           setMessages([])
           try {
-            const {data} = await axios.post(`${DOMAIN.BACKEND_DEPLOY_URL}${import.meta.env.VITE_MESSAGES_URL}`, {
+            const {data} = await axios.post(`${DOMAIN.BACKEND_DEPLOY_URL}/api/v1/messages`, {
                  from: user?._id,
                  to: selectId, 
                  targetLanguage: language,

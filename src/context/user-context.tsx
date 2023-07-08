@@ -95,7 +95,7 @@ export const UserContextProvider:React.FC<{children: ReactNode}> = ({children}) 
         const fetchUser = async () => {
             try {
                 if (loggedInUserId) {
-                    const { data } = await axios.get(`${DOMAIN.BACKEND_DEPLOY_URL}${import.meta.env.VITE_USERS_URL}/${loggedInUserId}`, {
+                    const { data } = await axios.get(`${DOMAIN.BACKEND_DEPLOY_URL}/api/v1/users/${loggedInUserId}`, {
                         headers: {
                           Authorization: `Bearer ${userWithToken}`,
                         },

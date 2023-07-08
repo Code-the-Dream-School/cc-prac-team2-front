@@ -88,7 +88,7 @@ const Chat = () => {
   }, [onlineUsers, usersList?.contactedUsers, usersList?.uncontactedUsers]);
 
   const fetchUsers = async () => {
-    const { data } = await axios.get(`${import.meta.env.VITE_USERS_URL}`, {
+    const { data } = await axios.get(`${DOMAIN.BACKEND_DEPLOY_URL}/api/v1/users`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
