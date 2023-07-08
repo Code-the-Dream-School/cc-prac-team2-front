@@ -418,4 +418,6 @@ const languagesArray =
       },
     ]
 
-    export default languagesArray;
+
+
+    export default languagesArray

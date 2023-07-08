@@ -9,7 +9,8 @@ import { v4 as uuidv4 } from "uuid";
 import JumpingDotsAnimation from "../UI/animation"
 import { HiOutlineLanguage } from "react-icons/hi2";
 import languagesArray from "../util/languages";
-
+import textToVoiceLanguages from "../util/textToVoiceLanguages";
+import TextToSpeech from "../components/TextToSpeech";
 
 
 interface Socket {
@@ -30,7 +31,6 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
     } = useContext(UserContext)
 
 
-
     const [usersArray, setUsersArray] = useState([])
     const [arrivalMessages, setArrivalMessages] = useState(null)
     const [typing, setTyping] = useState(false)
@@ -44,7 +44,9 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
     const fullLanguage = languagesArray.map((l) => {
       if (l.code === language) return l.language
     })
-    
+
+    const voiceCode = textToVoiceLanguages.find((la) => la.code === language)?.voiceCode
+
 
     const fetchMessages = async () => {
         try {
@@ -56,7 +58,6 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
                     }
                   }
                 )
-                console.log(data)
                 const {messages} = data.conversation
                 const {users} = data.conversation
 
@@ -241,6 +242,57 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
   }, [messages]);
 
 
+  const onHandleTranslateText = async (translateText: string) => {
+    console.log(translateText)
+    socket.current.emit("stopTyping", selectId)
+    if (selectId && conversationId && translateText) {
+      try {
+
+        const {data} = await axios.post(`${import.meta.env.VITE_MESSAGES_URL}`, {
+             from: user?._id,
+             to: selectId, 
+             targetLanguage: language,
+             message: translateText.text,
+             voiceTargetLanguage: voiceCode,
+             voiceToVoice: true
+         },
+         {
+             headers: {
+               Authorization: `Bearer ${token}`
+             }
+           }
+         )
+         console.log(data);
+         const {message} = data
+         setMessages((prev) => [
+          ...prev,
+          {
+            createdAt: message.createdAt,
+            voiceNote: {
+              url: message.voiceNote.url,
+            },
+            sender: user?._id,
+            _id: message._id,
+          },
+        ]);
+
+        socket.current.emit("sendMessage", {
+          createdAt: message.createdAt,
+          voiceNote: {
+            url: message.voiceNote.url,
+          },
+          from: user?._id,
+          to: selectId,
+        });
+        
+   
+    
+     } catch (err) {
+         toast.error("Error sending messages, please try again");
+     }
+  }}
+
+
   return (
     <>
       <div
@@ -249,8 +301,8 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
         }`}
       >
         <div
-          className={`w-full h-14 text-black pt-4 cursor-pointer rounded-tl-lg shadow text-center font-medium border-b-2 border-slate-300 ${
-            isDarkMode ? "bg-gray-800 text-white border-gray-900" : "bg-slate-200"
+          className={`w-full h-14 text-black pt-4 cursor-pointer rounded-tl-lg shadow text-center font-medium border-b-2 ${
+            isDarkMode ? "bg-gray-800 text-white border-slate-700" : "bg-slate-200 border-slate-300"
           }`}
         >
           <div className="flex flex-row mx-2 px-2 gap-2">
@@ -318,8 +370,14 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
                         <>{msg.message}</>
                       )}
 
-                                
-                        <div className='text-xxs text-gray-600 text-right items-right'>{getTime(msg.createdAt)}</div>
+                        <div className="flex flex-row gap-2">  
+                        <div className='w-1/3 text-xxs text-gray-600 items-end'>
+                          {getTime(msg.createdAt)}
+                        </div>
+                       
+                        <TextToSpeech convertedText={msg.message} />
+                       
+                        </div>
                        {msg.voiceNote && (
                         <audio className="w-60 h-15" controls>
                         <source src={msg.voiceNote?.url} type="audio/mpeg" />
@@ -337,7 +395,7 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
             </div>
           </div>
         </div>
-        <hr className=" border-slate-300 mb-3" />
+        <hr className={`mb-3 ${isDarkMode ? "border-slate-700" : "border-slate-300"}`} />
         {selectedTyping?.to === user?._id 
         && selectedTyping?.from === selectId 
         && isTyping ? <JumpingDotsAnimation /> : null}
@@ -357,10 +415,13 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
                 setTyping={setTyping}
                 isTyping={isTyping}
                 setIsTyping={setIsTyping}
+                onHandleTranslateText={onHandleTranslateText}
                 />
                 </>
             ) : null}
                 </div>
+
+           
             </div>
         </>
     )

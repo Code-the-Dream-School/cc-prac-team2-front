@@ -5,6 +5,7 @@ import { UserContext } from "../context/user-context";
 import { getContactName } from "../util/getContactName";
 import { io, Socket } from "socket.io-client";
 import COCKATOO from "./.././assests/cockatoo.png";
+import FetchLatestMessages from "../util/FetchLatestMessages"
 
 type MyEventMap = {
   connect: () => void;
@@ -127,14 +128,14 @@ const Chat = () => {
 
   return (
     <>
-      <div className={`flex h-[100vh] overflow-hidden lex-grow ${isDarkMode ? "bg-dark" : "bg-light"}`}>
+      <div className={`flex h-[100vh] overflow-hidden flex-grow ${isDarkMode ? "bg-dark" : "bg-light"}`}>
         <div
           className={`md:w-72  max-h-screen p-2 ${isDarkMode ? "bg-gray-800" : "bg-slate-200"}`}
         >
-          <div className="flex items-center gap-2">
+          <div className="flex items-center justify-center gap-2">
             <button
               className={`p-2 rounded-lg ${
-                view === "friends" ? "bg-slate-500" : "bg-slate-300"
+                view === "friends" ? "bg-slate-500 hover:bg-slate-400" : "bg-slate-300 hover:bg-slate-400"
               }`}
               onClick={() => setView("friends")}
             >
@@ -142,7 +143,7 @@ const Chat = () => {
             </button>
             <button
               className={`p-2 rounded-lg ${
-                view === "people" ? "bg-slate-500" : "bg-slate-300"
+                view === "people" ? "bg-slate-500 hover:bg-slate-400" : "bg-slate-300 hover:bg-slate-400"
               }`}
               onClick={handleSelectPeople}
             >
@@ -159,15 +160,22 @@ const Chat = () => {
                     <div
                       key={u._id}
                       className={
-                        "flex bg-slate-300 rounded-lg m-3 p-2 cursor-pointer last:mb-[3rem] " +
-                        (conversationId === u.conversation._id
-                          ? "bg-slate-500"
-                          : "")
+                        "flex rounded-lg m-2 p-1 cursor-pointer " +
+                        ((conversationId === u.conversation._id && isDarkMode)
+                          ? "bg-slate-500 text-white hover:bg-slate-600"
+                          : (conversationId === u.conversation._id && !isDarkMode)
+                          ? "bg-slate-500 text-black hover:bg-slate-400"
+                          : isDarkMode
+                          ? "bg-[#161c24] text-white hover:bg-slate-600"
+                          : "bg-slate-300 text-black hover:bg-slate-400")
                       }
                       onClick={() => handleSelectContact(u)}
                     >
-                      <div className="flex flex-row gap-4">
-                        <div className="h-full w-1/3 items-center justify-between">
+
+                    
+
+  <div className="flex flex-row">
+                        <div className="w-1/4 flex items-center justify-center">
                           <div className="relative">
                             <div
                               className="w-10 h-10 rounded-full shadow-xl flex items-center justify-center"
@@ -199,12 +207,21 @@ const Chat = () => {
                             {getContactName(u.userName, onlineFriends)}
                           </div>
                         </div>
-                        <div className="flex w-2/3 items-center justify-center">
-                          <div className="text-center">
+                        <div className="flex w-3/4 pl-2 ml-2 mb-2">
+                        <div className="flex flex-col">
+                          <div className="h-1/2 mb-1">
                             {u.userName}
-                          </div>
+                            </div>
+                            <div className="h-1/2">
+                            <FetchLatestMessages u={u}/>
+                          </div> 
+                      </div>
+
+                         
                         </div>
                       </div>
+           
+          
                     </div>
                   );
                 })
@@ -225,8 +242,14 @@ const Chat = () => {
                     <div
                       key={unContact._id}
                       className={
-                        "flex bg-slate-300 rounded-lg m-3 p-2 cursor-pointer last:mb-[3rem] " +
-                        (selectId === unContact._id ? "bg-slate-500" : "")
+                        "flex rounded-lg m-2 p-1 cursor-pointer " +
+                        ((selectId === unContact._id && isDarkMode)
+                          ? "bg-slate-500 text-white hover:bg-slate-600"
+                          : (selectId === unContact._id && !isDarkMode)
+                          ? "bg-slate-500 text-black hover:bg-slate-400"
+                          : isDarkMode
+                          ? "bg-[#161c24] text-white hover:bg-slate-600"
+                          : "bg-slate-300 text-black hover:bg-slate-400")
                       }
                       onClick={() => handleSelectUnContact(unContact)}
                     >
