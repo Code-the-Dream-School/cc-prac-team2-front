@@ -21,7 +21,7 @@ interface FetchLatestMessagesProps {
 
 
 const FetchLatestMessages:React.FC<FetchLatestMessagesProps> = ({u}) => {
-  console.log(u)
+
 
   const token: {token: string } | null = JSON.parse(localStorage.getItem("token") || "null")
   const [latestMessage, setLatestMessage] = useState("")
