@@ -5,7 +5,7 @@ import { FaArrowLeft, FaPlus } from "react-icons/fa";
 import { toast } from "react-toastify";
 import axios from "axios";
 import languagesArray from "../util/languages";
-
+import DOMAIN from "../util/url";
 const Profile = () => {
   const { user, setUser, isDarkMode} = useContext(UserContext);
   const [name, setName] = useState("");
@@ -48,7 +48,7 @@ const Profile = () => {
       }
   
       const response = await axios.patch(
-        `${import.meta.env.VITE_USERS_URL}/${user?._id}/update-user`,
+        `${DOMAIN.BACKEND_DEPLOY_URL}/api/v1/users/${user?._id}/update-user`,
         formData,
         {
           headers: {

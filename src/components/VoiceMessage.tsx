@@ -6,7 +6,7 @@ import { FaMicrophone, FaStop, FaPlay, FaPaperPlane } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 import "./VoiceMessage.css";
 import RecordRTC from "recordrtc";
-
+import DOMAIN from "../util/url";
 
 
 interface VoiceMessageProps {
@@ -107,7 +107,7 @@ const VoiceMessage = ({ socket, onHandleTranslateText }: VoiceMessageProps) => {
 
       try {
         const { data } = await axios.post(
-          `${import.meta.env.VITE_VOICE_MESSAGES_URL}`,
+          `${DOMAIN.BACKEND_DEPLOY_URL}/api/v1/messages/voice-note`,
           formData,
           {
             headers: {

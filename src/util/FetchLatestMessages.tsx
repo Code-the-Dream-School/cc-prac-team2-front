@@ -2,6 +2,7 @@ import React, { useState, useContext, useEffect, useRef } from "react";
 import { UserContext } from "../context/user-context";
 import axios from "axios";
 import { toast } from "react-toastify";
+import DOMAIN from "./url";
 
 interface FetchLatestMessagesProps {
   _id: string;
@@ -34,7 +35,7 @@ const FetchLatestMessages:React.FC<FetchLatestMessagesProps> = ({u}) => {
     const getMessages = async () => {
       try {
           if (user && u._id) {
-              const {data} = await axios.get(`${import.meta.env.VITE_USERS_URL}/${user._id}/conversations/${u.conversation._id}`, 
+              const {data} = await axios.get(`${DOMAIN.BACKEND_DEPLOY_URL}/api/v1/users/${user._id}/conversations/${u.conversation._id}`, 
               {
                   headers: {
                     Authorization: `Bearer ${token}`

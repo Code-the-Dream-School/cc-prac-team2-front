@@ -2,7 +2,7 @@ import React, { createContext, useState, ReactNode, useEffect, } from "react";
 import axios from "axios"
 import jwt_decode from "jwt-decode";
 import { toast } from "react-toastify";
-
+import DOMAIN from "../util/url";
 
 interface Messages {
     createdAt?: string | null,
@@ -95,7 +95,7 @@ export const UserContextProvider:React.FC<{children: ReactNode}> = ({children}) 
         const fetchUser = async () => {
             try {
                 if (loggedInUserId) {
-                    const { data } = await axios.get(`${import.meta.env.VITE_USERS_URL}/${loggedInUserId}`, {
+                    const { data } = await axios.get(`${DOMAIN.BACKEND_DEPLOY_URL}/api/v1/users/${loggedInUserId}`, {
                         headers: {
                           Authorization: `Bearer ${userWithToken}`,
                         },

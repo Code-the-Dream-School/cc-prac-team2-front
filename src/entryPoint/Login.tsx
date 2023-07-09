@@ -1,11 +1,12 @@
 import { useState, useEffect, useContext, ChangeEvent } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import emailRegex from "../util/constants.tsx";
+import emailRegex from "../util/constants.ts";
 import jwt_decode from "jwt-decode";
 import { UserContext } from "../context/user-context";
 import { toast } from "react-toastify";
 import { AiFillEyeInvisible, AiFillEye } from "react-icons/ai";
+import DOMAIN from "../util/url.ts";
 
 const LogIn = () => {
   const [email, setEmail] = useState("");
@@ -61,7 +62,7 @@ const LogIn = () => {
 
     if (isFormValid) {
       try {
-        const response = await axios.post(`${import.meta.env.VITE_LOGIN_URL}`, {
+        const response = await axios.post(`${DOMAIN.BACKEND_DEPLOY_URL}/api/v1/account/log-in`, {
           email: email,
           password: password,
         });
