@@ -93,7 +93,7 @@ const Chat = () => {
         Authorization: `Bearer ${token}`,
       },
     });
-    console.log(data)
+
     setUsersList(data.users)
   };
 
@@ -207,7 +207,7 @@ const Chat = () => {
                             {getContactName(u.userName, onlineFriends)}
                           </div>
                         </div>
-                        <div className="flex w-3/4 pl-2 ml-2 mb-2">
+                        <div className="flex w-3/4 pl-2 ml-2 mb-1">
                         <div className="flex flex-col">
                           <div className="h-1/2 mb-1">
                             {u.userName}

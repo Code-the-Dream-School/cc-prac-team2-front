@@ -243,7 +243,7 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
 
 
   const onHandleTranslateText = async (translateText: string) => {
-    console.log(translateText)
+
     socket.current.emit("stopTyping", selectId)
     if (selectId && conversationId && translateText) {
       try {
@@ -262,7 +262,7 @@ const ChatContainer = ({ socket }: { socket: Socket }): JSX.Element => {
              }
            }
          )
-         console.log(data);
+
          const {message} = data
          setMessages((prev) => [
           ...prev,
